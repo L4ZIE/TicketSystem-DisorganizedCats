@@ -12,8 +12,17 @@ public class DataBaseConnector {
 
     private static final String file = "resources/sqllogin.properties";
     private SQLServerDataSource dataSource = null;
+    private static DataBaseConnector instance;
 
-    public DataBaseConnector() {
+    public static DataBaseConnector getInstance() {
+        if(instance == null) {
+            instance = new DataBaseConnector();
+        }
+        return instance;
+
+    }
+
+    private DataBaseConnector() {
         Properties properties = getConnectionDetails();
         dataSource = new SQLServerDataSource();
         dataSource.setDatabaseName(properties.getProperty("name"));
@@ -24,7 +33,7 @@ public class DataBaseConnector {
         dataSource.setTrustServerCertificate(true);
     }
 
-    public Connection creatConnection()throws SQLServerException {
+    public Connection createConnection()throws SQLServerException {
         return dataSource.getConnection();
     }
 
