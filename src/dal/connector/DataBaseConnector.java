@@ -10,7 +10,7 @@ import java.util.Properties;
 
 public class DataBaseConnector {
 
-    private static final String file = "resources/sqlogin.properties";
+    private static final String file = "resources/sqllogin.properties";
     private SQLServerDataSource dataSource = null;
 
     public DataBaseConnector() {
