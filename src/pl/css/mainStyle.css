@@ -30,16 +30,11 @@
     -fx-scale-z: 1.025;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 4, 4);
 }
-.negative-buttons {/*code repetition, edit later*/
-    -fx-font-size: 16px;
-    -fx-text-fill: black;
-
+.negative-buttons {
     -fx-background-color: #AD343E;
-    -fx-background-radius: 10px;
-
-    -fx-border-width: 1px;
-    -fx-border-color: black;
-    -fx-border-radius: 10px;
+}
+.positive-buttons {
+    -fx-background-color: #9BCA5F;
 }
 .label{
     -fx-text-fill: black;
