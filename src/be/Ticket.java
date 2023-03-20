@@ -12,12 +12,13 @@ public class Ticket extends TicketBase{
     private byte used;
 
     public Ticket( int id, String customerName, String customerEmail, int ticketType, int ticketPrice, String qrCode, byte used) {
-        this.id = id;
+        super(id, qrCode);
+        //this.id = id;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.ticketType = ticketType;
         this.ticketPrice = ticketPrice;
-        this.qrCode = qrCode;
+        //this.qrCode = qrCode;
         this.used = used;
     }
 

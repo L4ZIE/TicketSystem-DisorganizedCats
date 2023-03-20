@@ -12,29 +12,26 @@ import java.util.List;
 public class TicketManager implements ITicketManager {
     ITicketDAO ticketDAO;
 
-    public TicketManager() {
-        ticketDAO = new TicketDAO();}
-
     @Override
-    public List<Ticket> getAllTickets() throws SQLException {
+    public List<Ticket> getAllTickets()  {
         return ticketDAO.getAllTickets();
     }
     @Override
-    public void createTicket(Ticket ticket) throws SQLException {
+    public void createTicket(Ticket ticket) {
         ticketDAO.createTicket(ticket);
     }
 
     @Override
-    public void deleteTicket(int id) throws SQLException {
+    public void deleteTicket(int id)  {
         ticketDAO.deleteTicket(id);
     }
     @Override
-    public Ticket getTicketByID(int id) throws SQLException {
+    public Ticket getTicketByID(int id)  {
         return ticketDAO.getTicketByID(id);
     }
 
     @Override
-    public List<Ticket> searchTicketsByCustomerName (String query) throws SQLException {
+    public List<Ticket> searchTicketsByCustomerName (String query) {
         List<Ticket> tickets = ticketDAO.getAllTickets();
         List<Ticket> filtered = new ArrayList<>();
 
