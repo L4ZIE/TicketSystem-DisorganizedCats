@@ -1,27 +1,44 @@
 package pl.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 
-public class mainController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class mainController implements Initializable {
     @FXML
-    public AnchorPane anpContentContainer;
+    public AnchorPane anpController,
+            anpContent,
+            anpMain;
 
     public mainController() {
 
+
     }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        displayUserControls(anpController);
+    }
+
     private void displayUserControls(AnchorPane container) {
         //TODO
+        container.getStyleClass().add("controls-container");
+
+
     }
+
     private void displayEventsTableView(AnchorPane container) {
         //TODO
     }
+
     private void HomeScreen(AnchorPane container) {
         ManageEventsScreen(container);
         //Change in sprint 2 depending on account type
     }
-
-
 
 
     private void ManageEventsScreen(AnchorPane container) {
@@ -56,5 +73,6 @@ public class mainController {
     private void displayManageAccountScreen(AnchorPane container) {
         //sprint 2
     }
+
 
 }

@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="pl.controllers.mainController"
-            stylesheets="../css/mainStyle.css"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane fx:id="anpMain" prefHeight="400.0" prefWidth="720.0" stylesheets="@../css/mainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.controllers.mainController">
+   <children>
+      <AnchorPane fx:id="anpController" minHeight="400.0" minWidth="306.0" />
+      <AnchorPane fx:id="anpContent" layoutX="306.0" minHeight="400.0" minWidth="413.0" />
+   </children>
 </AnchorPane>
