@@ -36,6 +36,7 @@ public class mainController implements Initializable {
         Button manageUsers = new Button();
         Button manageEvents = new Button();
         Button manageSpecTickets = new Button();
+
         Label userControls = new Label();
 
         VBox buttonContainer = new VBox(5);
@@ -67,6 +68,19 @@ public class mainController implements Initializable {
         userControls.setLayoutY(container.getLayoutY() + 10);
 
         container.getChildren().addAll(userControls, buttonContainer);
+
+        manageUsers.setDisable(true);
+        manageUsers.setOnMouseClicked(e->{
+            //this is for sprint 2
+        });
+
+        manageEvents.setOnMouseClicked(e->{
+            ManageEventsScreen(anpContent);
+        });
+
+        manageSpecTickets.setOnMouseClicked(e->{
+            ManageSpecialTicketsScreen(anpContent);
+        });
     }
 
     private void displayEventsTableView(AnchorPane container) {
@@ -74,28 +88,19 @@ public class mainController implements Initializable {
         container.getStyleClass().add("container");
     }
 
-    private void HomeScreen(AnchorPane container) {
-        ManageEventsScreen(container);
-        //Change in sprint 2 depending on account type
-    }
-
-
     private void ManageEventsScreen(AnchorPane container) {
-        displayUserControls(container);
-        //TODO Display: latest events and line
+        //TODO Display: latest events and line, search bar and search button
         displayEventsTableView(container);
         //TODO Display: New Event button
     }
 
     private void ManageSelectedEventScreen(AnchorPane container) {//when merged with backend, add an Event event to the constructor
-        displayUserControls(container);
         //TODO Display: latest events and line
         displayEventsTableView(container);
         //TODO Display: New Event button
     }
 
     private void CreateEventScreen(AnchorPane container) {
-        displayUserControls(container);
         //TODO Display: all elements according to figma
     }
 

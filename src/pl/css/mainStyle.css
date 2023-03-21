@@ -30,6 +30,13 @@
     -fx-scale-z: 1.025;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 4, 4);
 }
+.app-buttons:pressed{
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-scale-z: 1;
+    -fx-effect: null;
+}
 .negative-buttons {
     -fx-background-color: #AD343E;
 }
