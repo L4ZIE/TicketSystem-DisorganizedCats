@@ -5,10 +5,5 @@
 /httpRequests/
 # Datasource local storage ignored files
 /dataSources/
-<<<<<<< HEAD
-/dataSources.local.xml/
-/src/resources/
-=======
 /dataSources.local.xml
 /resources/
->>>>>>> 9481bb92fe4cba8a425ea75a8615dfaacfa0568e
