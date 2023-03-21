@@ -14,11 +14,8 @@ import java.util.List;
 
 public class EventDAO implements IEventDAO {
     private PreparedStatement preparedStatement;
-    private final DataBaseConnector dataBaseConnector;
+    private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
 
-    public EventDAO() {
-        dataBaseConnector = new DataBaseConnector();
-    }
     @Override
     public List<Event> getAllEvents() {
 
@@ -26,7 +23,7 @@ public class EventDAO implements IEventDAO {
         String sql = "SELECT * FROM Events";
 
         try {
-            preparedStatement = dataBaseConnector.creatConnection().prepareStatement(sql);
+            preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.next()) ;
@@ -49,7 +46,7 @@ public class EventDAO implements IEventDAO {
         try {
             String sql = "INSERT INTO Events (eventName, startDateTime, endDateTime, location, locationGuidance, notes) VALUES (?,?,?,?,?,?)";
 
-            preparedStatement = dataBaseConnector.creatConnection().prepareStatement(sql);
+            preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
             preparedStatement.setString(1, event.getStartDateTime());
             preparedStatement.setString(2, event.getEndDateTime());
@@ -67,7 +64,7 @@ public class EventDAO implements IEventDAO {
     public void deleteEvent(int id) {
         try {
             String sql = "DELETE FROM Events WHERE id= ?";
-            Connection conn = dataBaseConnector.creatConnection();
+            Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
@@ -87,7 +84,7 @@ public class EventDAO implements IEventDAO {
                     "SET eventName" +
                     "WHERE id = ?";
 
-            Connection conn = dataBaseConnector.creatConnection();
+            Connection conn = dataBaseConnector.createConnection();
             PreparedStatement prepareStatement = conn.prepareStatement(sql);
 
             preparedStatement.setString(1, event.getStartDateTime());
