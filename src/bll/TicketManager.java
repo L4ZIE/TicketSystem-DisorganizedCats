@@ -2,19 +2,19 @@ package bll;
 
 import be.Ticket;
 import bll.interfaces.ITicketManager;
-import dal.TicketDAO;
 import dal.interfaces.ITicketDAO;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TicketManager implements ITicketManager {
+public class TicketManager implements ITicketManager { // REFACTO
     ITicketDAO ticketDAO;
+    private List<Ticket> allTickets ;
 
     @Override
-    public List<Ticket> getAllTickets()  {
+    public List<Ticket> getAllTickets() {
         return ticketDAO.getAllTickets();
+
     }
     @Override
     public void createTicket(Ticket ticket) {
@@ -25,14 +25,10 @@ public class TicketManager implements ITicketManager {
     public void deleteTicket(int id)  {
         ticketDAO.deleteTicket(id);
     }
-    @Override
-    public Ticket getTicketByID(int id)  {
-        return ticketDAO.getTicketByID(id);
-    }
 
     @Override
     public List<Ticket> searchTicketsByCustomerName (String query) {
-        List<Ticket> tickets = ticketDAO.getAllTickets();
+        List<Ticket> tickets = ticketDAO.getAllTickets();// TODO
         List<Ticket> filtered = new ArrayList<>();
 
         for (Ticket t : tickets) {
@@ -41,5 +37,22 @@ public class TicketManager implements ITicketManager {
             }
         }
         return filtered;
+    }
+
+    @Override
+    public Ticket getTicket(int id) {
+        for (Ticket ticket: allTickets)
+        {
+            if(ticket.getId()==id)
+            {
+                return ticket;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void searchTicketByEvent(String query) {
+        // TODO
     }
 }

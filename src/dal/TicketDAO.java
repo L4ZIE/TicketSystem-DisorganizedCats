@@ -19,27 +19,11 @@ public class TicketDAO implements ITicketDAO {
 
     @Override
     public List<Ticket> getAllTickets() {
+        List<Ticket> tickets = new ArrayList<>();
         try {
-            List<Ticket> tickets;
-
             String sql = "SELECT * FROM Tickets";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
-            tickets = fillTickets(resultSet);
-
-            return tickets;
-
-        } catch (SQLServerException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<Ticket> fillTickets(ResultSet resultSet) {
-        try {
-            List<Ticket> tickets = new ArrayList<>();
 
             while (resultSet.next()) {
                 tickets.add(new Ticket(
@@ -54,6 +38,8 @@ public class TicketDAO implements ITicketDAO {
             }
             return tickets;
 
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -91,7 +77,6 @@ public class TicketDAO implements ITicketDAO {
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();
-
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -100,32 +85,34 @@ public class TicketDAO implements ITicketDAO {
     }
 
     @Override
-    public Ticket getTicketByID(int id) {
-        try {
-            Ticket result = null;
+    public void updateTicket(Ticket selectedTicket) {
+        try{
+            String sql = "UPDATE Tickets" +
+                    "SET customerName = ? " +
+                    "SET customerEmail = ? " +
+                    "SET ticketType = ? " +
+                    "SET ticketPrice = ? " +
+                    "SET ticketQrCode = ? " +
+                    "SET used = ? " +
+                    "WHERE id = ? ";
+            Connection conn = dataBaseConnector.createConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, selectedTicket.getCustomerName());
+            preparedStatement.setString(2, selectedTicket.getCustomerEmail());
+            preparedStatement.setInt(3 ,selectedTicket.getTicketType());
+            preparedStatement.setInt(4, selectedTicket.getTicketPrice());
+            preparedStatement.setString(5, selectedTicket.getQrCode());
+            preparedStatement.setByte(6,selectedTicket.getUsed());
+            preparedStatement.setInt(7,selectedTicket.getId());
 
-            String sql = "SELECT * FROM Tickets WHERE id = ?";
-
-            preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next())
-                result = new Ticket(
-                        resultSet.getInt("id"),
-                        resultSet.getString("customerName"),
-                        resultSet.getString("customerEmail"),
-                        resultSet.getInt("ticketType"),
-                        resultSet.getInt("ticketPrice"),
-                        resultSet.getString("qrCode"),
-                        resultSet.getByte("used")
-                );
-            return result;
+            preparedStatement.executeUpdate();
 
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
 
