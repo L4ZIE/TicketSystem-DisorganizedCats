@@ -7,43 +7,49 @@ import dal.interfaces.ITicketDAO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TicketManager implements ITicketManager { // REFACTO
+public class TicketManager implements ITicketManager {
+
     ITicketDAO ticketDAO;
-    private List<Ticket> allTickets ;
+    private List<Ticket> allTickets = new ArrayList<>();
 
     @Override
     public List<Ticket> getAllTickets() {
-        return ticketDAO.getAllTickets();
-
+        return allTickets;
     }
+
     @Override
     public void createTicket(Ticket ticket) {
+        allTickets.add(ticket);
         ticketDAO.createTicket(ticket);
+
+    }
+    @Override
+    public void deleteTicket(int id) {
+        Ticket ticket = getTicketByID(id);
+        if(ticket!= null)
+        {
+            allTickets.remove(ticket);
+            ticketDAO.deleteTicket(id);
+        }
     }
 
     @Override
-    public void deleteTicket(int id)  {
-        ticketDAO.deleteTicket(id);
-    }
-
-    @Override
-    public List<Ticket> searchTicketsByCustomerName (String query) {
-        List<Ticket> tickets = ticketDAO.getAllTickets();// TODO
+    public List<Ticket> searchTicketsByCustomerName(String query) {
         List<Ticket> filtered = new ArrayList<>();
-
-        for (Ticket t : tickets) {
-            if (("" + t.getCustomerName().toLowerCase()).contains(query.toLowerCase())) {
+        for (Ticket t : allTickets) {
+            if (("" + t.getCustomerName()).equalsIgnoreCase(query)) {
                 filtered.add(t);
             }
         }
         return filtered;
+
     }
 
     @Override
-    public Ticket getTicket(int id) {
-        for (Ticket ticket: allTickets)
+    public Ticket getTicketByID(int id) {
+        for (Ticket ticket : allTickets)
         {
-            if(ticket.getId()==id)
+            if(ticket.getId()== id)
             {
                 return ticket;
             }
@@ -53,6 +59,6 @@ public class TicketManager implements ITicketManager { // REFACTO
 
     @Override
     public void searchTicketByEvent(String query) {
-        // TODO
+    //TODO
     }
 }
