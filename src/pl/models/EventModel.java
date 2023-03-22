@@ -23,7 +23,11 @@ public class EventModel {
         //sprint 2
         return null;
     }
-    public ObservableList<Event> getEventsByDate(String date){
+    public ObservableList<Event> getEventsByStartDate(String date){
+        //waiting for backend
+        return null;
+    }
+    public ObservableList<Event> getEventsByEndDate(String date){
         //waiting for backend
         return null;
     }
