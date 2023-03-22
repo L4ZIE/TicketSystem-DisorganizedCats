@@ -10,7 +10,6 @@ public interface ITicketManager {
     void createTicket(Ticket ticket) ;
     void deleteTicket(int id);
     List<Ticket> searchTicketsByCustomerName(String query);
-
-    Ticket getTicket(int id);
+    Ticket getTicketByID(int id);
     void searchTicketByEvent(String query);
 }
