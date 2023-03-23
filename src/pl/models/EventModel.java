@@ -12,11 +12,11 @@ public class EventModel {
     }
 
     public ObservableList<Event> getAllEvents(){
-        //waiting for backend
+        //done
         return null;
     }
     public Event getEventByID(int id){
-        //waiting for backend
+        //done
         return null;
     }
     public ObservableList<Event> getEventByAccount(){

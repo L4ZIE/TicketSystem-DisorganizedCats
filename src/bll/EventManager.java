@@ -38,7 +38,7 @@ public class EventManager implements IEventManager {
             }
         }
     }
-    private Event getEventByID(int id)
+    public Event getEventByID(int id)
     {
         for (Event event : allEvents)
         {
@@ -49,6 +49,15 @@ public class EventManager implements IEventManager {
         }
         return null;
     }
-
-
+    @Override
+    public Event getEventsByStartDate(String date){
+         for (Event event : allEvents)
+         {
+             if (event.getStartDateTime() == date)
+             {
+                 return event;
+             }
+         }
+        return null;
+    }
 }
