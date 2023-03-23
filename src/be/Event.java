@@ -44,16 +44,17 @@ public class Event {
     public void setTitle(String title){this.eventName = eventName;}
     //endregion
 
-    public Event(int id,String startDateTime, String endDateTime, String location, String locationGuidance, String notes){
+    public Event(int id,String startDateTime, String endDateTime, String location, String locationGuidance, String notes,String eventName){
         this.id = id;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.location = location;
         this.locationGuidance = locationGuidance;
         this.notes = notes;
+        this.eventName = eventName;
     }
     @Override
     public String toString() {
-        return id + " " + startDateTime + " " + endDateTime + " " + location + " " + locationGuidance + " " + notes;
+        return id + " " + startDateTime + " " + endDateTime + " " + location + " " + locationGuidance + " " + notes + " " + eventName;
     }
 }
