@@ -14,8 +14,7 @@ public class TicketModel {
         return FXCollections.observableArrayList(ticketManager.getAllTickets());
     }
     public Ticket getTicketByID(int id){
-        return ticketManager.getTicket(id);
-    }
+        return ticketManager.getTicketByID(id);}
     public ObservableList<Ticket> getTicketsByCustomer(String name){
         //waiting for backend
         return null;
