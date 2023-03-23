@@ -4,7 +4,6 @@ import be.Ticket;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dal.connector.DataBaseConnector;
 import dal.interfaces.ITicketDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

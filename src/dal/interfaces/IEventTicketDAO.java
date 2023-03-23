@@ -1,5 +1,6 @@
 package dal.interfaces;
 
+ bllmanager
 import java.util.List;
 
 public interface IEventTicketDAO {
@@ -8,4 +9,7 @@ public interface IEventTicketDAO {
     List<Integer> getEventForTickets(int ticketID);
 
     void addTicketToEvent(int ticketID, int eventID);
+
+public interface IEventTicketDAO {
+
 }
