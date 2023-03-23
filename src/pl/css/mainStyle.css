@@ -48,3 +48,30 @@
     -fx-font-weight: bold;
     -fx-font-size: 16px;
 }
+
+.new-event{
+    -fx-background-color: #AD343E;
+    -fx-border-width: 105px;
+    -fx-border-height: 25px;
+    -fx-border-color: 1px solid black;
+    -fx-border-radius: 5px;
+    -fx-font-family: 'Inter';
+    -fx-font-style: normal;
+    -fx-font-weight: 500;
+    -fx-font-size: 16px;
+    -fx-line-height: 19px;
+}
+
+.return{
+    -fx-background-color: #AD343E;
+    -fx-border-radius: 5px;
+    -fx-border-width: 25px;
+    -fx-font-weight: bold;
+}
+
+.ticket-search{
+    -fx-background-color: #E0E0CE;
+    -fx-border-width: 286px;
+
+}
+
