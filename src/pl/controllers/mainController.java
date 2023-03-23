@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -94,12 +95,19 @@ public class mainController implements Initializable {
         //TODO Display: latest events and line, search bar and search button
         displayEventsTableView(container);
         //TODO Display: New Event button
+
+        //Button newEvent = new Button();
+        //newEvent.getStyleClass().add("new-event");
+        //newEvent.setText("New Event");
+        //newEvent.setLayoutX(container.getLayoutX()-50);
+        //container.getChildren().addAll(newEvent);
     }
 
     private void ManageSelectedEventScreen(AnchorPane container) {//when merged with backend, add an Event event to the constructor
         //TODO Display: latest events and line
         displayEventsTableView(container);
         //TODO Display: New Event button
+
     }
 
     private void CreateEventScreen(AnchorPane container) {
@@ -110,6 +118,8 @@ public class mainController implements Initializable {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
+
+        displayEventsTableView(container);
 
         TableView ticketList = new TableView<>();
 
@@ -145,24 +155,41 @@ public class mainController implements Initializable {
 
         //TableView.setPlaceholder(new Label("No Tickets Available"));
 
-
-
         Button goBack = new Button();
         Button useBtn = new Button();
         Button delBtn = new Button();
-
+        Label eventLabel = new Label();
         TextField searchBar = new TextField();
+
 
         goBack.setText("<-");
         useBtn.setText("Use");
         delBtn.setText("Delete");
-
         searchBar.setText("Search...");
 
+        goBack.getStyleClass().add("return");
+        searchBar.getStyleClass().add("ticket-search");
 
-        //goBack.setLayoutX();
-        //goBack.setLayoutY();
+        //ticketList.setMinWidth(container.getMinWidth()-100);
 
+
+
+        goBack.setLayoutX(container.getLayoutX()-290);
+        goBack.setLayoutY(container.getLayoutY()+5);
+
+        searchBar.setLayoutX(container.getLayoutX()-80);
+        searchBar.setLayoutY(container.getLayoutY()+5);
+
+        ticketList.setLayoutX(container.getLayoutX()-290);
+        ticketList.setLayoutY(container.getLayoutY()+40);
+
+
+
+        container.getChildren().addAll(goBack,searchBar,ticketList);
+
+        goBack.setOnMouseClicked(e->{
+            ManageSelectedEventScreen(anpContent);
+        });
 
     }
 
