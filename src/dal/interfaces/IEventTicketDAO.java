@@ -8,4 +8,4 @@ public interface IEventTicketDAO {
     List<Integer> getEventForTickets(int ticketID);
 
     void addTicketToEvent(int ticketID, int eventID);
-}
+

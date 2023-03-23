@@ -15,6 +15,7 @@ public class TicketModel {
     }
     public Ticket getTicketByID(int id){
         return ticketManager.getTicketByID(id);}
+
     public ObservableList<Ticket> getTicketsByCustomer(String name){
         //waiting for backend
         return null;
