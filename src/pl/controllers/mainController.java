@@ -1,10 +1,11 @@
 package pl.controllers;
 
+import be.Ticket;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -85,6 +86,7 @@ public class mainController implements Initializable {
 
     private void displayEventsTableView(AnchorPane container) {
         //TODO
+
         container.getStyleClass().add("container");
     }
 
@@ -108,6 +110,60 @@ public class mainController implements Initializable {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
+
+        TableView ticketList = new TableView<>();
+
+        TableColumn<Ticket, String> nameColumn = new TableColumn<>("Name");
+
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        TableColumn<Ticket, String> emailColumn = new TableColumn<>("Email");
+
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
+
+        TableColumn<Ticket, String> priceColumn = new TableColumn<>("Price");
+
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
+
+        TableColumn<Ticket, String> typeColumn = new TableColumn<>("Type");
+
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
+
+        TableColumn<Ticket, String> usedColumn = new TableColumn<>("Used");
+
+        usedColumn.setCellValueFactory(new PropertyValueFactory<>("used"));
+
+        //TableColumn<Ticket, String> useNdelColumn = new TableColumn<>("useNdel");
+
+        //useNdelColumn.setCellValueFactory();
+
+        ticketList.getColumns().add(nameColumn);
+        ticketList.getColumns().add(emailColumn);
+        ticketList.getColumns().add(priceColumn);
+        ticketList.getColumns().add(typeColumn);
+        ticketList.getColumns().add(usedColumn);
+
+        //TableView.setPlaceholder(new Label("No Tickets Available"));
+
+
+
+        Button goBack = new Button();
+        Button useBtn = new Button();
+        Button delBtn = new Button();
+
+        TextField searchBar = new TextField();
+
+        goBack.setText("<-");
+        useBtn.setText("Use");
+        delBtn.setText("Delete");
+
+        searchBar.setText("Search...");
+
+
+        //goBack.setLayoutX();
+        //goBack.setLayoutY();
+
+
     }
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {
