@@ -1,8 +1,6 @@
 package dal;
 
 import be.Event;
-import be.Ticket;
-import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dal.connector.DataBaseConnector;
 import dal.interfaces.IEventDAO;
 
@@ -20,36 +18,33 @@ public class EventDAO implements IEventDAO {
 
     @Override
     public List<Event> getAllEvents() {
+
         List<Event> events = new ArrayList<>();
+        String sql = "SELECT * FROM Events";
+
         try {
-            String sql = "SELECT * FROM Events";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                events.add(new Event(
-                        resultSet.getInt("id"),
-                        resultSet.getString("startDateTime"),
-                        resultSet.getString("endDateTime"),
-                        resultSet.getString("eventLocation"),
-                        resultSet.getString("locationGuidance"),
-                        resultSet.getString("notes"),
-                        resultSet.getString("eventName")
-                ));
-            }
-            return events;
-        } catch (SQLServerException e) {
-            throw new RuntimeException(e);
+            if (!resultSet.next()) ;
+
+            events.add(new Event(
+                    resultSet.getInt("id"),
+                    resultSet.getString("starDateTime"),
+                    resultSet.getString("endDateTime"),
+                    resultSet.getString("location"),
+                    resultSet.getString("locationGuide"),
+                    resultSet.getString("notes")
+            ));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return events;
     }
-
-
-        @Override
+    @Override
     public void createEvent(Event event) {
         try {
-            String sql = "INSERT INTO Events (startDateTime, endDateTime, eventLocation, locationGuidance, notes, eventName ) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO Events (eventName, startDateTime, endDateTime, location, locationGuidance, notes) VALUES (?,?,?,?,?,?)";
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
@@ -83,7 +78,7 @@ public class EventDAO implements IEventDAO {
             String sql = "UPDATE Events" +
                     "SET startDateTime = ?" +
                     "SET endDateTime = ?" +
-                    "SET eventLocation = ?" +
+                    "SET location = ?" +
                     "SET locationGuidance = ?" +
                     "SET notes = ?" +
                     "SET eventName" +
