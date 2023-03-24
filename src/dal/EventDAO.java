@@ -1,6 +1,7 @@
 package dal;
 
 import be.Event;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dal.connector.DataBaseConnector;
 import dal.interfaces.IEventDAO;
 
@@ -18,13 +19,12 @@ public class EventDAO implements IEventDAO {
 
     @Override
     public List<Event> getAllEvents() {
-
         List<Event> events = new ArrayList<>();
-        String sql = "SELECT * FROM Events";
-
         try {
+            String sql = "SELECT * FROM Events";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
+
 
             if (!resultSet.next()) ;
 
@@ -36,15 +36,17 @@ public class EventDAO implements IEventDAO {
                     resultSet.getString("locationGuide"),
                     resultSet.getString("notes"),
                     resultSet.getString("eventName")));
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return events;
     }
     @Override
     public void createEvent(Event event) {
         try {
+
             String sql = "INSERT INTO Events (eventName, startDateTime, endDateTime, eventLocation, locationGuidance, notes) VALUES (?,?,?,?,?,?)";
+
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 

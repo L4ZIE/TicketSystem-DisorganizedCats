@@ -1,12 +1,14 @@
 package pl.controllers;
 
+import be.Ticket;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -85,6 +87,7 @@ public class mainController implements Initializable {
 
     private void displayEventsTableView(AnchorPane container) {
         //TODO
+
         container.getStyleClass().add("container");
     }
 
@@ -92,12 +95,19 @@ public class mainController implements Initializable {
         //TODO Display: latest events and line, search bar and search button
         displayEventsTableView(container);
         //TODO Display: New Event button
+
+        //Button newEvent = new Button();
+        //newEvent.getStyleClass().add("new-event");
+        //newEvent.setText("New Event");
+        //newEvent.setLayoutX(container.getLayoutX()-50);
+        //container.getChildren().addAll(newEvent);
     }
 
     private void ManageSelectedEventScreen(AnchorPane container) {//when merged with backend, add an Event event to the constructor
         //TODO Display: latest events and line
         displayEventsTableView(container);
         //TODO Display: New Event button
+
     }
 
     private void CreateEventScreen(AnchorPane container) {
@@ -108,6 +118,79 @@ public class mainController implements Initializable {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
+
+        displayEventsTableView(container);
+
+        TableView ticketList = new TableView<>();
+
+        TableColumn<Ticket, String> nameColumn = new TableColumn<>("Name");
+
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        TableColumn<Ticket, String> emailColumn = new TableColumn<>("Email");
+
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
+
+        TableColumn<Ticket, String> priceColumn = new TableColumn<>("Price");
+
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
+
+        TableColumn<Ticket, String> typeColumn = new TableColumn<>("Type");
+
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
+
+        TableColumn<Ticket, String> usedColumn = new TableColumn<>("Used");
+
+        usedColumn.setCellValueFactory(new PropertyValueFactory<>("used"));
+
+        //TableColumn<Ticket, String> useNdelColumn = new TableColumn<>("useNdel");
+
+        //useNdelColumn.setCellValueFactory();
+
+        ticketList.getColumns().add(nameColumn);
+        ticketList.getColumns().add(emailColumn);
+        ticketList.getColumns().add(priceColumn);
+        ticketList.getColumns().add(typeColumn);
+        ticketList.getColumns().add(usedColumn);
+
+        //TableView.setPlaceholder(new Label("No Tickets Available"));
+
+        Button goBack = new Button();
+        Button useBtn = new Button();
+        Button delBtn = new Button();
+        Label eventLabel = new Label();
+        TextField searchBar = new TextField();
+
+
+        goBack.setText("<-");
+        useBtn.setText("Use");
+        delBtn.setText("Delete");
+        searchBar.setText("Search...");
+
+        goBack.getStyleClass().add("return");
+        searchBar.getStyleClass().add("ticket-search");
+
+        //ticketList.setMinWidth(container.getMinWidth()-100);
+
+
+
+        goBack.setLayoutX(container.getLayoutX()-290);
+        goBack.setLayoutY(container.getLayoutY()+5);
+
+        searchBar.setLayoutX(container.getLayoutX()-80);
+        searchBar.setLayoutY(container.getLayoutY()+5);
+
+        ticketList.setLayoutX(container.getLayoutX()-290);
+        ticketList.setLayoutY(container.getLayoutY()+40);
+
+
+
+        container.getChildren().addAll(goBack,searchBar,ticketList);
+
+        goBack.setOnMouseClicked(e->{
+            ManageSelectedEventScreen(anpContent);
+        });
+
     }
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {

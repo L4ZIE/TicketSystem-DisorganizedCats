@@ -44,6 +44,7 @@ public class Event {
     public void setTitle(String eventName){this.eventName = eventName;}
     //endregion
 
+
     public Event(int id, String startDateTime, String endDateTime, String eventLocation, String locationGuidance, String notes, String eventName){
         this.id = id;
         this.startDateTime = startDateTime;
@@ -55,6 +56,7 @@ public class Event {
     }
     @Override
     public String toString() {
+
         return id + " " + startDateTime + " " + endDateTime + " " + eventLocation + " " + locationGuidance + " " + notes + " " + eventName;
     }
 }
