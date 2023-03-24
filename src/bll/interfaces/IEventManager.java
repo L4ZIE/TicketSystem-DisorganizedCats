@@ -10,4 +10,12 @@ public interface IEventManager {
     void createEvent(Event event);
 
     void deleteEvent(int id);
+
+    Event getEventsByStartDate(String date);
+
+    List<Event> getEventsByStartDateTime(String date);
+
+    List<Event> getEventsByEndDate(String date);
+
+    List<Event> getEventsByName(String name);
 }

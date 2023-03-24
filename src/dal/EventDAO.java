@@ -25,20 +25,18 @@ public class EventDAO implements IEventDAO {
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                events.add(new Event(
-                        resultSet.getInt("id"),
-                        resultSet.getString("starDateTime"),
-                        resultSet.getString("endDateTime"),
-                        resultSet.getString("location"),
-                        resultSet.getString("locationGuide"),
-                        resultSet.getString("notes"),
-                        resultSet.getString("eventName")
-                ));
-            }
-            return events;
-        } catch (SQLServerException e) {
-            throw new RuntimeException(e);
+
+            if (!resultSet.next()) ;
+
+            events.add(new Event(
+                    resultSet.getInt("id"),
+                    resultSet.getString("starDateTime"),
+                    resultSet.getString("endDateTime"),
+                    resultSet.getString("eventLocation"),
+                    resultSet.getString("locationGuide"),
+                    resultSet.getString("notes"),
+                    resultSet.getString("eventName")));
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -46,13 +44,15 @@ public class EventDAO implements IEventDAO {
     @Override
     public void createEvent(Event event) {
         try {
-            String sql = "INSERT INTO Events (startDateTime,endDateTime,eventLocation,eventGuidance,locationGuidance,notes,eventName) VALUES (?,?,?,?,?,?)";
+
+            String sql = "INSERT INTO Events (eventName, startDateTime, endDateTime, eventLocation, locationGuidance, notes) VALUES (?,?,?,?,?,?)";
+
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
             preparedStatement.setString(1, event.getStartDateTime());
             preparedStatement.setString(2, event.getEndDateTime());
-            preparedStatement.setString(3, event.getLocation());
+            preparedStatement.setString(3, event.getEventLocation());
             preparedStatement.setString(4, event.getLocationGuidance());
             preparedStatement.setString(5, event.getNotes());
             preparedStatement.setString(6,event.getEventName());
@@ -91,7 +91,7 @@ public class EventDAO implements IEventDAO {
 
             preparedStatement.setString(1, event.getStartDateTime());
             preparedStatement.setString(2, event.getEndDateTime());
-            preparedStatement.setString(3, event.getLocation());
+            preparedStatement.setString(3, event.getEventLocation());
             preparedStatement.setString(4, event.getLocationGuidance());
             preparedStatement.setString(5, event.getNotes());
             preparedStatement.setString(6, event.getEventName());
@@ -99,5 +99,30 @@ public class EventDAO implements IEventDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    @Override
+    public Event getEventByEventName(String eventName) {
+        Event result = null;
+        try {
+        String sql = "SELECT * FROM Event WHERE eventName = ?";
+
+            preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
+
+        preparedStatement.setString(1, eventName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet.next())
+            result = new Event(
+                    resultSet.getInt("id"),
+                    resultSet.getString("startDateTime"),
+                    resultSet.getString("endDateTime"),
+                    resultSet.getString("eventLocation"),
+                    resultSet.getString("locationGuidance"),
+                    resultSet.getString("notes"),
+                    resultSet.getString("eventName")
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 }
