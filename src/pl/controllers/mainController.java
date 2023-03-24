@@ -10,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import pl.models.EventModel;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -20,6 +21,8 @@ public class mainController implements Initializable {
             anpContent,
             anpMain;
 
+    private EventModel eventModel;
+
     public mainController() {
 
 
@@ -27,6 +30,7 @@ public class mainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        eventModel = new EventModel();
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
@@ -93,25 +97,25 @@ public class mainController implements Initializable {
         TableColumn<Event, String> nameColumn = new TableColumn<>();
         nameColumn.setResizable(false);
         nameColumn.setText("Name");
-        nameColumn.setMinWidth(125);
+        nameColumn.setMinWidth(100);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("eventName"));
 
         TableColumn<Event, String> startColumn = new TableColumn<>();
         startColumn.setResizable(false);
         startColumn.setText("Start");
-        startColumn.setMaxWidth(50);
+        startColumn.setMaxWidth(75);
         startColumn.setCellValueFactory(new PropertyValueFactory<>("startDateTime"));
 
         TableColumn<Event, String> endColumn = new TableColumn<>();
         endColumn.setResizable(false);
         endColumn.setText("End");
-        endColumn.setMaxWidth(50);
+        endColumn.setMaxWidth(75);
         endColumn.setCellValueFactory(new PropertyValueFactory<>("endDateTime"));
 
         TableColumn<Event, String> locationColumn = new TableColumn<>();
         locationColumn.setResizable(false);
         locationColumn.setText("Location");
-        locationColumn.setMinWidth(135);
+        locationColumn.setMinWidth(110);
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
 
         fillEventsTable(eventsTable);
@@ -126,6 +130,7 @@ public class mainController implements Initializable {
     }
 
     private void fillEventsTable(TableView eventsTable) {
+        eventsTable.setItems(eventModel.getAllEvents());
     }
 
     private void ManageEventsScreen(AnchorPane container) {

@@ -2,6 +2,7 @@ package bll;
 
 import be.Event;
 import bll.interfaces.IEventManager;
+import dal.EventDAO;
 import dal.interfaces.IEventDAO;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class EventManager implements IEventManager {
     private List<Event> allEvents;
 
     public EventManager() {
+        eventDAO = new EventDAO();
         fillAllEvents();
     }
 

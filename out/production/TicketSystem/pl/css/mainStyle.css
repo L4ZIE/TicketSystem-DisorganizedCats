@@ -66,6 +66,9 @@
     -fx-border-color: black;
     -fx-background-insets: 1px;
 }
+.table-row-cell:focused{
+    -fx-text-fill: black;
+}
 .table-view .column-header{
     -fx-background-color: #F2AF29;
     -fx-border-color: #F2AF29;

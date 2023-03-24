@@ -26,21 +26,22 @@ public class EventDAO implements IEventDAO {
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (!resultSet.next()) ;
-
-            events.add(new Event(
-                    resultSet.getInt("id"),
-                    resultSet.getString("starDateTime"),
-                    resultSet.getString("endDateTime"),
-                    resultSet.getString("location"),
-                    resultSet.getString("locationGuide"),
-                    resultSet.getString("notes")
-            ));
+            while (resultSet.next())
+                events.add(new Event(
+                        resultSet.getInt("id"),
+                        resultSet.getString("startDateTime"),
+                        resultSet.getString("endDateTime"),
+                        resultSet.getString("eventLocation"),
+                        resultSet.getString("locationGuidance"),
+                        resultSet.getString("notes"),
+                        resultSet.getString("eventName")
+                ));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return events;
     }
+
     @Override
     public void createEvent(Event event) {
         try {
@@ -53,13 +54,14 @@ public class EventDAO implements IEventDAO {
             preparedStatement.setString(3, event.getLocation());
             preparedStatement.setString(4, event.getLocationGuidance());
             preparedStatement.setString(5, event.getNotes());
-            preparedStatement.setString(6,event.getEventName());
+            preparedStatement.setString(6, event.getEventName());
 
             preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void deleteEvent(int id) {
         try {
@@ -72,6 +74,7 @@ public class EventDAO implements IEventDAO {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void updateEvent(Event event) {
         try {

@@ -2,6 +2,7 @@ package bll;
 
 import be.Ticket;
 import bll.interfaces.ITicketManager;
+import dal.TicketDAO;
 import dal.interfaces.ITicketDAO;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class TicketManager implements ITicketManager {
     ITicketDAO ticketDAO;
     private List<Ticket> allTickets;
     public TicketManager(){
+        ticketDAO = new TicketDAO();
         fillAllTickets();
     }
 
