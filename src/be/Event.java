@@ -5,7 +5,7 @@ public class Event {
     private int id;
     private String startDateTime;
     private String endDateTime;
-    private  String location;
+    private  String eventLocation;
     private String locationGuidance;
     private String notes;
     private String eventName;
@@ -24,11 +24,11 @@ public class Event {
     public void setEndTimeDate(String endDateTime){
         this.endDateTime = endDateTime;
     }
-    public String getLocation() {
-        return location;
+    public String getEventLocation() {
+        return eventLocation;
     }
-    public void setLocation(String location){
-        this.location = location;
+    public void setEventLocation(String eventLocation){
+        this.eventLocation = eventLocation;
     }
     public String getLocationGuidance(){
         return locationGuidance;
@@ -41,20 +41,22 @@ public class Event {
         this.notes = notes;
     }
     public String getEventName(){return eventName;}
-    public void setTitle(String title){this.eventName = eventName;}
+    public void setTitle(String eventName){this.eventName = eventName;}
     //endregion
 
-    public Event(int id,String startDateTime, String endDateTime, String location, String locationGuidance, String notes, String eventName){
+    public Event(int id, String startDateTime, String endDateTime, String eventLocation, String locationGuidance, String notes, String eventName){
+
         this.id = id;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.location = location;
+        this.eventLocation = eventLocation;
         this.locationGuidance = locationGuidance;
         this.notes = notes;
         this.eventName = eventName;
     }
     @Override
     public String toString() {
-        return id + " " + startDateTime + " " + endDateTime + " " + location + " " + locationGuidance + " " + notes;
+
+        return id + " " + startDateTime + " " + endDateTime + " " + eventLocation + " " + locationGuidance + " " + notes + " " + eventName;
     }
 }

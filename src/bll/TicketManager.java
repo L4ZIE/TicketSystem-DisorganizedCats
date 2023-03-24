@@ -1,8 +1,10 @@
 package bll;
 
+import be.Event;
 import be.Ticket;
 import bll.interfaces.ITicketManager;
 import dal.TicketDAO;
+import dal.interfaces.IEventTicketDAO;
 import dal.interfaces.ITicketDAO;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 public class TicketManager implements ITicketManager {
 
     ITicketDAO ticketDAO;
+
     private List<Ticket> allTickets;
     public TicketManager(){
         ticketDAO = new TicketDAO();
@@ -30,15 +33,16 @@ public class TicketManager implements ITicketManager {
     public void createTicket(Ticket ticket) {
         allTickets.add(ticket);
         ticketDAO.createTicket(ticket);
-
     }
+
     @Override
     public void deleteTicket(int id) {
-        Ticket ticket = getTicketByID(id);
-        if(ticket!= null)
-        {
-            allTickets.remove(ticket);
-            ticketDAO.deleteTicket(id);
+        for (int i = 0; i < allTickets.size(); i++) {
+            if (allTickets.get(i).getId() == id) {
+                allTickets.remove(allTickets.get(i));
+                ticketDAO.deleteTicket(id);
+                break;
+            }
         }
     }
 
@@ -51,15 +55,12 @@ public class TicketManager implements ITicketManager {
             }
         }
         return filtered;
-
     }
 
     @Override
     public Ticket getTicketByID(int id) {
-        for (Ticket ticket : allTickets)
-        {
-            if(ticket.getId()== id)
-            {
+        for (Ticket ticket : allTickets) {
+            if (ticket.getId() == id) {
                 return ticket;
             }
         }
@@ -67,12 +68,15 @@ public class TicketManager implements ITicketManager {
     }
 
     @Override
-    public void searchTicketByEvent(String query) {
-    //TODO
+    public List<Ticket> searchTicketByEvent(String query) {
+        //TODO
+        //i will implement later
+        return null;
     }
 
     @Override
     public List<Ticket> getTicketsByCustomer(String name) {
+
         List<Ticket> customersTickets = new ArrayList<>();
         for (Ticket t : allTickets) {
             if (t.getCustomerName().equalsIgnoreCase(name))
@@ -111,3 +115,4 @@ public class TicketManager implements ITicketManager {
         return customersTickets;
     }
 }
+

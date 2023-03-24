@@ -42,17 +42,31 @@ public class EventManager implements IEventManager {
         }
     }
 
-    @Override
-    public Event getEventByID(int id) {
-        for (Event event : allEvents) {
-            if (event.getId() == id) {
+    public Event getEventByID(int id)
+    {
+        for (Event event : allEvents)
+        {
+            if (event.getId() == id)
+            {
                 return event;
             }
         }
         return null;
     }
+    @Override
+    public Event getEventsByStartDate(String date){
+         for (Event event : allEvents)
+         {
+             if (event.getStartDateTime() == date)
+             {
+                 return event;
+             }
+         }
+        return null;
+    }
 
     @Override
+
     public List<Event> getEventsByStartDate(String start) {
         List<Event> result = new ArrayList<>();
         for (Event e : allEvents) {
@@ -83,4 +97,15 @@ public class EventManager implements IEventManager {
     }
 
 
+
+    @Override
+    public List<Event> getEventsByName(String name){
+        List<Event> eventsName = new ArrayList<>();
+        for (Event t : allEvents){
+            if (t.getEventName().equalsIgnoreCase(name)){
+                eventsName.add(t);
+            }
+        }
+        return eventsName;
+    }
 }

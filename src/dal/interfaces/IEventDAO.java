@@ -13,4 +13,6 @@ public interface IEventDAO {
     void deleteEvent(int id);
 
     void updateEvent(Event event);
+
+    Event getEventByEventName(String eventName) throws SQLException;
 }

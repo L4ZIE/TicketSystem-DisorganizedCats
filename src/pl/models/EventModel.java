@@ -14,16 +14,19 @@ public class EventModel {
     }
 
     public ObservableList<Event> getAllEvents(){
+
         return FXCollections.observableArrayList(eventManager.getAllEvents());
     }
     public Event getEventByID(int id){
         return eventManager.getEventByID(id);
+
     }
     public ObservableList<Event> getEventByAccount(){
         //sprint 2
         return null;
     }
     public ObservableList<Event> getEventsByStartDate(String date){
+
         return FXCollections.observableArrayList(eventManager.getEventsByStartDate(date));
     }
     public ObservableList<Event> getEventsByEndDate(String date){
@@ -31,6 +34,7 @@ public class EventModel {
     }
     public ObservableList<Event> getEventsByName(String name){
         return FXCollections.observableArrayList(eventManager.getEventsByName(name));
+
     }
 
 
