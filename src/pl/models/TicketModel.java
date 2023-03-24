@@ -2,11 +2,12 @@ package pl.models;
 
 import be.Ticket;
 import bll.TicketManager;
+import bll.interfaces.ITicketManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class TicketModel {
-    private TicketManager ticketManager;
+    private ITicketManager ticketManager;
     public TicketModel(){
         ticketManager = new TicketManager();
     }
@@ -17,20 +18,16 @@ public class TicketModel {
         return ticketManager.getTicketByID(id);
     }
     public ObservableList<Ticket> getTicketsByCustomer(String name){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(ticketManager.getTicketsByCustomer(name));
     }
     public ObservableList<Ticket> getTicketsByEmail(String email){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(ticketManager.getTicketsByEmail(email));
     }
     public ObservableList<Ticket> getTicketsByPrice(int price){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(ticketManager.getTicketsByPrice(price));
     }
     public ObservableList<Ticket> getTicketsByUsed(Boolean used){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(ticketManager.getTicketsByUsed(used));
     }
     public ObservableList<Ticket> getTicketsByEventID(int id){
         //waiting for backend

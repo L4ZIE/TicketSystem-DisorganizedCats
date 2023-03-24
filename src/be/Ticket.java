@@ -3,15 +3,12 @@ package be;
 import com.microsoft.sqlserver.jdbc.SQLServerResource_it;
 
 public class Ticket extends TicketBase{
-    private int id;
     private String customerName;
     private String customerEmail;
     private int ticketType;
     private int ticketPrice;
-    private String qrCode;
-    private byte used;
 
-    public Ticket( int id, String customerName, String customerEmail, int ticketType, int ticketPrice, String qrCode, byte used) {
+    public Ticket( int id, String customerName, String customerEmail, int ticketType, int ticketPrice, String qrCode, boolean used) {
         super(id, qrCode,used);
         this.customerName = customerName;
         this.customerEmail = customerEmail;

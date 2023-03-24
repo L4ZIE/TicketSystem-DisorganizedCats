@@ -3,9 +3,9 @@ package be;
 public abstract class TicketBase {
     private int id;
     private String qrCode;
-    private byte used;
+    private boolean used;
 
-    public TicketBase(int id,String qrCode, byte used ){
+    public TicketBase(int id,String qrCode, boolean used ){
         this.id = id;
         this.qrCode = qrCode;
         this.used = used;
@@ -20,10 +20,10 @@ public abstract class TicketBase {
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
     }
-    public byte getUsed() {
+    public boolean getUsed() {
         return used;
     }
-    public void setUsed(byte used) {
+    public void setUsed(boolean used) {
         this.used = used;
     }
 

@@ -1,5 +1,6 @@
 package pl.controllers;
 
+import be.Event;
 import be.Ticket;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,7 +28,7 @@ public class mainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         displayUserControls(anpController);
-        displayEventsTableView(anpContent);
+        anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
     }
 
@@ -72,35 +73,105 @@ public class mainController implements Initializable {
         container.getChildren().addAll(userControls, buttonContainer);
 
         manageUsers.setDisable(true);
-        manageUsers.setOnMouseClicked(e->{
+        manageUsers.setOnMouseClicked(e -> {
             //this is for sprint 2
         });
 
-        manageEvents.setOnMouseClicked(e->{
+        manageEvents.setOnMouseClicked(e -> {
             ManageEventsScreen(anpContent);
         });
 
-        manageSpecTickets.setOnMouseClicked(e->{
+        manageSpecTickets.setOnMouseClicked(e -> {
             ManageSpecialTicketsScreen(anpContent);
         });
     }
 
     private void displayEventsTableView(AnchorPane container) {
         //TODO
+        TableView eventsTable = new TableView();
 
-        container.getStyleClass().add("container");
+        TableColumn<Event, String> nameColumn = new TableColumn<>();
+        nameColumn.setResizable(false);
+        nameColumn.setText("Name");
+        nameColumn.setMinWidth(125);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("eventName"));
+
+        TableColumn<Event, String> startColumn = new TableColumn<>();
+        startColumn.setResizable(false);
+        startColumn.setText("Start");
+        startColumn.setMaxWidth(50);
+        startColumn.setCellValueFactory(new PropertyValueFactory<>("startDateTime"));
+
+        TableColumn<Event, String> endColumn = new TableColumn<>();
+        endColumn.setResizable(false);
+        endColumn.setText("End");
+        endColumn.setMaxWidth(50);
+        endColumn.setCellValueFactory(new PropertyValueFactory<>("endDateTime"));
+
+        TableColumn<Event, String> locationColumn = new TableColumn<>();
+        locationColumn.setResizable(false);
+        locationColumn.setText("Location");
+        locationColumn.setMinWidth(135);
+        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+
+        fillEventsTable(eventsTable);
+        eventsTable.setLayoutX(container.getLayoutX() - 300);
+        eventsTable.setLayoutY(container.getLayoutY() + 30);
+        eventsTable.setMaxHeight(container.getMinHeight() - 100);
+        eventsTable.setMaxWidth(360);
+
+        eventsTable.getColumns().addAll(nameColumn, startColumn, endColumn, locationColumn);
+        container.getChildren().add(eventsTable);
+
+    }
+
+    private void fillEventsTable(TableView eventsTable) {
     }
 
     private void ManageEventsScreen(AnchorPane container) {
+        clearContainer(container);
+
+        Label title = new Label();
+        TextField searchBox = new TextField();
+        Button searchButton = new Button();
+        Button newEvent = new Button();
+
+        searchBox.setPromptText("Search...");
+        newEvent.setText("New Event");
+        searchButton.setText("\uD83D\uDD0D");
+        searchButton.setStyle("-fx-font-size: 12");
+
+        searchButton.getStyleClass().add("app-buttons");
+        newEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
+
+        title.setText("Manage Events");
+
+        title.setLayoutX(container.getLayoutX() - 300);
+        title.setLayoutY(container.getLayoutY());
+
+        searchBox.setLayoutX(title.getLayoutX() + 125);
+        searchBox.setLayoutY(title.getLayoutY());
+        searchBox.setMinWidth(container.getMinWidth() / 2);
+
+        searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 5);
+        searchButton.setLayoutY(searchBox.getLayoutY());
+
+        newEvent.setLayoutX(title.getLayoutX());
+        newEvent.setLayoutY(container.getMinHeight() - newEvent.getMinHeight() - 50);
+
+
+        container.getChildren().addAll(title, searchBox, searchButton, newEvent);
         //TODO Display: latest events and line, search bar and search button
         displayEventsTableView(container);
         //TODO Display: New Event button
 
-        //Button newEvent = new Button();
-        //newEvent.getStyleClass().add("new-event");
-        //newEvent.setText("New Event");
-        //newEvent.setLayoutX(container.getLayoutX()-50);
-        //container.getChildren().addAll(newEvent);
+        newEvent.setOnMouseClicked(e->{
+            //Add new event window
+        });
+    }
+
+    private void clearContainer(AnchorPane container) {
+        container.getChildren().clear();
     }
 
     private void ManageSelectedEventScreen(AnchorPane container) {//when merged with backend, add an Event event to the constructor
@@ -118,8 +189,6 @@ public class mainController implements Initializable {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
-
-        displayEventsTableView(container);
 
         TableView ticketList = new TableView<>();
 
@@ -173,21 +242,19 @@ public class mainController implements Initializable {
         //ticketList.setMinWidth(container.getMinWidth()-100);
 
 
+        goBack.setLayoutX(container.getLayoutX() - 290);
+        goBack.setLayoutY(container.getLayoutY() + 5);
 
-        goBack.setLayoutX(container.getLayoutX()-290);
-        goBack.setLayoutY(container.getLayoutY()+5);
+        searchBar.setLayoutX(container.getLayoutX() - 80);
+        searchBar.setLayoutY(container.getLayoutY() + 5);
 
-        searchBar.setLayoutX(container.getLayoutX()-80);
-        searchBar.setLayoutY(container.getLayoutY()+5);
-
-        ticketList.setLayoutX(container.getLayoutX()-290);
-        ticketList.setLayoutY(container.getLayoutY()+40);
-
+        ticketList.setLayoutX(container.getLayoutX() - 290);
+        ticketList.setLayoutY(container.getLayoutY() + 40);
 
 
-        container.getChildren().addAll(goBack,searchBar,ticketList);
+        container.getChildren().addAll(goBack, searchBar, ticketList);
 
-        goBack.setOnMouseClicked(e->{
+        goBack.setOnMouseClicked(e -> {
             ManageSelectedEventScreen(anpContent);
         });
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EventDAO implements IEventDAO {
     private PreparedStatement preparedStatement;
-    private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
+    private final DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
 
     @Override
     public List<Event> getAllEvents() {
@@ -44,7 +44,7 @@ public class EventDAO implements IEventDAO {
     @Override
     public void createEvent(Event event) {
         try {
-            String sql = "INSERT INTO Events (eventName, startDateTime, endDateTime, location, locationGuidance, notes) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO Events (startDateTime, endDateTime, location, locationGuidance, notes, eventName) VALUES (?,?,?,?,?,?)";
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 

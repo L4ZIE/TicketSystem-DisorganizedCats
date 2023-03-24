@@ -19,41 +19,62 @@
     -fx-border-width: 1px;
     -fx-border-radius: 10px;
     -fx-border-color: black;
-
     -fx-background-insets: 1px;
 
 }
-.app-buttons:hover{
+
+.app-buttons:hover {
     -fx-cursor: hand;
     -fx-scale-x: 1.025;
     -fx-scale-y: 1.025;
     -fx-scale-z: 1.025;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 4, 4);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 4, 4);
 }
-.app-buttons:pressed{
+
+.app-buttons:pressed {
     -fx-cursor: hand;
     -fx-scale-x: 1;
     -fx-scale-y: 1;
     -fx-scale-z: 1;
     -fx-effect: null;
 }
+
 .negative-buttons {
     -fx-background-color: #AD343E;
 }
+
 .positive-buttons {
     -fx-background-color: #9BCA5F;
 }
-.label{
+
+.label {
     -fx-text-fill: black;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
 }
 
-.new-event{
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell{
+    -fx-background-color: #E0E0CE;
+    -fx-background-radius: 5px;
+
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-border-color: black;
+    -fx-background-insets: 1px;
+}
+.table-view .column-header{
+    -fx-background-color: #F2AF29;
+    -fx-border-color: #F2AF29;
+}
+
+.new-event { /* this is totally unnecessary */
     -fx-background-color: #AD343E;
     -fx-border-width: 105px;
     -fx-border-height: 25px;
-    -fx-border-color: 1px solid black;
     -fx-border-radius: 5px;
     -fx-font-family: 'Inter';
     -fx-font-style: normal;
@@ -62,14 +83,14 @@
     -fx-line-height: 19px;
 }
 
-.return{
+.return { /* this is totally unnecessary */
     -fx-background-color: #AD343E;
     -fx-border-radius: 5px;
     -fx-border-width: 25px;
     -fx-font-weight: bold;
 }
 
-.ticket-search{
+.ticket-search { /* this is totally unnecessary */
     -fx-background-color: #E0E0CE;
     -fx-border-width: 286px;
 

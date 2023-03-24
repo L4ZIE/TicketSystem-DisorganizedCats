@@ -10,7 +10,14 @@ import java.util.List;
 public class TicketManager implements ITicketManager {
 
     ITicketDAO ticketDAO;
-    private List<Ticket> allTickets = new ArrayList<>();
+    private List<Ticket> allTickets;
+    public TicketManager(){
+        fillAllTickets();
+    }
+
+    private void fillAllTickets() {
+        allTickets = ticketDAO.getAllTickets();
+    }
 
     @Override
     public List<Ticket> getAllTickets() {
@@ -60,5 +67,45 @@ public class TicketManager implements ITicketManager {
     @Override
     public void searchTicketByEvent(String query) {
     //TODO
+    }
+
+    @Override
+    public List<Ticket> getTicketsByCustomer(String name) {
+        List<Ticket> customersTickets = new ArrayList<>();
+        for (Ticket t : allTickets) {
+            if (t.getCustomerName().equalsIgnoreCase(name))
+                customersTickets.add(t);
+        }
+        return customersTickets;
+    }
+
+    @Override
+    public List<Ticket> getTicketsByEmail(String email) {
+        List<Ticket> emailTickets = new ArrayList<>();
+        for (Ticket t : allTickets) {
+            if (t.getCustomerEmail().equalsIgnoreCase(email))
+                emailTickets.add(t);
+        }
+        return emailTickets;
+    }
+
+    @Override
+    public List<Ticket> getTicketsByPrice(int price) {
+        List<Ticket> priceTickets = new ArrayList<>();
+        for (Ticket t : allTickets) {
+            if (t.getTicketPrice() == price)
+                priceTickets.add(t);
+        }
+        return priceTickets;
+    }
+
+    @Override
+    public List<Ticket> getTicketsByUsed(Boolean used) {
+        List<Ticket> customersTickets = new ArrayList<>();
+        for (Ticket t : allTickets) {
+            if (t.getUsed() == used)
+                customersTickets.add(t);
+        }
+        return customersTickets;
     }
 }

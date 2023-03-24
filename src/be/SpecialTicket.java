@@ -2,7 +2,7 @@ package be;
 
 public class SpecialTicket extends TicketBase {
     private String ticketName;
-    public SpecialTicket(int id, String ticketName, String qrCode, byte used) {
+    public SpecialTicket(int id, String ticketName, String qrCode, boolean used) {
         super(id, qrCode, used);
         this.ticketName = ticketName;
     }

@@ -8,9 +8,9 @@ import java.util.List;
 public interface IEventDAO {
     List<Event> getAllEvents();
 
-    void createEvent(Event event) throws SQLException;
+    void createEvent(Event event);
 
-    void deleteEvent(int id) throws SQLException;
+    void deleteEvent(int id);
 
     void updateEvent(Event event);
 }

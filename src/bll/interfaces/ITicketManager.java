@@ -12,4 +12,8 @@ public interface ITicketManager {
     List<Ticket> searchTicketsByCustomerName(String query);
     Ticket getTicketByID(int id);
     void searchTicketByEvent(String query);
+    List<Ticket> getTicketsByCustomer(String name);
+    List<Ticket> getTicketsByEmail(String email);
+    List<Ticket> getTicketsByPrice(int price);
+    List<Ticket> getTicketsByUsed(Boolean used);
 }
