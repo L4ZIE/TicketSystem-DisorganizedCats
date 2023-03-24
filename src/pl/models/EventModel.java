@@ -24,15 +24,15 @@ public class EventModel {
         return null;
     }
     public ObservableList<Event> getEventsByStartDate(String date){
-        //waiting for backend
+        //done
         return null;
     }
     public ObservableList<Event> getEventsByEndDate(String date){
-        //waiting for backend
+        //done
         return null;
     }
     public ObservableList<Event> getEventsByName(String name){
-        //waiting for backend
+        //done
         return null;
     }
 

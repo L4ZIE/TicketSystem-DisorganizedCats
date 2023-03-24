@@ -60,4 +60,34 @@ public class EventManager implements IEventManager {
          }
         return null;
     }
+
+    @Override
+    public List<Event> getEventsByStartDateTime(String date){
+        List<Event> eventsStartDate = new ArrayList<>();
+        for (Event t : allEvents) {
+            if (t.getStartDateTime().equalsIgnoreCase(date))
+                eventsStartDate.add(t);
+        }
+        return eventsStartDate;
+    }
+    @Override
+    public List<Event> getEventsByEndDate(String date){
+        List<Event> eventsEndDate = new ArrayList<>();
+        for (Event t : allEvents) {
+            if (t.getEndDateTime().equalsIgnoreCase(date))
+                eventsEndDate.add(t);
+        }
+        return eventsEndDate;
+    }
+
+    @Override
+    public List<Event> getEventsByName(String name){
+        List<Event> eventsName = new ArrayList<>();
+        for (Event t : allEvents){
+            if (t.getEventName().equalsIgnoreCase(name)){
+                eventsName.add(t);
+            }
+        }
+        return eventsName;
+    }
 }
