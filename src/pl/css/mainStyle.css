@@ -74,28 +74,3 @@
     -fx-border-color: #F2AF29;
 }
 
-.new-event { /* this is totally unnecessary */
-    -fx-background-color: #AD343E;
-    -fx-border-width: 105px;
-    -fx-border-height: 25px;
-    -fx-border-radius: 5px;
-    -fx-font-family: 'Inter';
-    -fx-font-style: normal;
-    -fx-font-weight: 500;
-    -fx-font-size: 16px;
-    -fx-line-height: 19px;
-}
-
-.return { /* this is totally unnecessary */
-    -fx-background-color: #AD343E;
-    -fx-border-radius: 5px;
-    -fx-border-width: 25px;
-    -fx-font-weight: bold;
-}
-
-.ticket-search { /* this is totally unnecessary */
-    -fx-background-color: #E0E0CE;
-    -fx-border-width: 286px;
-
-}
-

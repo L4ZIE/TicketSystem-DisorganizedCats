@@ -170,7 +170,7 @@ public class mainController implements Initializable {
         displayEventsTableView(container);
         //TODO Display: New Event button
 
-        newEvent.setOnMouseClicked(e->{
+        newEvent.setOnMouseClicked(e -> {
             //Add new event window
         });
     }
@@ -198,36 +198,21 @@ public class mainController implements Initializable {
         TableView ticketList = new TableView<>();
 
         TableColumn<Ticket, String> nameColumn = new TableColumn<>("Name");
-
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 
         TableColumn<Ticket, String> emailColumn = new TableColumn<>("Email");
-
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
 
         TableColumn<Ticket, String> priceColumn = new TableColumn<>("Price");
-
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
 
         TableColumn<Ticket, String> typeColumn = new TableColumn<>("Type");
-
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
 
         TableColumn<Ticket, String> usedColumn = new TableColumn<>("Used");
-
         usedColumn.setCellValueFactory(new PropertyValueFactory<>("used"));
 
-        //TableColumn<Ticket, String> useNdelColumn = new TableColumn<>("useNdel");
-
-        //useNdelColumn.setCellValueFactory();
-
-        ticketList.getColumns().add(nameColumn);
-        ticketList.getColumns().add(emailColumn);
-        ticketList.getColumns().add(priceColumn);
-        ticketList.getColumns().add(typeColumn);
-        ticketList.getColumns().add(usedColumn);
-
-        //TableView.setPlaceholder(new Label("No Tickets Available"));
+        ticketList.getColumns().addAll(nameColumn, emailColumn, priceColumn, typeColumn, usedColumn);
 
         Button goBack = new Button();
         Button useBtn = new Button();
@@ -241,10 +226,7 @@ public class mainController implements Initializable {
         delBtn.setText("Delete");
         searchBar.setText("Search...");
 
-        goBack.getStyleClass().add("return");
-        searchBar.getStyleClass().add("ticket-search");
-
-        //ticketList.setMinWidth(container.getMinWidth()-100);
+        goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
 
 
         goBack.setLayoutX(container.getLayoutX() - 290);
