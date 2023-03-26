@@ -3,6 +3,7 @@ package bll;
 import be.Event;
 import be.Ticket;
 import bll.interfaces.ITicketManager;
+import dal.TicketDAO;
 import dal.interfaces.IEventTicketDAO;
 import dal.interfaces.ITicketDAO;
 
@@ -14,6 +15,16 @@ public class TicketManager implements ITicketManager {
     ITicketDAO ticketDAO;
     private IEventTicketDAO eventTicketDAO;
     private List<Ticket> allTickets = new ArrayList<>();
+
+
+    public TicketManager(){
+        ticketDAO = new TicketDAO();
+        fillAllTickets();
+    }
+
+    private void fillAllTickets() {
+        allTickets = ticketDAO.getAllTickets();
+    }
 
     @Override
     public List<Ticket> getAllTickets() {
