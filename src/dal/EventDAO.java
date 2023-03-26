@@ -28,10 +28,10 @@ public class EventDAO implements IEventDAO {
             while (resultSet.next()) {
                 events.add(new Event(
                         resultSet.getInt("id"),
-                        resultSet.getString("starDateTime"),
+                        resultSet.getString("startDateTime"),
                         resultSet.getString("endDateTime"),
-                        resultSet.getString("location"),
-                        resultSet.getString("locationGuide"),
+                        resultSet.getString("eventLocation"),
+                        resultSet.getString("locationGuidance"),
                         resultSet.getString("notes"),
                         resultSet.getString("eventName")
                 ));
