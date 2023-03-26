@@ -3,7 +3,7 @@ package be;
 public abstract class TicketBase {
     private int id;
     private String qrCode;
-    private boolean used;
+    private Boolean used;
 
     public TicketBase(int id,String qrCode, boolean used ){
         this.id = id;
@@ -20,10 +20,16 @@ public abstract class TicketBase {
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
     }
-    public boolean getUsed() {
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Boolean getUsed() {
         return used;
     }
-    public void setUsed(boolean used) {
+
+    public void setUsed(Boolean used) {
         this.used = used;
     }
 
