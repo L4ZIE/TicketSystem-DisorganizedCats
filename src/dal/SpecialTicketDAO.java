@@ -30,7 +30,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
                         resultSet.getInt("id"),
                         resultSet.getString("ticketName"),
                         resultSet.getString("qrCode"),
-                        resultSet.getByte("used")
+                        resultSet.getBoolean("used")
                 ));
             }
             return specialTickets;
@@ -50,7 +50,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
 
             preparedStatement.setString(1,specialTicket.getTicketName());
             preparedStatement.setString(2,specialTicket.getQrCode());
-            preparedStatement.setByte(3, specialTicket.getUsed());
+            preparedStatement.setBoolean(3, specialTicket.getUsed());
 
             preparedStatement.execute();
 
