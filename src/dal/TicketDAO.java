@@ -32,7 +32,7 @@ public class TicketDAO implements ITicketDAO {
                         resultSet.getInt("ticketType"),
                         resultSet.getInt("ticketPrice"),
                         resultSet.getString("qrCode"),
-                        resultSet.getByte("used")
+                        resultSet.getBoolean("used")
                 ));
             }
             return tickets;
@@ -56,7 +56,7 @@ public class TicketDAO implements ITicketDAO {
             preparedStatement.setInt(3, ticket.getTicketType());
             preparedStatement.setInt(4, ticket.getTicketPrice());
             preparedStatement.setString(5, ticket.getQrCode());
-            preparedStatement.setByte(6, ticket.getUsed());
+            preparedStatement.setBoolean(6, ticket.getUsed());
 
             preparedStatement.execute();
 
@@ -101,7 +101,7 @@ public class TicketDAO implements ITicketDAO {
             preparedStatement.setInt(3 ,selectedTicket.getTicketType());
             preparedStatement.setInt(4, selectedTicket.getTicketPrice());
             preparedStatement.setString(5, selectedTicket.getQrCode());
-            preparedStatement.setByte(6,selectedTicket.getUsed());
+            preparedStatement.setBoolean(6,selectedTicket.getUsed());
             preparedStatement.setInt(7,selectedTicket.getId());
 
             preparedStatement.executeUpdate();
@@ -114,7 +114,6 @@ public class TicketDAO implements ITicketDAO {
 
     }
 }
-
 
 
 
