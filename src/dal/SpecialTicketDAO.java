@@ -15,7 +15,7 @@ import java.util.List;
 public class SpecialTicketDAO implements ISpecialTicketDAO {
 
     private PreparedStatement preparedStatement;
-    private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
+    private final DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
 
     @Override
     public List<SpecialTicket> getAllSpecialTickets() {

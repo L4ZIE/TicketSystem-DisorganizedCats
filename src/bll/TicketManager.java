@@ -115,7 +115,7 @@ public class TicketManager implements ITicketManager {
 
     @Override
     public List<Ticket> getTicketsByEventID(Event event){
-        List<Integer> ticketID = null;
+        List<Integer> ticketID;
         List<Ticket> listTicketsByEvent = new ArrayList<>();
 
         ticketID = eventTicketDAO.getTicketsByEventID(event.getId());

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TicketDAO implements ITicketDAO {
     private PreparedStatement preparedStatement;
-    private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
+    private final DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
 
 
     @Override
