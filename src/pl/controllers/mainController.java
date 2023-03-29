@@ -223,6 +223,14 @@ public class mainController implements Initializable {
         typeColumn.setMinWidth(110);
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
 
+        TableColumn<Event, String> useColumn = new TableColumn<>();
+        useColumn.setResizable(false);
+        useColumn.setMaxWidth(75);
+
+        TableColumn<Event, String> delColumn = new TableColumn<>();
+        delColumn.setResizable(false);
+        delColumn.setMaxWidth(75);
+
         fillTicketsTable(ticketsTable);
         ticketsTable.setLayoutX(container.getLayoutX() - 310);
         ticketsTable.setLayoutY(container.getLayoutY() + 30);
