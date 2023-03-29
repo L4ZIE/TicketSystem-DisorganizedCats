@@ -260,25 +260,26 @@ public class mainController implements Initializable {
         searchBox.setPromptText("Search...");
         searchButton.setText("\uD83D\uDD0D");
         searchButton.setStyle("-fx-font-size: 12");
-        goBack.setText("<-");
+        goBack.setText("←");
 
         searchButton.getStyleClass().add("app-buttons");
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
+        goBack.setStyle("-fx-font-size: 13");
 
         title.setText("Event Tickets");
 
-        title.setLayoutX(container.getLayoutX()-220);
+        goBack.setLayoutX(title.getLayoutX()-90);
+        goBack.setLayoutY(goBack.getLayoutY()+5);
+
+        title.setLayoutX(container.getLayoutX()-240);
         title.setLayoutY(container.getLayoutY());
 
         searchBox.setLayoutX(title.getLayoutX()+115);
         searchBox.setLayoutY(title.getLayoutY());
         searchBox.setMinWidth(container.getMinWidth()/6);
 
-        searchButton.setLayoutX(searchBox.getLayoutX()+searchBox.getMinWidth()+70);
+        searchButton.setLayoutX(searchBox.getLayoutX()+searchBox.getMinWidth()+90);
         searchButton.setLayoutY(searchBox.getLayoutY());
-
-        goBack.setLayoutX(title.getLayoutX()-90);
-        goBack.setLayoutY(goBack.getLayoutY()+5);
 
         container.getChildren().addAll(title, searchBox, searchButton, goBack);
         displayTicketsTableView(container);
@@ -286,6 +287,8 @@ public class mainController implements Initializable {
         goBack.setOnMouseClicked(e -> {
             //Add new event window
         } );
+
+        //add a button to create tickets
     }
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {
