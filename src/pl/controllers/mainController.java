@@ -2,14 +2,21 @@ package pl.controllers;
 
 import be.Event;
 import be.Ticket;
+import dal.EventDAO;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.util.Callback;
 import pl.models.EventModel;
 
 import java.net.URL;
@@ -22,10 +29,13 @@ public class mainController implements Initializable {
             anpMain;
 
     private EventModel eventModel;
+    private int id;
+    private boolean listsUpdated = false;
+    private Event selectedEvent;
+    private TableView<Event> eventsTable;
+    private TextField txfEventName,txfStartDate,txfEndDate,txfLocation,txfLocationGuidance,txfNotes;
 
     public mainController() {
-
-
     }
 
     @Override
@@ -34,6 +44,13 @@ public class mainController implements Initializable {
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
+    }
+    public TableView<Event> getEventsTable() {
+        return this.eventsTable;
+    }
+
+    private void fillEventsTable(TableView eventsTable) {
+        eventsTable.setItems(eventModel.getAllEvents());
     }
 
     private void displayUserControls(AnchorPane container) {
@@ -91,8 +108,7 @@ public class mainController implements Initializable {
     }
 
     private void displayEventsTableView(AnchorPane container) {
-        //TODO
-        TableView eventsTable = new TableView();
+        eventsTable = new TableView<>();
 
         TableColumn<Event, String> nameColumn = new TableColumn<>();
         nameColumn.setResizable(false);
@@ -126,12 +142,9 @@ public class mainController implements Initializable {
 
         eventsTable.getColumns().addAll(nameColumn, startColumn, endColumn, locationColumn);
         container.getChildren().add(eventsTable);
-
     }
 
-    private void fillEventsTable(TableView eventsTable) {
-        eventsTable.setItems(eventModel.getAllEvents());
-    }
+
 
     private void ManageEventsScreen(AnchorPane container) {
         clearContainer(container);
@@ -140,6 +153,19 @@ public class mainController implements Initializable {
         TextField searchBox = new TextField();
         Button searchButton = new Button();
         Button newEvent = new Button();
+
+        Button deleteEvent = new Button();
+        Button editEvent = new Button();
+
+        editEvent.setText("Edit");
+        editEvent.setLayoutX(container.getLayoutX() -5);
+        editEvent.setLayoutY(container.getLayoutY() + 341);
+        editEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
+
+        deleteEvent.setText("Delete");
+        deleteEvent.setLayoutX(container.getLayoutX() - 140);
+        deleteEvent.setLayoutY(container.getLayoutY() + 341);
+        deleteEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         searchBox.setPromptText("Search...");
         newEvent.setText("New Event");
@@ -165,14 +191,172 @@ public class mainController implements Initializable {
         newEvent.setLayoutY(container.getMinHeight() - newEvent.getMinHeight() - 50);
 
 
-        container.getChildren().addAll(title, searchBox, searchButton, newEvent);
+        container.getChildren().addAll(title, searchBox, searchButton, newEvent,deleteEvent,editEvent);
         //TODO Display: latest events and line, search bar and search button
         displayEventsTableView(container);
-        //TODO Display: New Event button
 
         newEvent.setOnMouseClicked(e -> {
-            //Add new event window
+            displayCreateEvent(container);
         });
+
+        deleteEvent.setOnMouseClicked(event -> {
+            Event selectedEvent = eventsTable.getSelectionModel().getSelectedItem();
+            eventModel.deleteEvent(selectedEvent);
+        });
+
+        searchBox.setOnAction(event -> {
+            //TODO
+
+        });
+
+        editEvent.setOnMouseClicked(event -> {
+           displayCreateEvent(container);
+           //TODO
+        });
+    }
+
+    public void displayCreateEvent(AnchorPane container) {
+        clearContainer(container);
+        TextField txfEventName = new TextField();
+
+        TextField txfStartDate = new TextField();
+        TextField txfStartTime = new TextField();
+        TextField txfStartMin = new TextField();
+
+        TextField txfEndDate = new TextField();
+        TextField txfEndTime = new TextField();
+        TextField txfEndMin = new TextField();
+
+        TextField txfLocation = new TextField();
+        TextField txfLocationGuidance = new TextField();
+        TextField txfNotes = new TextField();
+
+        Label labelStart = new Label();
+        Label labelEnd = new Label();
+        Label labelPlace = new Label();
+        Label labelLocGuidance = new Label();
+        Label labelNote = new Label();
+        Label labelStartTime = new Label();
+
+        Button btnSave = new Button();
+        Button btnManageTicket = new Button();
+        Button btnCancel = new Button();
+
+
+        txfEventName.setPrefWidth(300);
+        txfEventName.setPrefHeight(40);
+        txfEventName.setAlignment(Pos.CENTER);
+        txfEventName.setLayoutX(container.getLayoutX() - 270);
+        txfEventName.setLayoutY(container.getLayoutY() );
+        txfEventName.setPromptText("Event Name");
+
+        labelStart.setLayoutX(container.getLayoutX() - 300);
+        labelStart.setLayoutY(container.getLayoutY() +55);
+        labelStart.setText("Start Date");
+
+        txfStartDate.setPrefWidth(130);
+        txfStartDate.setLayoutX(container.getLayoutX()- 300);
+        txfStartDate.setLayoutY(container.getLayoutY() + 80);
+
+        labelEnd.setLayoutX(container.getLayoutX() - 300);
+        labelEnd.setLayoutY(container.getLayoutY() + 115);
+        labelEnd.setText("End Date");
+
+        txfEndDate.setPrefWidth(130);
+        txfEndDate.setLayoutX(container.getLayoutX() -300);
+        txfEndDate.setLayoutY(container.getLayoutY() + 140);
+
+        labelPlace.setLayoutX(container.getLayoutX() -300);
+        labelPlace.setLayoutY(container.getLayoutY() + 180);
+        labelPlace.setText("Location");
+
+        txfLocation.setPrefWidth(370);
+        txfLocation.setPrefHeight(30);
+        txfLocation.setLayoutX(container.getLayoutX() - 300);
+        txfLocation.setLayoutY(container.getLayoutY() +205);
+
+        labelLocGuidance.setLayoutX(container.getLayoutX() - 300);
+        labelLocGuidance.setLayoutY(container.getLayoutY() + 245);
+        labelLocGuidance.setText(" Location Guidance");
+
+        txfLocationGuidance.setPrefWidth(370);
+        txfLocationGuidance.setPrefHeight(50);
+        txfLocationGuidance.setLayoutX(container.getLayoutX() - 300);
+        txfLocationGuidance.setLayoutY(container.getLayoutY() + 270);
+
+        labelNote.setLayoutX(container.getLayoutX() - 75);
+        labelNote.setLayoutY(container.getLayoutY() + 55);
+        labelNote.setText("Notes");
+
+        txfNotes.setPrefWidth(145);
+        txfNotes.setPrefHeight(85);
+        txfNotes.setLayoutX(container.getLayoutX() - 75);
+        txfNotes.setLayoutY(container.getLayoutY() + 80);
+
+        labelStartTime.setLayoutX(container.getLayoutX() - 140);
+        labelStartTime.setLayoutY(container.getLayoutY() + 55);
+        labelStartTime.setText("Time");
+
+        txfStartTime.setPrefWidth(30);
+        txfStartTime.setLayoutX(container.getLayoutX() - 150);
+        txfStartTime.setLayoutY(container.getLayoutY() + 80);
+
+        txfStartMin.setPrefWidth(30);
+        txfStartMin.setLayoutX(container.getLayoutX() - 115);
+        txfStartMin.setLayoutY(container.getLayoutY() + 80);
+
+        txfEndTime.setPrefWidth(30);
+        txfEndTime.setLayoutX(container.getLayoutX() - 150);
+        txfEndTime.setLayoutY(container.getLayoutY() + 140);
+
+        txfEndMin.setPrefWidth(30);
+        txfEndMin.setLayoutX(container.getLayoutX() - 115);
+        txfEndMin.setLayoutY(container.getLayoutY() + 140);
+
+        btnSave.setPrefWidth(60);
+        btnSave.setText("Save");
+        btnSave.setLayoutX(container.getLayoutX() -300);
+        btnSave.setLayoutY(container.getLayoutY() + 350);
+
+        btnManageTicket.setPrefWidth(120);
+        btnManageTicket.setAlignment(Pos.CENTER);
+        btnManageTicket.setText("Manage Ticket");
+        btnManageTicket.setLayoutX(container.getLayoutX() - 175);
+        btnManageTicket.setLayoutY(container.getLayoutY() + 350);
+
+        btnCancel.setPrefWidth(60);
+        btnCancel.setText("Cancel");
+        btnCancel.setLayoutX(container.getLayoutX());
+        btnCancel.setLayoutY(container.getLayoutY() + 350);
+
+        container.getChildren().addAll(txfEventName,txfStartDate,txfEndDate,labelEnd,labelStart,labelPlace,txfLocation,
+                                labelLocGuidance,txfLocationGuidance,labelNote,txfNotes,labelStartTime,txfStartTime,
+                                txfStartMin,txfEndTime,txfEndMin,btnSave,btnManageTicket,btnCancel);
+
+        btnSave.setOnMouseClicked(e -> {
+
+            eventModel.createEvent(new Event(
+                    id,
+                    txfStartDate.getText(),
+                    txfEndDate.getText(),
+                    txfLocation.getText(),
+                    txfNotes.getText(),
+                    txfLocationGuidance.getText(),
+                    txfEventName.getText()
+            ));
+            updateTableEvents(container);
+            container.getChildren().clear();
+            displayEventsTableView(container);
+        });
+
+        btnManageTicket.setOnMouseClicked(event -> {
+            ManageTicketsScreen(container);
+        });
+    }
+    public void updateTableEvents(AnchorPane container) {
+        if (listsUpdated){
+            listsUpdated = false;
+        }
     }
 
     private void clearContainer(AnchorPane container) {
@@ -185,15 +369,11 @@ public class mainController implements Initializable {
         //TODO Display: New Event button
 
     }
-
-    private void CreateEventScreen(AnchorPane container) {
-        //TODO Display: all elements according to figma
-    }
-
     private void ManageTicketsScreen(AnchorPane container) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
+        container.getChildren().clear();
 
         TableView ticketList = new TableView<>();
 

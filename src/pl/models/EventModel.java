@@ -6,19 +6,42 @@ import bll.interfaces.IEventManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class EventModel {
 
     IEventManager eventManager;
     public EventModel(){
         eventManager = new EventManager();
     }
+    private ObservableList<Event> events;
 
     public ObservableList<Event> getAllEvents(){
-        return FXCollections.observableArrayList(eventManager.getAllEvents());
+        List<Event> listEvents = eventManager.getAllEvents();
+        return events = FXCollections.observableArrayList(listEvents);
     }
+    public void createEvent(Event event) {
+        eventManager.createEvent(event);
+        events.add(event);
+    }
+    public void deleteEvent(Event event){
+        eventManager.deleteEvent(event.getId());
+        events.remove(events.indexOf(event));
+    }
+
+    public void updateEvent(Event event){
+        eventManager.updateEvent(event);
+        events.add(event);
+    }
+
+    public ObservableList<Event> searchEventByName(String query) {
+        return FXCollections.observableArrayList(eventManager.searchEventByName(query));
+    }
+
     public Event getEventByID(int id){
         return eventManager.getEventByID(id);
     }
+
     public ObservableList<Event> getEventByAccount(){
         //sprint 2
         return null;
@@ -32,6 +55,4 @@ public class EventModel {
     public ObservableList<Event> getEventsByName(String name){
         return FXCollections.observableArrayList(eventManager.getEventsByName(name));
     }
-
-
 }

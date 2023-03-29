@@ -9,6 +9,8 @@ public interface ISpecialTicketManager {
 
     SpecialTicket getSpecTicketByID(int id);
 
+    List<SpecialTicket> getSpecTicketsByUsed(boolean used);
+
     List<SpecialTicket> getSpecTicketsByEventID(int id);
 
     void deleteSpecialTicket(int id);

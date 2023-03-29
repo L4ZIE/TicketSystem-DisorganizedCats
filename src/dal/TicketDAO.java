@@ -86,14 +86,7 @@ public class TicketDAO implements ITicketDAO {
     @Override
     public void updateTicket(Ticket selectedTicket) {
         try{
-            String sql = "UPDATE Tickets" +
-                    "SET customerName = ? " +
-                    "SET customerEmail = ? " +
-                    "SET ticketType = ? " +
-                    "SET ticketPrice = ? " +
-                    "SET ticketQrCode = ? " +
-                    "SET used = ? " +
-                    "WHERE id = ? ";
+            String sql = "UPDATE Tickets SET customerName = ?,customerEmail = ?, ticketType = ?, ticketPrice = ?, ticketQrCode = ?, used = ? WHERE id = ? ";
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, selectedTicket.getCustomerName());
@@ -111,7 +104,6 @@ public class TicketDAO implements ITicketDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
 

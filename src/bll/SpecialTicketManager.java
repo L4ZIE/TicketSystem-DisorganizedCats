@@ -1,10 +1,8 @@
 package bll;
 
 import be.SpecialTicket;
-import be.Ticket;
 import bll.interfaces.ISpecialTicketManager;
 import dal.SpecialTicketDAO;
-import dal.TicketDAO;
 import dal.interfaces.ISpecialTicketDAO;
 
 import java.util.ArrayList;
@@ -37,11 +35,15 @@ public class SpecialTicketManager implements ISpecialTicketManager {
         }
         return null;
     }
-
-    public List<SpecialTicket> getSpecTicketsByUsed (boolean used){
-
-        // TODO need help
-        return null;
+    @Override
+    public List<SpecialTicket> getSpecTicketsByUsed(boolean used){
+        List<SpecialTicket> usedSpecialTicket = new ArrayList<>();
+        for(SpecialTicket specTicket : allSpecialTickets) {
+            if(specTicket.getUsed() == true) {
+                usedSpecialTicket.add(specTicket);
+            }
+        }
+        return usedSpecialTicket;
     }
 
     @Override

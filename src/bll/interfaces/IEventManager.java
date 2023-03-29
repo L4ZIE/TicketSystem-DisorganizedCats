@@ -15,4 +15,7 @@ public interface IEventManager {
     public List<Event> getEventsByEndDate(String end);
     public List<Event> getEventsByName(String name);
 
+    List<Event> searchEventByName(String query);
+
+    void updateEvent(Event event);
 }
