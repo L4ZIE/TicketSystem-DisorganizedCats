@@ -6,6 +6,7 @@ import bll.interfaces.ITicketManager;
 import dal.TicketDAO;
 import dal.interfaces.IEventTicketDAO;
 import dal.interfaces.ITicketDAO;
+import javafx.collections.FXCollections;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,9 +109,14 @@ public class TicketManager implements ITicketManager {
         return listTicketPrice;
     }
     @Override
-    public List <Ticket>getTicketsByUsed(Boolean used) {
-        // TODO need help
-        return null;
+    public List <Ticket> getTicketsByUsed(Boolean used) {
+        List<Ticket> listUsedTicket = new ArrayList<>();
+        for(Ticket ticket : allTickets) {
+            if(ticket.getUsed() == true) {
+                listUsedTicket.add(ticket);
+            }
+        }
+        return listUsedTicket;
     }
 
     @Override

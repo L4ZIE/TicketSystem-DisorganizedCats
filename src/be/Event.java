@@ -41,7 +41,7 @@ public class Event {
         this.notes = notes;
     }
     public String getEventName(){return eventName;}
-    public void setTitle(String title){this.eventName = eventName;}
+    public void setEventName(String eventName){this.eventName = eventName;}
     //endregion
 
     public Event(int id,String startDateTime, String endDateTime, String location, String locationGuidance, String notes,String eventName){

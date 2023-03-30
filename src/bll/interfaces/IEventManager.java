@@ -11,8 +11,10 @@ public interface IEventManager {
 
     void deleteEvent(int id);
     Event getEventByID(int id);
-    public List<Event> getEventsByStartDate(String start);
-    public List<Event> getEventsByEndDate(String end);
-    public List<Event> getEventsByName(String name);
-
+    List<Event> getEventsByStartDate(String start);
+    List<Event> getEventsByEndDate(String end);
+    List<Event> getEventsByName(String name);
+    List<Event> searchEventByName(String query);
+    int getMaxID();
+    void updateEvent(Event event);
 }

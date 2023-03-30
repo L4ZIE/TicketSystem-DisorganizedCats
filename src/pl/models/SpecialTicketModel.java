@@ -1,31 +1,28 @@
 package pl.models;
 
 import be.SpecialTicket;
+import bll.SpecialTicketManager;
+import bll.interfaces.ISpecialTicketManager;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class SpecialTicketModel {
-    //waiting for backend
-    //private SpecialTicketManager specTicketManager;
+    private ISpecialTicketManager specTicketManager;
 
     public SpecialTicketModel(){
-        //specTicketManager = new SpecialTicketManager();
+        specTicketManager = new SpecialTicketManager();
     }
 
     public ObservableList<SpecialTicket> getAllSpecTickets(){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(specTicketManager.getAllSpecTickets());
     }
-
     public SpecialTicket getSpecTicketByID(int id){
-        //waiting for backend
-        return null;
+        return specTicketManager.getSpecTicketByID(id);
     }
     public ObservableList<SpecialTicket> getSpecTicketsByUsed(Boolean used){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(specTicketManager.getSpecTicketsByUsed(used));
     }
     public ObservableList<SpecialTicket> getSpecTicketsByEventID(int id){
-        //waiting for backend
-        return null;
+       return FXCollections.observableArrayList(specTicketManager.getSpecTicketsByEventID(id));
     }
 }

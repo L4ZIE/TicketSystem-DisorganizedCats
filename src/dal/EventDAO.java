@@ -46,7 +46,7 @@ public class EventDAO implements IEventDAO {
     @Override
     public void createEvent(Event event) {
         try {
-            String sql = "INSERT INTO Events (startDateTime,endDateTime,eventLocation,eventGuidance,locationGuidance,notes,eventName) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO Events (startDateTime,endDateTime,eventLocation,locationGuidance,notes,eventName) VALUES (?,?,?,?,?,?)";
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
@@ -55,7 +55,7 @@ public class EventDAO implements IEventDAO {
             preparedStatement.setString(3, event.getLocation());
             preparedStatement.setString(4, event.getLocationGuidance());
             preparedStatement.setString(5, event.getNotes());
-            preparedStatement.setString(6,event.getEventName());
+            preparedStatement.setString(6, event.getEventName());
 
             preparedStatement.execute();
         } catch (SQLException e) {
@@ -75,29 +75,27 @@ public class EventDAO implements IEventDAO {
         }
     }
     @Override
-    public void updateEvent(Event event) {
-        try {
-            String sql = "UPDATE Events" +
-                    "SET startDateTime = ?" +
-                    "SET endDateTime = ?" +
-                    "SET eventLocation = ?" +
-                    "SET locationGuidance = ?" +
-                    "SET notes = ?" +
-                    "SET eventName" +
-                    "WHERE id = ?";
+    public void updateEvent(Event selectedEvent) {
+        try{
+            String sql = "UPDATE Events SET startDateTime = ?, endDateTime = ?, eventLocation = ? , locationGuidance = ? ,notes = ? , eventName = ? WHERE id = ? ";
 
             Connection conn = dataBaseConnector.createConnection();
-            PreparedStatement prepareStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, selectedEvent.getStartDateTime());
+            preparedStatement.setString(2, selectedEvent.getEndDateTime());
+            preparedStatement.setString(3 ,selectedEvent.getLocation());
+            preparedStatement.setString(4, selectedEvent.getLocationGuidance());
+            preparedStatement.setString(5, selectedEvent.getNotes());
+            preparedStatement.setString(6,selectedEvent.getEventName());
+            preparedStatement.setInt(7,selectedEvent.getId());
 
-            preparedStatement.setString(1, event.getStartDateTime());
-            preparedStatement.setString(2, event.getEndDateTime());
-            preparedStatement.setString(3, event.getLocation());
-            preparedStatement.setString(4, event.getLocationGuidance());
-            preparedStatement.setString(5, event.getNotes());
-            preparedStatement.setString(6, event.getEventName());
-            preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
+
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
