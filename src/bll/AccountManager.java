@@ -27,13 +27,17 @@ public class AccountManager implements IAccountManager {
     }
     @Override
     public void deleteAccount(int id) {
-        Account account = getAccountById(id);
-        if (account != null){
-        allAccounts.remove(account);
         accountDAO.deleteAccount(id);
-        }
+        fillAllAccounts();
     }
-    private Account getAccountById(int id) {
+
+    @Override
+    public void updateAccount(Account account) {
+        accountDAO.updateAccount(account);
+        fillAllAccounts();
+    }
+    @Override
+    public Account getAccountById(int id) {
         for (Account account : allAccounts) {
             if (account.getId() == id) {
                 return account;
@@ -42,10 +46,10 @@ public class AccountManager implements IAccountManager {
         return null;
     }
     @Override
-    public List<Account> getAccountsByAccountType() {
+    public List<Account> getAccountsByType(boolean type) {
         List<Account> result = new ArrayList<>();
         for (Account e : allAccounts) {
-            if (e.getAccountType())
+            if (e.getAccountType() == type)
                 result.add(e);
         }
         return result;

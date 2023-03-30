@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface IAccountManager {
     List<Account> getAllAccounts();
-
     void creatAccount(Account account);
-
     void deleteAccount(int id);
-
-    List<Account> getAccountsByAccountType();
+    void updateAccount(Account account);
+    List<Account> getAccountsByType(boolean type);
+    Account getAccountById(int id);
 }

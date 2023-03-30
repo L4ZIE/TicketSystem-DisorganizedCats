@@ -2,34 +2,39 @@ package be;
 
 public class Account {
     private int id;
-    private String uName ;
-    private String uPassword;
+    private String username;
+    private String password;
     private boolean accountType;
     //region getters and setters
     public int getId() {
         return id;
     }
-    public String getUName(){return uName;}
-    public void setUName(String uName){this.uName = uName;}
-    public String getUPassword(){return uPassword;}
-    public void setUPassword(String uPassword){this.uPassword = uPassword;}
+    public String getUsername(){return username;}
+    public void setUsername(String uName){this.username = uName;}
+    public String getPassword(){return password;}
+    public void setPassword(String uPassword){this.password = uPassword;}
 
     /**
-     * this method returns if the user is an Admin or and Event Coordinator.
-     * @return if true, then user is an Admin , on false user is Event Coordinator.
+     * This method returns if the user is an Admin or and Event Coordinator.
+     * @return if true, then user is an Admin, on false user is Event Coordinator.
      */
     public boolean getAccountType(){return accountType;}
+
+    /**
+     * This method sets the account rights.
+     * @param accountType True: Admin, False: Event Coordinator.
+     */
     public void setAccountType(boolean accountType){this.accountType = accountType;}
     //endregion
 
-    public Account(int id, String uName, String uPassword, boolean accountType){
+    public Account(int id, String username, String password, boolean accountType){
         this.id = id;
-        this.uName = uName;
-        this.uPassword = uPassword;
+        this.username = username;
+        this.password = password;
         this.accountType = accountType;
     }
     @Override
     public String toString() {
-        return id + " " + uName + " " + uPassword + " " + accountType;
+        return id + " " + username + " " + password + " " + accountType;
     }
 }

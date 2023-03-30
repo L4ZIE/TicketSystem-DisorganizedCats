@@ -44,8 +44,8 @@ public class AccountDAO implements IAccountDAO {
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
             preparedStatement.setInt(1,account.getId());
-            preparedStatement.setString(2,account.getUName());
-            preparedStatement.setString(3,account.getUPassword());
+            preparedStatement.setString(2,account.getUsername());
+            preparedStatement.setString(3,account.getPassword());
             preparedStatement.setBoolean(4,account.getAccountType());
 
             preparedStatement.executeQuery();
@@ -76,8 +76,8 @@ public class AccountDAO implements IAccountDAO {
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
 
-            preparedStatement.setString(1, account.getUName());
-            preparedStatement.setString(2, account.getUPassword());
+            preparedStatement.setString(1, account.getUsername());
+            preparedStatement.setString(2, account.getPassword());
             preparedStatement.setBoolean(3, account.getAccountType());
             preparedStatement.setInt(4, account.getId());
 
