@@ -23,6 +23,7 @@ public class EventManager implements IEventManager {
 
     @Override
     public List<Event> getAllEvents() {
+        fillAllEvents();
         return allEvents;
     }
 
@@ -34,12 +35,8 @@ public class EventManager implements IEventManager {
 
     @Override
     public void deleteEvent(int id) {
-        Event event = getEventByID(id);
-        if (event != null) {
-            allEvents.remove(event);
-            eventDAO.deleteEvent(id);
-
-        }
+        eventDAO.deleteEvent(id);
+        fillAllEvents();
     }
 
     @Override
@@ -91,10 +88,23 @@ public class EventManager implements IEventManager {
         }
         return filtered;
     }
+
+    @Override
+    public int getMaxID() {
+        int max = 0;
+
+        for (Event e : allEvents) {
+            if(max < e.getId())
+                max = e.getId();
+        }
+
+        return max;
+    }
+
     @Override
     public void updateEvent(Event event) {
         eventDAO.updateEvent(event);
-        allEvents.add(event);
+        allEvents = eventDAO.getAllEvents();
     }
 }
 

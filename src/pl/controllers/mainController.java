@@ -2,23 +2,16 @@ package pl.controllers;
 
 import be.Event;
 import be.Ticket;
-import dal.EventDAO;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.util.Callback;
 import pl.models.EventModel;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,9 +24,7 @@ public class mainController implements Initializable {
     private EventModel eventModel;
     private int id;
     private boolean listsUpdated = false;
-    private Event selectedEvent;
     private TableView<Event> eventsTable;
-    private TextField txfEventName,txfStartDate,txfEndDate,txfLocation,txfLocationGuidance,txfNotes;
 
     public mainController() {
     }
@@ -44,9 +35,6 @@ public class mainController implements Initializable {
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
-    }
-    public TableView<Event> getEventsTable() {
-        return this.eventsTable;
     }
 
     private void fillEventsTable(TableView eventsTable) {
@@ -65,9 +53,9 @@ public class mainController implements Initializable {
 
         VBox buttonContainer = new VBox(5);
 
-        manageUsers.getStyleClass().add("app-buttons");
-        manageEvents.getStyleClass().add("app-buttons");
-        manageSpecTickets.getStyleClass().add("app-buttons");
+        manageUsers.getStyleClass().addAll("app-buttons", "big-buttons");
+        manageEvents.getStyleClass().addAll("app-buttons", "big-buttons");
+        manageSpecTickets.getStyleClass().addAll("app-buttons", "big-buttons");
 
         manageUsers.setText("Manage Users");
         manageEvents.setText("Manage Events");
@@ -113,201 +101,255 @@ public class mainController implements Initializable {
         TableColumn<Event, String> nameColumn = new TableColumn<>();
         nameColumn.setResizable(false);
         nameColumn.setText("Name");
-        nameColumn.setMinWidth(100);
+        nameColumn.setMinWidth(100); //set to dynamic later
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("eventName"));
 
         TableColumn<Event, String> startColumn = new TableColumn<>();
         startColumn.setResizable(false);
         startColumn.setText("Start");
-        startColumn.setMaxWidth(75);
+        startColumn.setMaxWidth(75); //set to dynamic later
         startColumn.setCellValueFactory(new PropertyValueFactory<>("startDateTime"));
 
         TableColumn<Event, String> endColumn = new TableColumn<>();
         endColumn.setResizable(false);
         endColumn.setText("End");
-        endColumn.setMaxWidth(75);
+        endColumn.setMaxWidth(75); //set to dynamic later
         endColumn.setCellValueFactory(new PropertyValueFactory<>("endDateTime"));
 
         TableColumn<Event, String> locationColumn = new TableColumn<>();
         locationColumn.setResizable(false);
         locationColumn.setText("Location");
-        locationColumn.setMinWidth(110);
+        locationColumn.setMinWidth(110); //set to dynamic later
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
 
         fillEventsTable(eventsTable);
         eventsTable.setLayoutX(container.getLayoutX() - 300);
         eventsTable.setLayoutY(container.getLayoutY() + 30);
         eventsTable.setMaxHeight(container.getMinHeight() - 100);
-        eventsTable.setMaxWidth(360);
+        eventsTable.setMaxWidth(container.getMinWidth() - 50);
 
         eventsTable.getColumns().addAll(nameColumn, startColumn, endColumn, locationColumn);
         container.getChildren().add(eventsTable);
     }
 
 
-
     private void ManageEventsScreen(AnchorPane container) {
         clearContainer(container);
 
-        Label title = new Label();
-        TextField searchBox = new TextField();
-        Button searchButton = new Button();
-        Button newEvent = new Button();
+        Label lblTitle = new Label();
+        TextField txfSearchBox = new TextField();
+        Button btnSearchButton = new Button();
+        Button btnNewEvent = new Button();
 
-        Button deleteEvent = new Button();
-        Button editEvent = new Button();
+        Button btnDeleteEvent = new Button();
+        Button btnEditEvent = new Button();
+        Button btnManageTickets = new Button();
 
-        editEvent.setText("Edit");
-        editEvent.setLayoutX(container.getLayoutX() -5);
-        editEvent.setLayoutY(container.getLayoutY() + 341);
-        editEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
+        lblTitle.setText("Manage Events");
+        lblTitle.setLayoutX(container.getLayoutX() - 300);
+        lblTitle.setLayoutY(container.getLayoutY());
 
-        deleteEvent.setText("Delete");
-        deleteEvent.setLayoutX(container.getLayoutX() - 140);
-        deleteEvent.setLayoutY(container.getLayoutY() + 341);
-        deleteEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
+        btnNewEvent.setText("New Event");
+        btnNewEvent.setLayoutX(lblTitle.getLayoutX());
+        btnNewEvent.setLayoutY(container.getMinHeight() - btnNewEvent.getMinHeight() - 50);
+        btnNewEvent.getStyleClass().addAll("app-buttons");
 
-        searchBox.setPromptText("Search...");
-        newEvent.setText("New Event");
-        searchButton.setText("\uD83D\uDD0D");
-        searchButton.setStyle("-fx-font-size: 12");
+        btnManageTickets.setText("Manage Tickets");
+        btnManageTickets.setLayoutX(btnNewEvent.getLayoutX() + 100);
+        btnManageTickets.setLayoutY(btnNewEvent.getLayoutY());
+        btnManageTickets.getStyleClass().add("app-buttons");
 
-        searchButton.getStyleClass().add("app-buttons");
-        newEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
+        btnDeleteEvent.setText("Delete");
+        btnDeleteEvent.setLayoutX(btnManageTickets.getLayoutX() + 140);
+        btnDeleteEvent.setLayoutY(btnManageTickets.getLayoutY());
+        btnDeleteEvent.getStyleClass().addAll("app-buttons", "negative-buttons");
 
-        title.setText("Manage Events");
+        btnEditEvent.setText("Edit");
+        btnEditEvent.setLayoutX(btnDeleteEvent.getLayoutX() + 80);
+        btnEditEvent.setLayoutY(btnDeleteEvent.getLayoutY());
+        btnEditEvent.getStyleClass().addAll("app-buttons");
 
-        title.setLayoutX(container.getLayoutX() - 300);
-        title.setLayoutY(container.getLayoutY());
+        txfSearchBox.setPromptText("Search...");
 
-        searchBox.setLayoutX(title.getLayoutX() + 125);
-        searchBox.setLayoutY(title.getLayoutY());
-        searchBox.setMinWidth(container.getMinWidth() / 2);
+        btnSearchButton.setText("\uD83D\uDD0D");
+        btnSearchButton.setStyle("-fx-font-size: 12");
 
-        searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 5);
-        searchButton.setLayoutY(searchBox.getLayoutY());
+        btnSearchButton.getStyleClass().add("app-buttons");
 
-        newEvent.setLayoutX(title.getLayoutX());
-        newEvent.setLayoutY(container.getMinHeight() - newEvent.getMinHeight() - 50);
+        txfSearchBox.setLayoutX(lblTitle.getLayoutX() + 125);
+        txfSearchBox.setLayoutY(lblTitle.getLayoutY());
+        txfSearchBox.setMinWidth(container.getMinWidth() / 2);
+
+        btnSearchButton.setLayoutX(txfSearchBox.getLayoutX() + txfSearchBox.getMinWidth() + 5);
+        btnSearchButton.setLayoutY(txfSearchBox.getLayoutY());
 
 
-        container.getChildren().addAll(title, searchBox, searchButton, newEvent,deleteEvent,editEvent);
+        container.getChildren().addAll(lblTitle, txfSearchBox, btnSearchButton, btnNewEvent, btnDeleteEvent, btnEditEvent, btnManageTickets);
         //TODO Display: latest events and line, search bar and search button
         displayEventsTableView(container);
 
-        newEvent.setOnMouseClicked(e -> {
+        btnNewEvent.setOnMouseClicked(e -> {
             displayCreateEvent(container);
         });
 
-        deleteEvent.setOnMouseClicked(event -> {
-            Event selectedEvent = eventsTable.getSelectionModel().getSelectedItem();
-            eventModel.deleteEvent(selectedEvent);
+        btnDeleteEvent.setOnMouseClicked(event -> {
+            if (eventsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an event.");
+            } else {
+                Event selectedEvent = eventsTable.getSelectionModel().getSelectedItem();
+                eventModel.deleteEvent(selectedEvent);
+                displayEventsTableView(container);
+            }
         });
 
-        searchBox.setOnAction(event -> {
+        txfSearchBox.setOnAction(event -> {
             //TODO
 
         });
 
-        editEvent.setOnMouseClicked(event -> {
-           displayCreateEvent(container);
-           //TODO
+        btnEditEvent.setOnMouseClicked(event -> {
+            if (eventsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an event.");
+            } else {
+                Event selectedEvent = eventsTable.getSelectionModel().getSelectedItem();
+                displayCreateEvent(container, selectedEvent);
+            }
+
+        });
+
+        btnManageTickets.setOnMouseClicked(e -> {
+            if (eventsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an event.");
+            } else {
+                ManageTicketsScreen(container, eventsTable.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
-    public void displayCreateEvent(AnchorPane container) {
+    private void displayCreateEvent(AnchorPane container, Event selectedEvent) {
         clearContainer(container);
         TextField txfEventName = new TextField();
 
         TextField txfStartDate = new TextField();
-        TextField txfStartTime = new TextField();
+        TextField txfStartHour = new TextField();
         TextField txfStartMin = new TextField();
 
         TextField txfEndDate = new TextField();
-        TextField txfEndTime = new TextField();
+        TextField txfEndHour = new TextField();
         TextField txfEndMin = new TextField();
 
         TextField txfLocation = new TextField();
         TextField txfLocationGuidance = new TextField();
         TextField txfNotes = new TextField();
 
-        Label labelStart = new Label();
-        Label labelEnd = new Label();
-        Label labelPlace = new Label();
-        Label labelLocGuidance = new Label();
-        Label labelNote = new Label();
-        Label labelStartTime = new Label();
+        Label lblStartDate = new Label();
+        Label lblStartTime = new Label();
+        Label lblEndDate = new Label();
+        Label lblEndTime = new Label();
+        Label lblPlace = new Label();
+        Label lblLocGuidance = new Label();
+        Label lblNote = new Label();
+        Label lblColumnStartTime = new Label();
+        Label lblColumnEndTime = new Label();
 
         Button btnSave = new Button();
-        Button btnManageTicket = new Button();
         Button btnCancel = new Button();
 
+        if (selectedEvent == null) {
+            txfEventName.setPromptText("Event Name (Click to edit)");
+        } else {
+            txfEventName.setText(selectedEvent.getEventName());
+            txfNotes.setText(selectedEvent.getNotes());
+            txfLocation.setText(selectedEvent.getLocation());
+            txfLocationGuidance.setText(selectedEvent.getLocationGuidance());
+
+            txfStartDate.setText(selectedEvent.getStartDateTime());
+            txfEndDate.setText(selectedEvent.getEndDateTime());
+        }
+
+        btnSave.getStyleClass().addAll("app-buttons");
+        btnCancel.getStyleClass().addAll("app-buttons");
 
         txfEventName.setPrefWidth(300);
         txfEventName.setPrefHeight(40);
         txfEventName.setAlignment(Pos.CENTER);
         txfEventName.setLayoutX(container.getLayoutX() - 270);
-        txfEventName.setLayoutY(container.getLayoutY() );
-        txfEventName.setPromptText("Event Name");
+        txfEventName.setLayoutY(container.getLayoutY());
+        txfEventName.getStyleClass().add("transparent-textField");
 
-        labelStart.setLayoutX(container.getLayoutX() - 300);
-        labelStart.setLayoutY(container.getLayoutY() +55);
-        labelStart.setText("Start Date");
+        lblStartDate.setLayoutX(container.getLayoutX() - 300);
+        lblStartDate.setLayoutY(container.getLayoutY() + 55);
+        lblStartDate.setText("Start Date*");
+
+        lblStartTime.setLayoutX(lblStartDate.getLayoutX() + 150);
+        lblStartTime.setLayoutY(lblStartDate.getLayoutY());
+        lblStartTime.setText("Start Time*");
+
+        lblNote.setLayoutX(lblStartTime.getLayoutX() + 85);
+        lblNote.setLayoutY(lblStartTime.getLayoutY());
+        lblNote.setText("Notes*");
 
         txfStartDate.setPrefWidth(130);
-        txfStartDate.setLayoutX(container.getLayoutX()- 300);
+        txfStartDate.setLayoutX(container.getLayoutX() - 300);
         txfStartDate.setLayoutY(container.getLayoutY() + 80);
 
-        labelEnd.setLayoutX(container.getLayoutX() - 300);
-        labelEnd.setLayoutY(container.getLayoutY() + 115);
-        labelEnd.setText("End Date");
+        lblEndDate.setLayoutX(container.getLayoutX() - 300);
+        lblEndDate.setLayoutY(container.getLayoutY() + 115);
+        lblEndDate.setText("End Date");
+        lblEndDate.getStyleClass().add("non-important");
+
+        lblEndTime.setLayoutX(lblEndDate.getLayoutX() + 150);
+        lblEndTime.setLayoutY(lblEndDate.getLayoutY());
+        lblEndTime.setText("End Time");
+        lblEndTime.getStyleClass().add("non-important");
 
         txfEndDate.setPrefWidth(130);
-        txfEndDate.setLayoutX(container.getLayoutX() -300);
+        txfEndDate.setLayoutX(container.getLayoutX() - 300);
         txfEndDate.setLayoutY(container.getLayoutY() + 140);
 
-        labelPlace.setLayoutX(container.getLayoutX() -300);
-        labelPlace.setLayoutY(container.getLayoutY() + 180);
-        labelPlace.setText("Location");
+        lblPlace.setLayoutX(container.getLayoutX() - 300);
+        lblPlace.setLayoutY(container.getLayoutY() + 180);
+        lblPlace.setText("Location*");
 
         txfLocation.setPrefWidth(370);
         txfLocation.setPrefHeight(30);
         txfLocation.setLayoutX(container.getLayoutX() - 300);
-        txfLocation.setLayoutY(container.getLayoutY() +205);
+        txfLocation.setLayoutY(container.getLayoutY() + 205);
 
-        labelLocGuidance.setLayoutX(container.getLayoutX() - 300);
-        labelLocGuidance.setLayoutY(container.getLayoutY() + 245);
-        labelLocGuidance.setText(" Location Guidance");
+        lblLocGuidance.setLayoutX(container.getLayoutX() - 300);
+        lblLocGuidance.setLayoutY(container.getLayoutY() + 245);
+        lblLocGuidance.setText("Location Guidance");
+        lblLocGuidance.getStyleClass().add("non-important");
 
         txfLocationGuidance.setPrefWidth(370);
         txfLocationGuidance.setPrefHeight(50);
         txfLocationGuidance.setLayoutX(container.getLayoutX() - 300);
         txfLocationGuidance.setLayoutY(container.getLayoutY() + 270);
 
-        labelNote.setLayoutX(container.getLayoutX() - 75);
-        labelNote.setLayoutY(container.getLayoutY() + 55);
-        labelNote.setText("Notes");
-
         txfNotes.setPrefWidth(145);
         txfNotes.setPrefHeight(85);
         txfNotes.setLayoutX(container.getLayoutX() - 75);
         txfNotes.setLayoutY(container.getLayoutY() + 80);
 
-        labelStartTime.setLayoutX(container.getLayoutX() - 140);
-        labelStartTime.setLayoutY(container.getLayoutY() + 55);
-        labelStartTime.setText("Time");
+        txfStartHour.setPrefWidth(30);
+        txfStartHour.setLayoutX(container.getLayoutX() - 155);
+        txfStartHour.setLayoutY(container.getLayoutY() + 80);
 
-        txfStartTime.setPrefWidth(30);
-        txfStartTime.setLayoutX(container.getLayoutX() - 150);
-        txfStartTime.setLayoutY(container.getLayoutY() + 80);
+        lblColumnStartTime.setText(":");
+        lblColumnStartTime.setLayoutX(txfStartHour.getLayoutX() + 33);
+        lblColumnStartTime.setLayoutY(txfStartHour.getLayoutY() + 1);
 
         txfStartMin.setPrefWidth(30);
         txfStartMin.setLayoutX(container.getLayoutX() - 115);
         txfStartMin.setLayoutY(container.getLayoutY() + 80);
 
-        txfEndTime.setPrefWidth(30);
-        txfEndTime.setLayoutX(container.getLayoutX() - 150);
-        txfEndTime.setLayoutY(container.getLayoutY() + 140);
+        txfEndHour.setPrefWidth(30);
+        txfEndHour.setLayoutX(container.getLayoutX() - 155);
+        txfEndHour.setLayoutY(container.getLayoutY() + 140);
+
+        lblColumnEndTime.setText(":");
+        lblColumnEndTime.setLayoutX(txfEndHour.getLayoutX() + 33);
+        lblColumnEndTime.setLayoutY(txfEndHour.getLayoutY() + 1);
 
         txfEndMin.setPrefWidth(30);
         txfEndMin.setLayoutX(container.getLayoutX() - 115);
@@ -315,46 +357,58 @@ public class mainController implements Initializable {
 
         btnSave.setPrefWidth(60);
         btnSave.setText("Save");
-        btnSave.setLayoutX(container.getLayoutX() -300);
+        btnSave.setLayoutX(container.getLayoutX() - 300);
         btnSave.setLayoutY(container.getLayoutY() + 350);
 
-        btnManageTicket.setPrefWidth(120);
-        btnManageTicket.setAlignment(Pos.CENTER);
-        btnManageTicket.setText("Manage Ticket");
-        btnManageTicket.setLayoutX(container.getLayoutX() - 175);
-        btnManageTicket.setLayoutY(container.getLayoutY() + 350);
-
-        btnCancel.setPrefWidth(60);
-        btnCancel.setText("Cancel");
+        btnCancel.setPrefWidth(70);
+        btnCancel.setText("Go Back");
         btnCancel.setLayoutX(container.getLayoutX());
         btnCancel.setLayoutY(container.getLayoutY() + 350);
 
-        container.getChildren().addAll(txfEventName,txfStartDate,txfEndDate,labelEnd,labelStart,labelPlace,txfLocation,
-                                labelLocGuidance,txfLocationGuidance,labelNote,txfNotes,labelStartTime,txfStartTime,
-                                txfStartMin,txfEndTime,txfEndMin,btnSave,btnManageTicket,btnCancel);
+        container.getChildren().addAll(txfEventName, txfStartDate, txfEndDate, lblEndDate, lblStartDate, lblPlace, txfLocation,
+                lblLocGuidance, txfLocationGuidance, lblNote, txfNotes, lblStartTime, txfStartHour, lblEndTime, lblColumnStartTime, lblColumnEndTime,
+                txfStartMin, txfEndHour, txfEndMin, btnSave, btnCancel);
 
         btnSave.setOnMouseClicked(e -> {
 
-            eventModel.createEvent(new Event(
-                    id,
-                    txfStartDate.getText(),
-                    txfEndDate.getText(),
-                    txfLocation.getText(),
-                    txfNotes.getText(),
-                    txfLocationGuidance.getText(),
-                    txfEventName.getText()
-            ));
-            updateTableEvents(container);
-            container.getChildren().clear();
-            displayEventsTableView(container);
+            if (selectedEvent == null) {
+                eventModel.createEvent(new Event(
+                        eventModel.getMaxID() + 1,
+                        txfStartDate.getText(),
+                        txfEndDate.getText(),
+                        txfLocation.getText(),
+                        txfNotes.getText(),
+                        txfLocationGuidance.getText(),
+                        txfEventName.getText()
+                ));
+                JOptionPane.showMessageDialog(null, "Successfully saved selected event");
+            } else {
+                eventModel.updateEvent(new Event(
+                        selectedEvent.getId(),
+                        txfStartDate.getText(),
+                        txfEndDate.getText(),
+                        txfLocation.getText(),
+                        txfNotes.getText(),
+                        txfLocationGuidance.getText(),
+                        txfEventName.getText()
+                ));
+                JOptionPane.showMessageDialog(null, "Successfully updated selected event");
+            }
+
+            ManageEventsScreen(container);
         });
 
-        btnManageTicket.setOnMouseClicked(event -> {
-            ManageTicketsScreen(container);
+        btnCancel.setOnMouseClicked(e -> {
+            ManageEventsScreen(container);
         });
     }
-    public void updateTableEvents(AnchorPane container) {
-        if (listsUpdated){
+
+    private void displayCreateEvent(AnchorPane container) {
+        displayCreateEvent(container, null);
+    }
+
+    private void updateTableEvents(AnchorPane container) {
+        if (listsUpdated) {
             listsUpdated = false;
         }
     }
@@ -369,7 +423,8 @@ public class mainController implements Initializable {
         //TODO Display: New Event button
 
     }
-    private void ManageTicketsScreen(AnchorPane container) {
+
+    private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button

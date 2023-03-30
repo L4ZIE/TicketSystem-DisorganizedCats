@@ -10,7 +10,7 @@
 }
 
 .app-buttons {
-    -fx-font-size: 16px;
+    -fx-font-size: 12px;
     -fx-text-fill: black;
 
     -fx-background-color: #E0E0CE;
@@ -21,6 +21,9 @@
     -fx-border-color: black;
     -fx-background-insets: 1px;
 
+}
+.big-buttons{
+    -fx-font-size: 16px;
 }
 
 .app-buttons:hover {
@@ -66,11 +69,39 @@
     -fx-border-color: black;
     -fx-background-insets: 1px;
 }
-.table-row-cell:focused{
-    -fx-text-fill: black;
+.table-row-cell:selected{
+    -fx-background-color: #474747;
+    -fx-text-fill: #E0E0CE;
 }
+
 .table-view .column-header{
     -fx-background-color: #F2AF29;
     -fx-border-color: #F2AF29;
 }
+.label{
+    -fx-font-size: 14px;
+}
 
+.non-important{
+    -fx-text-fill: #474747;
+}
+
+.text-field{
+    -fx-background-color: #D9D9D9;
+    -fx-background-radius: 5px;
+
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-insets: 1px;
+
+    -fx-font-weight: bold;
+}
+
+.transparent-textField{
+    -fx-background-color: transparent;
+    -fx-prompt-text-fill: black;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-width: 0px;
+}
