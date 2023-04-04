@@ -1,7 +1,6 @@
 package pl.controllers;
 
 import be.Event;
-import be.Ticket;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -424,63 +423,102 @@ public class mainController implements Initializable {
 
     }
 
-    private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
+    private void displayTicketsTableView(AnchorPane container){
+        TableView ticketsTable = new TableView();
+
+        TableColumn<Event, String> nameColumn = new TableColumn<>();
+        nameColumn.setResizable(false);
+        nameColumn.setText("Name");
+        nameColumn.setMinWidth(100);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        TableColumn<Event, String> emailColumn = new TableColumn<>();
+        emailColumn.setResizable(false);
+        emailColumn.setText("Email");
+        emailColumn.setMaxWidth(75);
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
+
+        TableColumn<Event, String> priceColumn = new TableColumn<>();
+        priceColumn.setResizable(false);
+        priceColumn.setText("Price");
+        priceColumn.setMaxWidth(75);
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
+
+        TableColumn<Event, String> typeColumn = new TableColumn<>();
+        typeColumn.setResizable(false);
+        typeColumn.setText("Type");
+        typeColumn.setMinWidth(110);
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
+
+        TableColumn<Event, String> useColumn = new TableColumn<>();
+        useColumn.setResizable(false);
+        useColumn.setMaxWidth(75);
+
+        TableColumn<Event, String> delColumn = new TableColumn<>();
+        delColumn.setResizable(false);
+        delColumn.setMaxWidth(75);
+
+        fillTicketsTable(ticketsTable);
+        ticketsTable.setLayoutX(container.getLayoutX() - 310);
+        ticketsTable.setLayoutY(container.getLayoutY() + 30);
+        ticketsTable.setMaxHeight(container.getMinHeight() - 100);
+        ticketsTable.setMaxWidth(360);
+
+        ticketsTable.getColumns().addAll(nameColumn, emailColumn, priceColumn, typeColumn);
+        container.getChildren().add(ticketsTable);
+    }
+
+    private void fillTicketsTable(TableView ticketsTable) {
+        ticketsTable.setItems(ticketModel.getAllTickets());
+    }
+
+    private void ManageTicketsScreen(AnchorPane container, Event selectedItem) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
-        container.getChildren().clear();
 
-        TableView ticketList = new TableView<>();
+        clearContainer(container);
 
-        TableColumn<Ticket, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-
-        TableColumn<Ticket, String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
-
-        TableColumn<Ticket, String> priceColumn = new TableColumn<>("Price");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
-
-        TableColumn<Ticket, String> typeColumn = new TableColumn<>("Type");
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
-
-        TableColumn<Ticket, String> usedColumn = new TableColumn<>("Used");
-        usedColumn.setCellValueFactory(new PropertyValueFactory<>("used"));
-
-        ticketList.getColumns().addAll(nameColumn, emailColumn, priceColumn, typeColumn, usedColumn);
-
+        Label title = new Label();
+        TextField searchBox = new TextField();
+        Button searchButton = new Button();
         Button goBack = new Button();
-        Button useBtn = new Button();
-        Button delBtn = new Button();
-        Label eventLabel = new Label();
-        TextField searchBar = new TextField();
 
+        searchBox.setPromptText("Search...");
+        searchButton.setText("\uD83D\uDD0D");
+        searchButton.setStyle("-fx-font-size: 12");
+        goBack.setText("←");
 
-        goBack.setText("<-");
-        useBtn.setText("Use");
-        delBtn.setText("Delete");
-        searchBar.setText("Search...");
-
+        searchButton.getStyleClass().add("app-buttons");
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
+        goBack.setStyle("-fx-font-size: 13");
 
+        title.setText("Event Tickets");
 
-        goBack.setLayoutX(container.getLayoutX() - 290);
-        goBack.setLayoutY(container.getLayoutY() + 5);
+        goBack.setLayoutX(container.getLayoutX()-300);
+        goBack.setLayoutY(container.getLayoutY()+5);
 
-        searchBar.setLayoutX(container.getLayoutX() - 80);
-        searchBar.setLayoutY(container.getLayoutY() + 5);
+        title.setLayoutX(goBack.getLayoutX()+60);
+        title.setLayoutY(goBack.getLayoutY());
 
-        ticketList.setLayoutX(container.getLayoutX() - 290);
-        ticketList.setLayoutY(container.getLayoutY() + 40);
+        searchBox.setLayoutX(title.getLayoutX()+105);
+        searchBox.setLayoutY(title.getLayoutY());
+        searchBox.setMinWidth(container.getMinWidth()/6);
 
+        searchButton.setLayoutX(searchBox.getLayoutX()+searchBox.getMinWidth()+100);
+        searchButton.setLayoutY(searchBox.getLayoutY());
 
-        container.getChildren().addAll(goBack, searchBar, ticketList);
+        container.getChildren().addAll(title, searchBox, searchButton, goBack);
+        displayTicketsTableView(container);
 
         goBack.setOnMouseClicked(e -> {
-            ManageSelectedEventScreen(anpContent);
-        });
+            ManageEventsScreen(anpContent);
+        } );
 
+        //add a button to create tickets
     }
+
+
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {
 
