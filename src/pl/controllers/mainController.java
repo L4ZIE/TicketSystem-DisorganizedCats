@@ -1,5 +1,6 @@
 package pl.controllers;
 
+import be.Account;
 import be.Event;
 import be.Ticket;
 import javafx.fxml.FXML;
@@ -25,6 +26,8 @@ public class mainController implements Initializable {
     private int id;
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
+
+    private TableView<Account> accountTable;
 
     public mainController() {
     }
@@ -81,9 +84,9 @@ public class mainController implements Initializable {
 
         container.getChildren().addAll(userControls, buttonContainer);
 
-        manageUsers.setDisable(true);
+        //manageUsers.setDisable(false);//
         manageUsers.setOnMouseClicked(e -> {
-            //this is for sprint 2
+            ManageAccountScreen(anpContent);
         });
 
         manageEvents.setOnMouseClicked(e -> {
@@ -486,9 +489,70 @@ public class mainController implements Initializable {
 
     }
 
-    private void displayManageAccountScreen(AnchorPane container) {
-        //sprint 2
+
+    private void displayAccountTableView(AnchorPane container) {
+        accountTable = new TableView<>();
+
+        TableColumn<Account, String> nameColumn = new TableColumn<>();
+        nameColumn.setResizable(false);
+        nameColumn.setText("Name");
+        nameColumn.setMinWidth(100); //set to dynamic later
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("accountName"));
+
+        TableColumn<Account, String> uNameColumn = new TableColumn<>();
+        uNameColumn.setResizable(false);
+        uNameColumn.setText("UserName");
+        uNameColumn.setMinWidth(110); //set to dynamic later
+        uNameColumn.setCellValueFactory(new PropertyValueFactory<>("uName"));
+
+        TableColumn<Account, String> uPasswordColumn = new TableColumn<>();
+        uPasswordColumn.setResizable(false);
+        uPasswordColumn.setText("UserName");
+        uPasswordColumn.setMinWidth(110); //set to dynamic later
+        uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("uName"));
+
+        fillEventsTable(accountTable);
+        accountTable.setLayoutX(container.getLayoutX() - 300);
+        accountTable.setLayoutY(container.getLayoutY() + 30);
+        accountTable.setMaxHeight(container.getMinHeight() - 100);
+        accountTable.setMaxWidth(container.getMinWidth() - 50);
+
+        accountTable.getColumns().addAll(nameColumn, uNameColumn, uPasswordColumn);
+        container.getChildren().add(accountTable);
     }
+    private void ManageAccountScreen(AnchorPane container) {
+        clearContainer(container);
 
+        Label lblTitle = new Label();
+        Button btnNewAccount = new Button();
+        Button btnManageUsers = new Button();
 
+        Button btnDeleteAccount = new Button();
+        Button btnEditAccount = new Button();
+
+        lblTitle.setText("Manage Accounts");
+        lblTitle.setLayoutX(container.getLayoutX() - 300);
+        lblTitle.setLayoutY(container.getLayoutY());
+
+        btnNewAccount.setText("New Account");
+        btnNewAccount.setLayoutX(lblTitle.getLayoutX());
+        btnNewAccount.setLayoutY(container.getMinHeight() - btnNewAccount.getMinHeight() - 50);
+        btnNewAccount.getStyleClass().addAll("app-buttons");
+
+        btnManageUsers.setText("Manage Accounts");
+        btnManageUsers.setLayoutX(btnNewAccount.getLayoutX() + 100);
+        btnManageUsers.setLayoutY(btnNewAccount.getLayoutY());
+        btnManageUsers.getStyleClass().add("app-buttons");
+
+        btnDeleteAccount.setText("Delete");
+        btnDeleteAccount.setLayoutX(btnManageUsers.getLayoutX() + 140);
+        btnDeleteAccount.setLayoutY(btnManageUsers.getLayoutY());
+        btnDeleteAccount.getStyleClass().addAll("app-buttons", "negative-buttons");
+
+        btnEditAccount.setText("Edit");
+        btnEditAccount.setLayoutX(btnDeleteAccount.getLayoutX() + 80);
+        btnEditAccount.setLayoutY(btnDeleteAccount.getLayoutY());
+        btnEditAccount.getStyleClass().addAll("app-buttons");
+
+    }
 }
