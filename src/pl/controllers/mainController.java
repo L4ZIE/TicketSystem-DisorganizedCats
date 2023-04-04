@@ -9,6 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import pl.models.EventModel;
+import pl.models.TicketModel;
 
 import javax.swing.*;
 import java.net.URL;
@@ -21,6 +22,9 @@ public class mainController implements Initializable {
             anpMain;
 
     private EventModel eventModel;
+
+    private TicketModel ticketModel;
+
     private int id;
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
@@ -472,7 +476,7 @@ public class mainController implements Initializable {
         ticketsTable.setItems(ticketModel.getAllTickets());
     }
 
-    private void ManageTicketsScreen(AnchorPane container, Event selectedItem) {
+    private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
@@ -483,39 +487,82 @@ public class mainController implements Initializable {
         TextField searchBox = new TextField();
         Button searchButton = new Button();
         Button goBack = new Button();
+        Button newTicket = new Button();
+        Button useBtn = new Button();
+        Button delBtn = new Button();
+        Button editBtn = new Button();
 
-        searchBox.setPromptText("Search...");
-        searchButton.setText("\uD83D\uDD0D");
-        searchButton.setStyle("-fx-font-size: 12");
+        newTicket.setText("New Ticket");
+        newTicket.getStyleClass().addAll("app-buttons");
+        newTicket.setLayoutX(goBack.getLayoutX()+20);
+        newTicket.setLayoutY(container.getMinHeight()-newTicket.getMinHeight()-50);
+
+        useBtn.setText("USE");
+        useBtn.getStyleClass().addAll("app-buttons");
+        useBtn.setLayoutX(newTicket.getLayoutX()+120);
+        useBtn.setLayoutY(newTicket.getLayoutY());
+
+        delBtn.setText("DELETE");
+        delBtn.getStyleClass().addAll("app-buttons", "negative-buttons");
+        delBtn.setLayoutX(useBtn.getLayoutX()+90);
+        delBtn.setLayoutY(useBtn.getLayoutY());
+
+        editBtn.setText("Edit");
+        editBtn.getStyleClass().addAll("app-buttons");
+        editBtn.setLayoutX(delBtn.getLayoutX()+100);
+        editBtn.setLayoutY(delBtn.getLayoutY());
+
+
         goBack.setText("←");
-
-        searchButton.getStyleClass().add("app-buttons");
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
         goBack.setStyle("-fx-font-size: 13");
-
-        title.setText("Event Tickets");
-
         goBack.setLayoutX(container.getLayoutX()-300);
         goBack.setLayoutY(container.getLayoutY()+5);
+        goBack.setStyle("-fx-font-size: 12");
 
-        title.setLayoutX(goBack.getLayoutX()+60);
-        title.setLayoutY(goBack.getLayoutY());
+        title.setText(selectedEvent.getEventName());
+        title.setLayoutX(goBack.getLayoutX()+40);
+        title.setLayoutY(goBack.getLayoutY()+2);
+        title.setStyle("-fx-font-size: 15");
 
-        searchBox.setLayoutX(title.getLayoutX()+105);
+        searchBox.setPromptText("Search...");
+        searchBox.setLayoutX(title.getLayoutX()+110);
         searchBox.setLayoutY(title.getLayoutY());
         searchBox.setMinWidth(container.getMinWidth()/6);
 
+        searchButton.setText("\uD83D\uDD0D");
+        searchButton.setStyle("-fx-font-size: 12");
+        searchButton.getStyleClass().add("app-buttons");
         searchButton.setLayoutX(searchBox.getLayoutX()+searchBox.getMinWidth()+100);
         searchButton.setLayoutY(searchBox.getLayoutY());
 
-        container.getChildren().addAll(title, searchBox, searchButton, goBack);
+        container.getChildren().addAll(title, searchBox, searchButton, goBack, newTicket, useBtn, delBtn, editBtn);
         displayTicketsTableView(container);
 
-        goBack.setOnMouseClicked(e -> {
-            ManageEventsScreen(anpContent);
-        } );
 
-        //add a button to create tickets
+        goBack.setOnMouseClicked(e -> {
+            ManageEventsScreen(container);
+        });
+
+        newTicket.setOnMouseClicked(event -> {
+            displayCreateTicket(container);
+        });
+    }
+
+    private void displayCreateTicket(AnchorPane container){
+        Label eventLbl = new Label();
+        Button saveBtn = new Button();
+        Button cancelBtn = new Button();
+
+        saveBtn.setPrefWidth(60);
+        saveBtn.setText("Save");
+        saveBtn.setLayoutX(container.getLayoutX() - 300);
+        saveBtn.setLayoutY(container.getLayoutY() + 350);
+
+        cancelBtn.setPrefWidth(70);
+        cancelBtn.setText("Go Back");
+        cancelBtn.setLayoutX(container.getLayoutX());
+        cancelBtn.setLayoutY(container.getLayoutY() + 350);
     }
 
 
