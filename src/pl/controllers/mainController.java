@@ -507,9 +507,9 @@ public class mainController implements Initializable {
 
         TableColumn<Account, String> uPasswordColumn = new TableColumn<>();
         uPasswordColumn.setResizable(false);
-        uPasswordColumn.setText("UserName");
+        uPasswordColumn.setText("UserPassword");
         uPasswordColumn.setMinWidth(110); //set to dynamic later
-        uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("uName"));
+        uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("uPassword"));
 
         fillEventsTable(accountTable);
         accountTable.setLayoutX(container.getLayoutX() - 300);
@@ -553,6 +553,10 @@ public class mainController implements Initializable {
         btnEditAccount.setLayoutX(btnDeleteAccount.getLayoutX() + 80);
         btnEditAccount.setLayoutY(btnDeleteAccount.getLayoutY());
         btnEditAccount.getStyleClass().addAll("app-buttons");
+
+        container.getChildren().addAll(lblTitle, btnManageUsers, btnEditAccount, btnDeleteAccount, btnNewAccount);
+
+        displayAccountTableView(container);
 
     }
 }
