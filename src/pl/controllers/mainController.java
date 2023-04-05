@@ -11,6 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import pl.models.EventModel;
+import pl.models.AccountModel;
 
 import javax.swing.*;
 import java.net.URL;
@@ -23,6 +24,7 @@ public class mainController implements Initializable {
             anpMain;
 
     private EventModel eventModel;
+    private AccountModel accountModel;
     private int id;
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
@@ -493,11 +495,11 @@ public class mainController implements Initializable {
     private void displayAccountTableView(AnchorPane container) {
         accountTable = new TableView<>();
 
-        TableColumn<Account, String> nameColumn = new TableColumn<>();
-        nameColumn.setResizable(false);
-        nameColumn.setText("Name");
-        nameColumn.setMinWidth(100); //set to dynamic later
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("accountName"));
+        TableColumn<Account, String> accountTypeColumn = new TableColumn<>();
+        accountTypeColumn.setResizable(false);
+        accountTypeColumn.setText("AccountType");
+        accountTypeColumn.setMinWidth(100); //set to dynamic later
+        accountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
         TableColumn<Account, String> uNameColumn = new TableColumn<>();
         uNameColumn.setResizable(false);
@@ -511,15 +513,15 @@ public class mainController implements Initializable {
         uPasswordColumn.setMinWidth(110); //set to dynamic later
         uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("uPassword"));
 
-        fillEventsTable(accountTable);
+        fillAccountsTable(accountTable);
         accountTable.setLayoutX(container.getLayoutX() - 300);
         accountTable.setLayoutY(container.getLayoutY() + 30);
         accountTable.setMaxHeight(container.getMinHeight() - 100);
         accountTable.setMaxWidth(container.getMinWidth() - 50);
-
-        accountTable.getColumns().addAll(nameColumn, uNameColumn, uPasswordColumn);
+        accountTable.getColumns().addAll(accountTypeColumn, uNameColumn, uPasswordColumn);
         container.getChildren().add(accountTable);
     }
+    private void fillAccountsTable(TableView accountTable) {accountTable.setItems(accountModel.getAllAccounts());}
     private void ManageAccountScreen(AnchorPane container) {
         clearContainer(container);
 
@@ -555,8 +557,38 @@ public class mainController implements Initializable {
         btnEditAccount.getStyleClass().addAll("app-buttons");
 
         container.getChildren().addAll(lblTitle, btnManageUsers, btnEditAccount, btnDeleteAccount, btnNewAccount);
-
         displayAccountTableView(container);
 
+        btnNewAccount.setOnMouseClicked(e -> {
+            displayCreateAccount(container);
+        });
+    }
+
+    public void displayCreateAccount(AnchorPane container){
+        clearContainer(container);
+
+        Label lblAccountType = new Label();
+
+        TextField txfUserName = new TextField();
+        TextField txfUserPassword = new TextField();
+
+        Button btnAdmin = new Button();
+        Button btnEventCoordinator = new Button();
+
+        lblAccountType.setText("Create Account");
+        lblAccountType.setLayoutX(container.getLayoutX() - 300);
+        lblAccountType.setLayoutY(container.getLayoutY());
+
+        btnAdmin.setText("Admin");
+        btnAdmin.setLayoutX(lblAccountType.getLayoutX());
+        btnAdmin.setLayoutY(container.getMinHeight() - btnAdmin.getMinHeight() - 50);
+        btnAdmin.getStyleClass().addAll("app-buttons");
+
+        btnEventCoordinator.setText("Event Coordinator");
+        btnEventCoordinator.setLayoutX(btnAdmin.getLayoutX() + 100 );
+        btnEventCoordinator.setLayoutY(btnAdmin.getLayoutY());
+        btnEventCoordinator.getStyleClass().addAll("app-buttons");
+
+        container.getChildren().addAll(lblAccountType, txfUserName, txfUserPassword, btnAdmin, btnEventCoordinator);
     }
 }
