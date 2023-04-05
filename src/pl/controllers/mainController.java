@@ -1,6 +1,7 @@
 package pl.controllers;
 
 import be.Event;
+import be.Ticket;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -28,6 +29,8 @@ public class mainController implements Initializable {
     private int id;
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
+
+    private TableView<Ticket> ticketsTable;
 
     public mainController() {
     }
@@ -428,41 +431,41 @@ public class mainController implements Initializable {
     }
 
     private void displayTicketsTableView(AnchorPane container){
-        TableView ticketsTable = new TableView();
+        ticketsTable = new TableView<>();
 
-        TableColumn<Event, String> nameColumn = new TableColumn<>();
+        TableColumn<Ticket, String> nameColumn = new TableColumn<>();
         nameColumn.setResizable(false);
         nameColumn.setText("Name");
         nameColumn.setMinWidth(100);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
 
-        TableColumn<Event, String> emailColumn = new TableColumn<>();
+        TableColumn<Ticket, String> emailColumn = new TableColumn<>();
         emailColumn.setResizable(false);
         emailColumn.setText("Email");
         emailColumn.setMaxWidth(75);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
 
-        TableColumn<Event, String> priceColumn = new TableColumn<>();
+        TableColumn<Ticket, Integer> priceColumn = new TableColumn<>();
         priceColumn.setResizable(false);
         priceColumn.setText("Price");
         priceColumn.setMaxWidth(75);
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
 
-        TableColumn<Event, String> typeColumn = new TableColumn<>();
+        TableColumn<Ticket, String> typeColumn = new TableColumn<>();
         typeColumn.setResizable(false);
         typeColumn.setText("Type");
         typeColumn.setMinWidth(110);
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
 
-        TableColumn<Event, String> useColumn = new TableColumn<>();
+        /*TableColumn<Ticket, String> useColumn = new TableColumn<>();
         useColumn.setResizable(false);
         useColumn.setMaxWidth(75);
 
-        TableColumn<Event, String> delColumn = new TableColumn<>();
+        TableColumn<Ticket, String> delColumn = new TableColumn<>();
         delColumn.setResizable(false);
-        delColumn.setMaxWidth(75);
+        delColumn.setMaxWidth(75);*/
 
-        fillTicketsTable(ticketsTable);
+        fillEventsTable(ticketsTable);
         ticketsTable.setLayoutX(container.getLayoutX() - 310);
         ticketsTable.setLayoutY(container.getLayoutY() + 30);
         ticketsTable.setMaxHeight(container.getMinHeight() - 100);
@@ -476,7 +479,8 @@ public class mainController implements Initializable {
         ticketsTable.setItems(ticketModel.getAllTickets());
     }
 
-    private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
+
+    private void ManageTicketsScreen(AnchorPane container, Event selectedItem) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
@@ -520,7 +524,7 @@ public class mainController implements Initializable {
         goBack.setLayoutY(container.getLayoutY()+5);
         goBack.setStyle("-fx-font-size: 12");
 
-        title.setText(selectedEvent.getEventName());
+        title.setText("Event's Tickets");
         title.setLayoutX(goBack.getLayoutX()+40);
         title.setLayoutY(goBack.getLayoutY()+2);
         title.setStyle("-fx-font-size: 15");
@@ -550,19 +554,83 @@ public class mainController implements Initializable {
     }
 
     private void displayCreateTicket(AnchorPane container){
+        clearContainer(container);
+        
         Label eventLbl = new Label();
-        Button saveBtn = new Button();
-        Button cancelBtn = new Button();
+        Label nameLbl = new Label();
+        Label emailLbl = new Label();
+        Label notesLbl = new Label();
+        Label locLbl = new Label();
+        Label locGuideLbl = new Label();
+        Button savBtn = new Button();
+        Button canclBtn = new Button();
+        TextField nameField = new TextField();
+        TextField emailField = new TextField();
+        TextField notesField = new TextField();
+        TextField locField = new TextField();
+        TextField locGuideField = new TextField();
 
-        saveBtn.setPrefWidth(60);
-        saveBtn.setText("Save");
-        saveBtn.setLayoutX(container.getLayoutX() - 300);
-        saveBtn.setLayoutY(container.getLayoutY() + 350);
+        nameLbl.setText("Name");
+        nameLbl.setLayoutX(container.getLayoutX()-290);
+        nameLbl.setLayoutY(container.getLayoutY()+40);
 
-        cancelBtn.setPrefWidth(70);
-        cancelBtn.setText("Go Back");
-        cancelBtn.setLayoutX(container.getLayoutX());
-        cancelBtn.setLayoutY(container.getLayoutY() + 350);
+        nameField.setLayoutX(nameLbl.getLayoutX());
+        nameField.setLayoutY(nameLbl.getLayoutY()+20);
+
+        emailLbl.setText("Email");
+        emailLbl.setLayoutX(nameField.getLayoutX());
+        emailLbl.setLayoutY(nameField.getLayoutY()+30);
+
+        emailField.setLayoutX(emailLbl.getLayoutX());
+        emailField.setLayoutY(emailLbl.getLayoutY()+20);
+
+        notesLbl.setText("Notes");
+        notesLbl.setLayoutX((container.getLayoutX()/2)+60);
+        notesLbl.setLayoutY(nameLbl.getLayoutY());
+
+        notesField.setLayoutX(notesLbl.getLayoutX());
+        notesField.setLayoutY(nameField.getLayoutY());
+        notesField.setPrefWidth(150);
+        notesField.setPrefHeight(150);
+
+        locLbl.setText("Location");
+        locLbl.setLayoutX(emailField.getLayoutX());
+        locLbl.setLayoutY(emailField.getLayoutY()+30);
+
+        locField.setLayoutX(locLbl.getLayoutX());
+        locField.setLayoutY(locLbl.getLayoutY()+20);
+
+        locGuideLbl.setText("Location Guidance");
+        locGuideLbl.setLayoutX(locLbl.getLayoutX());
+        locGuideLbl.setLayoutY(locLbl.getLayoutY()+60);
+
+        locGuideField.setLayoutX(locGuideLbl.getLayoutX());
+        locGuideField.setLayoutY(locLbl.getLayoutY()+90);
+        locGuideField.setPrefSize(350,110);
+
+
+        eventLbl.setText("Create Ticket");
+        eventLbl.setLayoutX(container.getLayoutX()/2);
+        eventLbl.setLayoutY(container.getLayoutY()+5);
+
+        savBtn.setPrefWidth(60);
+        savBtn.setText("Save");
+        savBtn.setLayoutX(container.getLayoutX() - 300);
+        savBtn.setLayoutY(container.getLayoutY() + 350);
+
+        canclBtn.setPrefWidth(70);
+        canclBtn.setText("Cancel");
+        canclBtn.setLayoutX(container.getLayoutX());
+        canclBtn.setLayoutY(container.getLayoutY() + 350);
+
+        container.getChildren().addAll(savBtn,canclBtn,eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
+
+        //add function for save button
+
+        canclBtn.setOnMouseClicked(event -> {
+            ManageTicketsScreen(container, eventsTable.getSelectionModel().getSelectedItem());
+
+        });
     }
 
 

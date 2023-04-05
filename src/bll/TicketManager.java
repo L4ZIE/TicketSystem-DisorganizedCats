@@ -15,7 +15,7 @@ public class TicketManager implements ITicketManager {
 
     ITicketDAO ticketDAO;
     private IEventTicketDAO eventTicketDAO;
-    private List<Ticket> allTickets = new ArrayList<>();
+    private List<Ticket> allTickets;
 
 
     public TicketManager(){
@@ -29,6 +29,7 @@ public class TicketManager implements ITicketManager {
 
     @Override
     public List<Ticket> getAllTickets() {
+        fillAllTickets();
         return allTickets;
     }
 
