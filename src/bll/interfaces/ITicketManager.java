@@ -12,7 +12,6 @@ public interface ITicketManager {
     void deleteTicket(int id);
     List<Ticket> searchTicketsByCustomerName(String query);
     Ticket getTicketByID(int id);
-    List<Ticket> searchTicketByEvent(String query);
 
     List<Ticket> getTicketsByCustomer(String name);
 

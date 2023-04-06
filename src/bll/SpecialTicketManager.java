@@ -91,10 +91,20 @@ public class SpecialTicketManager implements ISpecialTicketManager {
         }
         return listSpecTicketsByEvent;
     }
-    public List<SpecialTicket> searchForSpecTicket(String query) {
-        return null;
+    @Override
+    public List<SpecialTicket> searchForSpecTicket(String query, List<SpecialTicket> allSpecialTickets) {
+        List<SpecialTicket> listSorted = new ArrayList<>();
+
+        for (SpecialTicket spTicket : allSpecialTickets) {
+            if ( spTicket.getTicketName().toLowerCase().contains(query.toLowerCase()) ||
+                    spTicket.getUsed().toString().contains(query.toLowerCase()))  {
+                listSorted.add(spTicket);
+            }
+        }
+        return listSorted;
     }
 }
+
 
 
 

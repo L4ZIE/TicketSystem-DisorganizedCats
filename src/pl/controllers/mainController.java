@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import pl.models.EventModel;
@@ -195,8 +196,8 @@ public class mainController implements Initializable {
         btnSearchButton.setLayoutY(txfSearchBox.getLayoutY());
 
 
-        container.getChildren().addAll(lblTitle, txfSearchBox, btnSearchButton, btnNewEvent, btnDeleteEvent, btnEditEvent, btnManageTickets);
-        //TODO Display: latest events and line, search bar and search button
+        container.getChildren().addAll(lblTitle, txfSearchBox, btnSearchButton, btnNewEvent,
+                                       btnDeleteEvent, btnEditEvent, btnManageTickets);
         displayEventsTableView(container);
 
         btnNewEvent.setOnMouseClicked(e -> {
@@ -213,10 +214,15 @@ public class mainController implements Initializable {
             }
         });
 
-        txfSearchBox.setOnAction(event -> {
-            //TODO
+        txfSearchBox.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                eventModel.searchForEvent(txfSearchBox.getText());
+                }
+            });
 
-        });
+        btnSearchButton.setOnAction(event -> {
+                eventModel.searchForEvent(txfSearchBox.getText());
+            });
 
         btnEditEvent.setOnMouseClicked(event -> {
             if (eventsTable.getSelectionModel().getSelectedItem() == null) {
@@ -417,17 +423,11 @@ public class mainController implements Initializable {
     private void displayCreateEvent(AnchorPane container) {
         displayCreateEvent(container, null);
     }
-
-
     private void clearContainer(AnchorPane container) {
         container.getChildren().clear();
     }
-
-    private void ManageSelectedEventScreen(AnchorPane container) {//when merged with backend, add an Event event to the constructor
-        //TODO Display: latest events and line
+    private void ManageSelectedEventScreen(AnchorPane container) {
         displayEventsTableView(container);
-        //TODO Display: New Event button
-
     }
 
     private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
@@ -461,14 +461,11 @@ public class mainController implements Initializable {
         Label eventLabel = new Label();
         TextField searchBar = new TextField();
 
-
         goBack.setText("<-");
         useBtn.setText("Use");
         delBtn.setText("Delete");
         searchBar.setText("Search...");
-
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
-
 
         goBack.setLayoutX(container.getLayoutX() - 290);
         goBack.setLayoutY(container.getLayoutY() + 5);
@@ -479,14 +476,12 @@ public class mainController implements Initializable {
         ticketList.setLayoutX(container.getLayoutX() - 290);
         ticketList.setLayoutY(container.getLayoutY() + 40);
 
-
         container.getChildren().addAll(goBack, searchBar, ticketList);
 
         goBack.setOnMouseClicked(e -> {
             clearContainer(container);
             ManageSelectedEventScreen(anpContent);
         });
-
     }
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {
@@ -545,6 +540,16 @@ public class mainController implements Initializable {
             createSpecTicketPopUp(container);
         });
 
+        txfSearch.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+               specTicketModel.searchForSpecTicket(txfSearch.getText());
+            }
+        });
+
+        btnSearch.setOnAction(event -> {
+            specTicketModel.searchForSpecTicket(txfSearch.getText());
+        });
+
         btnDeleteSpecTicket.setOnMouseClicked(event -> {
             if (specialTicketsTable.getSelectionModel().getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(null, "Please select an ticket.");
@@ -563,12 +568,12 @@ public class mainController implements Initializable {
             }
         });
     }
+
     private void createSpecTicketPopUp(AnchorPane container) {
         createSpecTicketPopUp(container, null);
     }
 
-
-    private void createSpecTicketPopUp(AnchorPane container, SpecialTicket selectedSpecTicket) {
+    private void createSpecTicketPopUp(AnchorPane container, SpecialTicket selectedItem) {
         clearContainer(container);
 
         Label lblTitle = new Label();
@@ -601,7 +606,7 @@ public class mainController implements Initializable {
         lblEvents.setLayoutX(container.getLayoutX() - 300);
         lblEvents.setLayoutY(txfTicketAmount.getLayoutY() + 60);
 
-        ChoiceBox<String> choiceBoxEvents = new ChoiceBox<>();
+        ChoiceBox<Event> choiceBoxEvents = new ChoiceBox<>();
         choiceBoxEvents.setPrefWidth(290);
         choiceBoxEvents.setLayoutX(lblEvents.getLayoutX() + 60);
         choiceBoxEvents.setLayoutY(lblEvents.getLayoutY());
@@ -643,28 +648,23 @@ public class mainController implements Initializable {
         btnSave.getStyleClass().addAll("app-buttons");
 
         container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
-                lblEvents, choiceBoxEvents, lblAddRemove, boxAddRemove, btnAdd, btnDelete, btnSave,btnGoBack);
+                lblEvents, choiceBoxEvents, lblAddRemove, boxAddRemove, btnAdd, btnDelete, btnSave, btnGoBack);
 
         btnGoBack.setOnAction(event -> {
             ManageSpecialTicketsScreen(container);
         });
 
-
-
         ObservableList<String> eventsName = FXCollections.observableArrayList();
-        for(Event e : eventModel.getAllEvents()){
+        for (Event e : eventModel.getAllEvents()) {
             eventsName.add(e.getEventName());
         }
         boxAddRemove.setItems(eventsName);
+            ///////////////////////////////////////TODO need help...i have method ready in the model
 
         btnSave.setOnAction(event -> {
-           ////////////////////create and edit a ticket
-        });
-        choiceBoxEvents.setOnAction(event -> {
-            ////////7 evensts...connected to the special ticket
+            //////////////////////////////////////TODO need help for create and edit...
 
         });
-
     }
 
 

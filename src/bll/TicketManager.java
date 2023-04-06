@@ -71,13 +71,6 @@ public class TicketManager implements ITicketManager {
     }
 
     @Override
-    public List<Ticket> searchTicketByEvent(String query) {
-        //TODO
-        //i will implement later
-        return null;
-    }
-
-    @Override
     public List<Ticket> getTicketsByCustomer(String name) {
         List<Ticket> ticketsByCustomer = new ArrayList<>();
         for (Ticket ticket : allTickets) {
@@ -130,5 +123,4 @@ public class TicketManager implements ITicketManager {
         }
         return listTicketsByEvent;
     }
-
 }

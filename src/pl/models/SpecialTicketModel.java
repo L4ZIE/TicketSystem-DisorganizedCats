@@ -7,6 +7,8 @@ import bll.interfaces.ISpecialTicketManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class SpecialTicketModel {
     private ISpecialTicketManager specTicketManager;
     private ObservableList<SpecialTicket> listSpecialTickets;
@@ -29,6 +31,11 @@ public class SpecialTicketModel {
         specTicketManager.updateSpecTicket(specialTicket);
         listSpecialTickets = getAllSpecTickets();
     }
+    public void searchForSpecTicket(String query) {
+        List<SpecialTicket> searched = specTicketManager.searchForSpecTicket(query, specTicketManager.getAllSpecTickets());
+        listSpecialTickets.clear();
+        listSpecialTickets.addAll(searched);
+    }
     public int getMaxID(){
         return specTicketManager.getMaxID();
     }
@@ -36,6 +43,7 @@ public class SpecialTicketModel {
     public SpecialTicket getSpecTicketByID(int id){
         return specTicketManager.getSpecTicketByID(id);
     }
+
     public ObservableList<SpecialTicket> getSpecTicketsByUsed(Boolean used){
         return FXCollections.observableArrayList(specTicketManager.getSpecTicketsByUsed(used));
     }

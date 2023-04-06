@@ -41,6 +41,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void createSpecialTicket(SpecialTicket specialTicket) {
         try {
@@ -48,8 +49,8 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
-            preparedStatement.setString(1,specialTicket.getTicketName());
-            preparedStatement.setString(2,specialTicket.getQrCode());
+            preparedStatement.setString(1, specialTicket.getTicketName());
+            preparedStatement.setString(2, specialTicket.getQrCode());
             preparedStatement.setBoolean(3, specialTicket.getUsed());
 
             preparedStatement.execute();
@@ -60,6 +61,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void deleteSpecialTicket(int id) {
         try {
@@ -75,6 +77,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void updateSpecTicket(SpecialTicket selectedSpecTicket) {
         try {
