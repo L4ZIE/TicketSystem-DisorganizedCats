@@ -2,7 +2,7 @@ package dal;
 
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import dal.connector.DataBaseConnector;
-import dal.interfaces.IEventTicketDAO;
+import dal.interfaces.IEventSpecTicketDAO;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,17 +10,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventTicketDAO implements IEventTicketDAO {
+public class EventSpecTicketDAO implements IEventSpecTicketDAO {
     private PreparedStatement preparedStatement;
     private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
 
     @Override
-    public List<Integer> getTicketsByEventID(int eventID) {
+    public List<Integer> getSpecTicketsByEventID(int eventID) {
         List<Integer> result = new ArrayList<>();
-        try{
-            String sql = "SELECT ticketID FROM Event_Tickets WHERE eventID = ? ";
+        try {
+            String sql = "SELECT ticketID FROM Event_SpecTickets WHERE eventID = ? ";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
-            preparedStatement.setInt(1,eventID);
+            preparedStatement.setInt(1, eventID);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 result.add(resultSet.getInt("ticketID"));
@@ -34,10 +34,11 @@ public class EventTicketDAO implements IEventTicketDAO {
         }
     }
     @Override
-    public List<Integer> getEventForTickets(int ticketID) {
+    public List<Integer> getEventForSpecTickets(int ticketID) {
         List<Integer> result = new ArrayList<>();
         try{
-            String sql = "SELECT eventID FROM Event_Tickets WHERE ticketID = ?";
+            String sql = "SELECT eventID FROM Event_SpecTickets WHERE ticketID = ?";
+
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             preparedStatement.setInt(1,ticketID);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -52,9 +53,9 @@ public class EventTicketDAO implements IEventTicketDAO {
         }
     }
     @Override
-    public void addTicketToEvent(int ticketID, int eventID) {
+    public void addSpecTicketToEvent(int ticketID, int eventID) {
         try{
-            String sql = "INSERT INTO Event_Tickets (ticketID, eventID) VALUES (?,?)";
+            String sql = "INSERT INTO Event_SpecTickets (ticketID, eventID) VALUES (?,?)";
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
             preparedStatement.setInt(1,ticketID);
@@ -68,4 +69,3 @@ public class EventTicketDAO implements IEventTicketDAO {
         }
     }
 }
-

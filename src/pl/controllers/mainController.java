@@ -3,6 +3,8 @@ package pl.controllers;
 import be.Event;
 import be.SpecialTicket;
 import be.Ticket;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -416,11 +418,6 @@ public class mainController implements Initializable {
         displayCreateEvent(container, null);
     }
 
-    private void updateTableEvents(AnchorPane container) {
-        if (listsUpdated) {
-            listsUpdated = false;
-        }
-    }
 
     private void clearContainer(AnchorPane container) {
         container.getChildren().clear();
@@ -486,6 +483,7 @@ public class mainController implements Initializable {
         container.getChildren().addAll(goBack, searchBar, ticketList);
 
         goBack.setOnMouseClicked(e -> {
+            clearContainer(container);
             ManageSelectedEventScreen(anpContent);
         });
 
@@ -501,10 +499,11 @@ public class mainController implements Initializable {
         Button btnNewSpecTicket = new Button();
         Button btnDeleteSpecTicket = new Button();
         Button btnEditSpecTicket = new Button();
+        Button btnPrintTicket = new Button();
 
         lblTitle.setText("Special Tickets");
         lblTitle.setLayoutX(container.getLayoutX() - 300);
-        lblTitle.setLayoutY(container.getLayoutY() );
+        lblTitle.setLayoutY(container.getLayoutY());
 
         txfSearch.setPromptText("Search...");
         txfSearch.setLayoutX(lblTitle.getLayoutX() + 125);
@@ -515,6 +514,7 @@ public class mainController implements Initializable {
         btnSearch.setLayoutX(txfSearch.getLayoutX() + txfSearch.getMinWidth() + 5);
         btnSearch.setLayoutY(txfSearch.getLayoutY());
         btnSearch.setStyle("-fx-font-size: 12");
+        btnSearch.getStyleClass().add("app-buttons");
 
         btnNewSpecTicket.setText("New Ticket");
         btnNewSpecTicket.setLayoutX(lblTitle.getLayoutX());
@@ -522,34 +522,63 @@ public class mainController implements Initializable {
         btnNewSpecTicket.getStyleClass().addAll("app-buttons");
 
         btnDeleteSpecTicket.setText("Delete");
-        btnDeleteSpecTicket.setLayoutX(btnNewSpecTicket.getLayoutX() + 150);
+        btnDeleteSpecTicket.setLayoutX(btnNewSpecTicket.getLayoutX() + 110);
         btnDeleteSpecTicket.setLayoutY(btnNewSpecTicket.getLayoutY());
         btnDeleteSpecTicket.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         btnEditSpecTicket.setText("Edit Ticket");
         btnEditSpecTicket.setPrefWidth(80);
-        btnEditSpecTicket.setLayoutX(btnDeleteSpecTicket.getLayoutX() + 140);
+        btnEditSpecTicket.setLayoutX(btnDeleteSpecTicket.getLayoutX() + 90);
         btnEditSpecTicket.setLayoutY(btnDeleteSpecTicket.getLayoutY());
         btnEditSpecTicket.getStyleClass().addAll("app-buttons");
 
-        container.getChildren().addAll(lblTitle,txfSearch,btnSearch,btnNewSpecTicket,btnDeleteSpecTicket,btnEditSpecTicket);
+        btnPrintTicket.setText("Print");
+        btnPrintTicket.setLayoutX(btnEditSpecTicket.getLayoutX()+ 113 );
+        btnPrintTicket.setLayoutY(btnEditSpecTicket.getLayoutY());
+        btnPrintTicket.getStyleClass().addAll("app-buttons");
+
+        container.getChildren().addAll(lblTitle, txfSearch, btnSearch, btnNewSpecTicket, btnDeleteSpecTicket,
+                                       btnEditSpecTicket,btnPrintTicket);
         displaySpecialTicketsTableView(container);
 
         btnNewSpecTicket.setOnAction(event -> {
             createSpecTicketPopUp(container);
         });
+
+        btnDeleteSpecTicket.setOnMouseClicked(event -> {
+            if (specialTicketsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an ticket.");
+            } else {
+                SpecialTicket selectedItem = specialTicketsTable.getSelectionModel().getSelectedItem();
+                specTicketModel.deleteSpecTicket(selectedItem);
+                displaySpecialTicketsTableView(container);
+            }
+        });
+        btnEditSpecTicket.setOnMouseClicked(event -> {
+            if (specialTicketsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an ticket.");
+            } else {
+                SpecialTicket selectedItem = specialTicketsTable.getSelectionModel().getSelectedItem();
+                createSpecTicketPopUp(container, selectedItem);
+            }
+        });
     }
     private void createSpecTicketPopUp(AnchorPane container) {
+        createSpecTicketPopUp(container, null);
+    }
+
+
+    private void createSpecTicketPopUp(AnchorPane container, SpecialTicket selectedSpecTicket) {
         clearContainer(container);
 
         Label lblTitle = new Label();
         lblTitle.setText("Special Ticket");
         lblTitle.setLayoutX(container.getLayoutX() - 155);
-        lblTitle.setLayoutY(container.getLayoutY() );
+        lblTitle.setLayoutY(container.getLayoutY() + 10);
 
         Label lblTicketName = new Label();
         lblTicketName.setText("Ticket Name");
-        lblTicketName.setLayoutX(container.getLayoutX() -300);
+        lblTicketName.setLayoutX(container.getLayoutX() - 300);
         lblTicketName.setLayoutY(container.getLayoutY() + 50);
 
         TextField txfTicketName = new TextField();
@@ -565,28 +594,34 @@ public class mainController implements Initializable {
         TextField txfTicketAmount = new TextField();
         txfTicketAmount.setPrefWidth(55);
         txfTicketAmount.setLayoutX(lblTicketAmount.getLayoutX() + 110);
-        txfTicketAmount.setLayoutY(lblTicketAmount.getLayoutY() );
+        txfTicketAmount.setLayoutY(lblTicketAmount.getLayoutY());
 
         Label lblEvents = new Label();
         lblEvents.setText("Events");
         lblEvents.setLayoutX(container.getLayoutX() - 300);
         lblEvents.setLayoutY(txfTicketAmount.getLayoutY() + 60);
 
-        ComboBox comboBoxEvents = new ComboBox<>();
-        comboBoxEvents.setPrefWidth(290);
-        comboBoxEvents.setLayoutX(lblEvents.getLayoutX() +60);
-        comboBoxEvents.setLayoutY(lblEvents.getLayoutY());
-        comboBoxEvents.getStyleClass().addAll("textField");
+        ChoiceBox<String> choiceBoxEvents = new ChoiceBox<>();
+        choiceBoxEvents.setPrefWidth(290);
+        choiceBoxEvents.setLayoutX(lblEvents.getLayoutX() + 60);
+        choiceBoxEvents.setLayoutY(lblEvents.getLayoutY());
+        choiceBoxEvents.getStyleClass().addAll("textField");
 
         Label lblAddRemove = new Label();
         lblAddRemove.setText("Add/Remove");
         lblAddRemove.setLayoutX(container.getLayoutX() - 300);
-        lblAddRemove.setLayoutY(comboBoxEvents.getLayoutY() + 60);
+        lblAddRemove.setLayoutY(choiceBoxEvents.getLayoutY() + 60);
 
-        ComboBox boxAddRemove = new ComboBox<>();
+        ChoiceBox<String> boxAddRemove = new ChoiceBox<>();
         boxAddRemove.setPrefWidth(250);
         boxAddRemove.setLayoutX(lblAddRemove.getLayoutX() + 100);
         boxAddRemove.setLayoutY(lblAddRemove.getLayoutY());
+
+        Button btnGoBack = new Button();
+        btnGoBack.setText("<-");
+        btnGoBack.setLayoutX(container.getLayoutX() - 290);
+        btnGoBack.setLayoutY(container.getLayoutY() + 5);
+        btnGoBack.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         Button btnAdd = new Button();
         btnAdd.setText("Add Event");
@@ -594,52 +629,73 @@ public class mainController implements Initializable {
         btnAdd.setLayoutY(boxAddRemove.getLayoutY() + 60);
         btnAdd.getStyleClass().addAll("app-buttons", "positive-buttons");
 
-
         Button btnDelete = new Button();
         btnDelete.setText("Remove");
         btnDelete.setLayoutX(btnAdd.getLayoutX() + 190);
         btnDelete.setLayoutY(boxAddRemove.getLayoutY() + 60);
-        btnDelete.getStyleClass().addAll("app-buttons","negative-buttons");
+        btnDelete.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         Button btnSave = new Button();
         btnSave.setText("Save");
         btnSave.setPrefWidth(80);
-        btnSave.setLayoutX(container.getLayoutX()- 300);
+        btnSave.setLayoutX(container.getLayoutX() - 300);
         btnSave.setLayoutY(btnDelete.getLayoutY() + 40);
         btnSave.getStyleClass().addAll("app-buttons");
 
-        container.getChildren().addAll(lblTitle, lblTicketName,txfTicketName,lblTicketAmount,txfTicketAmount,
-            lblEvents,comboBoxEvents,lblAddRemove,boxAddRemove,btnAdd,btnDelete,btnSave);
+        container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
+                lblEvents, choiceBoxEvents, lblAddRemove, boxAddRemove, btnAdd, btnDelete, btnSave,btnGoBack);
+
+        btnGoBack.setOnAction(event -> {
+            ManageSpecialTicketsScreen(container);
+        });
+
+
+
+        ObservableList<String> eventsName = FXCollections.observableArrayList();
+        for(Event e : eventModel.getAllEvents()){
+            eventsName.add(e.getEventName());
+        }
+        boxAddRemove.setItems(eventsName);
+
+        btnSave.setOnAction(event -> {
+           ////////////////////create and edit a ticket
+        });
+        choiceBoxEvents.setOnAction(event -> {
+            ////////7 evensts...connected to the special ticket
+
+        });
 
     }
+
+
     private void displaySpecialTicketsTableView(AnchorPane container) {
         specialTicketsTable = new TableView<>();
 
-        TableColumn<SpecialTicket, String> specTicketNameCol = new TableColumn<>();
-        specTicketNameCol.setResizable(false);
-        specTicketNameCol.setText(" Ticket Name");
-        specTicketNameCol.setMinWidth(100);
-        specTicketNameCol.setCellValueFactory(new PropertyValueFactory<>("ticketName"));
+        TableColumn<SpecialTicket,Integer> colID = new TableColumn<>();
+        colID.setResizable(false);
+        colID.setText("ID");
+        colID.setMaxWidth(40);
+        colID.setCellValueFactory(new PropertyValueFactory<>("id") );
 
-        TableColumn<SpecialTicket, String> specTicketUsage = new TableColumn<>();
-        specTicketUsage.setResizable(false);
-        specTicketUsage.setText("Used");
-        specTicketUsage.setMinWidth(50);
-        specTicketUsage.setCellValueFactory(new PropertyValueFactory<>("used"));
+        TableColumn<SpecialTicket, String> colName = new TableColumn<>();
+        colName.setResizable(false);
+        colName.setText(" Ticket Name");
+        colName.setMinWidth(150);
+        colName.setCellValueFactory(new PropertyValueFactory<>("ticketName"));
 
-        TableColumn<SpecialTicket, String> specialTicketAction = new TableColumn<>();
-        specialTicketAction.setResizable(false);
-        specialTicketAction.setText("Action");
-        specialTicketAction.setMinWidth(130);
-        specialTicketAction.setCellValueFactory(new PropertyValueFactory<>("button"));
+        TableColumn<SpecialTicket,Boolean> colUsed = new TableColumn<>();
+        colUsed.setResizable(false);
+        colUsed.setText("Used");
+        colUsed.setMinWidth(100);
+        colUsed.setCellValueFactory(new PropertyValueFactory<>("used"));
 
         fillSpecialTicketsTable(specialTicketsTable);
-        specialTicketsTable.setLayoutX(container.getLayoutX() - 270);
+        specialTicketsTable.setLayoutX(container.getLayoutX() - 265);
         specialTicketsTable.setLayoutY(container.getLayoutY() + 30);
         specialTicketsTable.setMaxHeight(container.getMinHeight() - 100);
-        specialTicketsTable.setMaxWidth(container.getMinWidth() - 50);
+        specialTicketsTable.setMaxWidth(container.getMinWidth() - 121);
 
-        specialTicketsTable.getColumns().addAll(specTicketNameCol, specTicketUsage, specialTicketAction);
+        specialTicketsTable.getColumns().addAll(colID,colName, colUsed);
         container.getChildren().add(specialTicketsTable);
 
     }

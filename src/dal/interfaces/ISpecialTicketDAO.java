@@ -9,4 +9,6 @@ public interface ISpecialTicketDAO {
     List<SpecialTicket> getAllSpecialTickets();
     void createSpecialTicket(SpecialTicket specialTicket);
     void deleteSpecialTicket(int id);
+
+    void updateSpecTicket(SpecialTicket selectedSpecTicket);
 }

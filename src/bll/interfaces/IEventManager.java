@@ -1,6 +1,7 @@
 package bll.interfaces;
 
 import be.Event;
+import be.SpecialTicket;
 
 import java.util.List;
 

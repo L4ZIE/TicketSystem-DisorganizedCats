@@ -19,7 +19,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
 
     @Override
     public List<SpecialTicket> getAllSpecialTickets() {
-        List<SpecialTicket> specialTickets= new ArrayList<>();
+        List<SpecialTicket> specialTickets = new ArrayList<>();
         try {
             String sql = "SELECT * FROM SpecialTickets";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
@@ -69,6 +69,26 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             preparedStatement.setInt(1, id);
 
             preparedStatement.executeUpdate();
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void updateSpecTicket(SpecialTicket selectedSpecTicket) {
+        try {
+            String sql = "UPDATE SpecialTickets SET ticketName = ?, qrCode = ?, used = ? WHERE id = ? ";
+
+            Connection conn = dataBaseConnector.createConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, selectedSpecTicket.getTicketName());
+            preparedStatement.setString(2, selectedSpecTicket.getQrCode());
+            preparedStatement.setBoolean(3, selectedSpecTicket.getUsed());
+            preparedStatement.setInt(4, selectedSpecTicket.getId());
+
+            preparedStatement.executeUpdate();
+
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {

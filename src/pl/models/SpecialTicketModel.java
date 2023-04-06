@@ -1,5 +1,6 @@
 package pl.models;
 
+import be.Event;
 import be.SpecialTicket;
 import bll.SpecialTicketManager;
 import bll.interfaces.ISpecialTicketManager;
@@ -8,14 +9,30 @@ import javafx.collections.ObservableList;
 
 public class SpecialTicketModel {
     private ISpecialTicketManager specTicketManager;
-
+    private ObservableList<SpecialTicket> listSpecialTickets;
     public SpecialTicketModel(){
         specTicketManager = new SpecialTicketManager();
     }
 
     public ObservableList<SpecialTicket> getAllSpecTickets(){
-        return FXCollections.observableArrayList(specTicketManager.getAllSpecTickets());
+        return listSpecialTickets = FXCollections.observableArrayList(specTicketManager.getAllSpecTickets());
     }
+    public void createSpecTicket(SpecialTicket specialTicket) {
+        specTicketManager.createSpecTicket(specialTicket);
+        listSpecialTickets.add(specialTicket);
+    }
+    public void deleteSpecTicket(SpecialTicket specialTicket){
+        specTicketManager.deleteSpecialTicket(specialTicket.getId());
+        listSpecialTickets.remove(listSpecialTickets.indexOf(specialTicket));
+    }
+    public void updateSpecTicket(SpecialTicket specialTicket){
+        specTicketManager.updateSpecTicket(specialTicket);
+        listSpecialTickets = getAllSpecTickets();
+    }
+    public int getMaxID(){
+        return specTicketManager.getMaxID();
+    }
+
     public SpecialTicket getSpecTicketByID(int id){
         return specTicketManager.getSpecTicketByID(id);
     }

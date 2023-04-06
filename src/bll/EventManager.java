@@ -1,15 +1,19 @@
 package bll;
 
 import be.Event;
+import be.SpecialTicket;
+import be.Ticket;
 import bll.interfaces.IEventManager;
 import dal.EventDAO;
 import dal.interfaces.IEventDAO;
+import dal.interfaces.IEventSpecTicketDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EventManager implements IEventManager {
     IEventDAO eventDAO;
+    IEventSpecTicketDAO eventSpecTicketDAO;
     private List<Event> allEvents;
 
     public EventManager() {
@@ -78,8 +82,9 @@ public class EventManager implements IEventManager {
         }
         return result;
     }
+
     @Override
-    public List<Event> searchEventByName(String query){
+    public List<Event> searchEventByName(String query) {
         List<Event> filtered = new ArrayList<>();
         for (Event e : allEvents) {
             if (("" + e.getEventName()).equalsIgnoreCase(query)) {
@@ -94,7 +99,7 @@ public class EventManager implements IEventManager {
         int max = 0;
 
         for (Event e : allEvents) {
-            if(max < e.getId())
+            if (max < e.getId())
                 max = e.getId();
         }
 
@@ -106,6 +111,7 @@ public class EventManager implements IEventManager {
         eventDAO.updateEvent(event);
         allEvents = eventDAO.getAllEvents();
     }
+
 }
 
 

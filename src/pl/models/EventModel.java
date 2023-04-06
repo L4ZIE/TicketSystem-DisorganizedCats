@@ -1,6 +1,7 @@
 package pl.models;
 
 import be.Event;
+import be.SpecialTicket;
 import bll.EventManager;
 import bll.interfaces.IEventManager;
 import javafx.collections.FXCollections;
