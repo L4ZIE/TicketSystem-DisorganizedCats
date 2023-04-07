@@ -81,14 +81,13 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
     @Override
     public void updateSpecTicket(SpecialTicket selectedSpecTicket) {
         try {
-            String sql = "UPDATE SpecialTickets SET ticketName = ?, qrCode = ?, used = ? WHERE id = ? ";
+            String sql = "UPDATE SpecialTickets SET ticketName = ?, used = ? WHERE id = ? ";
 
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, selectedSpecTicket.getTicketName());
-            preparedStatement.setString(2, selectedSpecTicket.getQrCode());
-            preparedStatement.setBoolean(3, selectedSpecTicket.getUsed());
-            preparedStatement.setInt(4, selectedSpecTicket.getId());
+            preparedStatement.setBoolean(2, selectedSpecTicket.getUsed());
+            preparedStatement.setInt(3, selectedSpecTicket.getId());
 
             preparedStatement.executeUpdate();
 

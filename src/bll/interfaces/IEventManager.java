@@ -19,4 +19,6 @@ public interface IEventManager {
     int getMaxID();
     void updateEvent(Event event);
     List<Event> getEventsBySpecTicketID(int id);
+
+    void addEventToSpecTicket(int ticketID, int eventID);
 }

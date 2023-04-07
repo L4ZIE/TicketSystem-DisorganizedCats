@@ -8,4 +8,6 @@ public interface IEventSpecTicketDAO {
     List<Integer> getEventForSpecTickets(int ticketID);
 
     void addSpecTicketToEvent(int ticketID, int eventID);
+
+    void addEventsToSpecTicket(int ticketID, int eventID);
 }

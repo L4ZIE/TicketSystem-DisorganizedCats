@@ -16,4 +16,5 @@ public interface ISpecialTicketManager {
     void deleteSpecialTicket(int id);
     List<SpecialTicket> getSpecTicketsByEventID(int id);
     List<SpecialTicket> searchForSpecTicket(String query, List<SpecialTicket> allSpecialTickets);
+     SpecialTicket getSpecTicketByName(String name);
 }

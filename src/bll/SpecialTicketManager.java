@@ -103,6 +103,16 @@ public class SpecialTicketManager implements ISpecialTicketManager {
         }
         return listSorted;
     }
+    @Override
+    public SpecialTicket getSpecTicketByName(String name) {
+        List <SpecialTicket> listSpecTicketName = new ArrayList<>();
+        for (SpecialTicket specTicket : allSpecialTickets) {
+            if(specTicket.getTicketName() == name) {
+                listSpecTicketName.add(specTicket);
+            }
+        }
+        return null;
+    }
 }
 
 

@@ -1,6 +1,5 @@
 package pl.models;
 
-import be.Event;
 import be.SpecialTicket;
 import bll.SpecialTicketManager;
 import bll.interfaces.ISpecialTicketManager;
@@ -11,43 +10,55 @@ import java.util.List;
 
 public class SpecialTicketModel {
     private ISpecialTicketManager specTicketManager;
-    private ObservableList<SpecialTicket> listSpecialTickets;
-    public SpecialTicketModel(){
+    private ObservableList<SpecialTicket> listSpecialTickets ;
+
+    public SpecialTicketModel() {
         specTicketManager = new SpecialTicketManager();
     }
 
-    public ObservableList<SpecialTicket> getAllSpecTickets(){
-        return listSpecialTickets = FXCollections.observableArrayList(specTicketManager.getAllSpecTickets());
+    public ObservableList<SpecialTicket> getAllSpecTickets() {
+        return listSpecialTickets = FXCollections.observableArrayList(
+                specTicketManager.getAllSpecTickets());
     }
+
     public void createSpecTicket(SpecialTicket specialTicket) {
         specTicketManager.createSpecTicket(specialTicket);
         listSpecialTickets.add(specialTicket);
     }
-    public void deleteSpecTicket(SpecialTicket specialTicket){
+
+    public void deleteSpecTicket(SpecialTicket specialTicket) {
         specTicketManager.deleteSpecialTicket(specialTicket.getId());
         listSpecialTickets.remove(listSpecialTickets.indexOf(specialTicket));
     }
-    public void updateSpecTicket(SpecialTicket specialTicket){
+
+    public void updateSpecTicket(SpecialTicket specialTicket) {
         specTicketManager.updateSpecTicket(specialTicket);
         listSpecialTickets = getAllSpecTickets();
     }
+
     public void searchForSpecTicket(String query) {
         List<SpecialTicket> searched = specTicketManager.searchForSpecTicket(query, specTicketManager.getAllSpecTickets());
         listSpecialTickets.clear();
         listSpecialTickets.addAll(searched);
     }
-    public int getMaxID(){
+
+    public int getMaxID() {
         return specTicketManager.getMaxID();
     }
 
-    public SpecialTicket getSpecTicketByID(int id){
+    public SpecialTicket getSpecTicketByID(int id) {
         return specTicketManager.getSpecTicketByID(id);
     }
 
-    public ObservableList<SpecialTicket> getSpecTicketsByUsed(Boolean used){
+    public ObservableList<SpecialTicket> getSpecTicketsByUsed(Boolean used) {
         return FXCollections.observableArrayList(specTicketManager.getSpecTicketsByUsed(used));
     }
-    public ObservableList<SpecialTicket> getSpecTicketsByEventID(int id){
-       return FXCollections.observableArrayList(specTicketManager.getSpecTicketsByEventID(id));
+
+    public ObservableList<SpecialTicket> getSpecTicketsByEventID(int id) {
+        return FXCollections.observableArrayList(specTicketManager.getSpecTicketsByEventID(id));
+    }
+
+    public SpecialTicket getSpecTicketByName(String name) {
+        return specTicketManager.getSpecTicketByName(name);
     }
 }

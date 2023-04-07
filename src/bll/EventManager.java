@@ -1,7 +1,6 @@
 package bll;
 
 import be.Event;
-import be.SpecialTicket;
 import bll.interfaces.IEventManager;
 import dal.EventDAO;
 import dal.EventSpecTicketDAO;
@@ -125,6 +124,10 @@ public class EventManager implements IEventManager {
             listEventsBySpecTicketID.add(getEventByID(i));
         }
         return listEventsBySpecTicketID;
+    }
+    @Override
+    public void addEventToSpecTicket(int ticketID, int eventID) {
+        eventSpecTicketDAO.addEventsToSpecTicket(ticketID,eventID);
     }
 }
 

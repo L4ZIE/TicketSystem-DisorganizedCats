@@ -31,10 +31,11 @@ public class mainController implements Initializable {
 
     private EventModel eventModel;
     private SpecialTicketModel specTicketModel;
-    private int id;
-    private boolean listsUpdated = false;
+    private String qrCode;
     private TableView<Event> eventsTable;
     private TableView<SpecialTicket> specialTicketsTable;
+    private  TextField txfTicketName;
+
 
     public mainController() {
     }
@@ -538,6 +539,7 @@ public class mainController implements Initializable {
 
         btnNewSpecTicket.setOnAction(event -> {
             createSpecTicketPopUp(container);
+
         });
 
         txfSearch.setOnKeyPressed(keyEvent -> {
@@ -565,6 +567,7 @@ public class mainController implements Initializable {
             } else {
                 SpecialTicket selectedItem = specialTicketsTable.getSelectionModel().getSelectedItem();
                 createSpecTicketPopUp(container, selectedItem);
+
             }
         });
     }
@@ -606,21 +609,22 @@ public class mainController implements Initializable {
         lblEvents.setLayoutX(container.getLayoutX() - 300);
         lblEvents.setLayoutY(txfTicketAmount.getLayoutY() + 60);
 
-        ChoiceBox<Event> choiceBoxEvents = new ChoiceBox<>();
-        choiceBoxEvents.setPrefWidth(290);
-        choiceBoxEvents.setLayoutX(lblEvents.getLayoutX() + 60);
-        choiceBoxEvents.setLayoutY(lblEvents.getLayoutY());
-        choiceBoxEvents.getStyleClass().addAll("textField");
+        ChoiceBox<String> choiceBoxAllEvents = new ChoiceBox<>();
+        choiceBoxAllEvents.setPrefWidth(290);
+        choiceBoxAllEvents.setLayoutX(lblEvents.getLayoutX() + 60);
+        choiceBoxAllEvents.setLayoutY(lblEvents.getLayoutY());
+        choiceBoxAllEvents.getStyleClass().addAll("textField");
 
         Label lblAddRemove = new Label();
         lblAddRemove.setText("Add/Remove");
         lblAddRemove.setLayoutX(container.getLayoutX() - 300);
-        lblAddRemove.setLayoutY(choiceBoxEvents.getLayoutY() + 60);
+        lblAddRemove.setLayoutY(choiceBoxAllEvents.getLayoutY() + 60);
 
-        ChoiceBox<String> boxAddRemove = new ChoiceBox<>();
-        boxAddRemove.setPrefWidth(250);
-        boxAddRemove.setLayoutX(lblAddRemove.getLayoutX() + 100);
-        boxAddRemove.setLayoutY(lblAddRemove.getLayoutY());
+        ChoiceBox<String> choiceBoxNewEvents = new ChoiceBox<>();
+        choiceBoxNewEvents.setPrefWidth(250);
+        choiceBoxNewEvents.setLayoutX(lblAddRemove.getLayoutX() + 100);
+        choiceBoxNewEvents.setLayoutY(lblAddRemove.getLayoutY());
+
 
         Button btnGoBack = new Button();
         btnGoBack.setText("<-");
@@ -631,13 +635,13 @@ public class mainController implements Initializable {
         Button btnAdd = new Button();
         btnAdd.setText("Add Event");
         btnAdd.setLayoutX(container.getLayoutX() - 200);
-        btnAdd.setLayoutY(boxAddRemove.getLayoutY() + 60);
+        btnAdd.setLayoutY(choiceBoxNewEvents.getLayoutY() + 60);
         btnAdd.getStyleClass().addAll("app-buttons", "positive-buttons");
 
         Button btnDelete = new Button();
         btnDelete.setText("Remove");
         btnDelete.setLayoutX(btnAdd.getLayoutX() + 190);
-        btnDelete.setLayoutY(boxAddRemove.getLayoutY() + 60);
+        btnDelete.setLayoutY(choiceBoxNewEvents.getLayoutY() + 60);
         btnDelete.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         Button btnSave = new Button();
@@ -648,25 +652,30 @@ public class mainController implements Initializable {
         btnSave.getStyleClass().addAll("app-buttons");
 
         container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
-                lblEvents, choiceBoxEvents, lblAddRemove, boxAddRemove, btnAdd, btnDelete, btnSave, btnGoBack);
-
+                lblEvents, choiceBoxNewEvents, lblAddRemove, choiceBoxAllEvents, btnAdd, btnDelete, btnSave, btnGoBack);
+        //*
         btnGoBack.setOnAction(event -> {
             ManageSpecialTicketsScreen(container);
         });
 
+        //*
         ObservableList<String> eventsName = FXCollections.observableArrayList();
         for (Event e : eventModel.getAllEvents()) {
             eventsName.add(e.getEventName());
         }
-        boxAddRemove.setItems(eventsName);
-            ///////////////////////////////////////TODO need help...i have method ready in the model
+        choiceBoxAllEvents.setItems(eventsName);
+        //*
 
-        btnSave.setOnAction(event -> {
-            //////////////////////////////////////TODO need help for create and edit...
+        btnAdd.setOnAction(event -> {
+            //////////////////////////////////////TODO NEED HELP
+        });
+
+        //*
+        btnSave.setOnMouseClicked(event -> {
+            ////TODO NEED HELP
 
         });
     }
-
 
     private void displaySpecialTicketsTableView(AnchorPane container) {
         specialTicketsTable = new TableView<>();

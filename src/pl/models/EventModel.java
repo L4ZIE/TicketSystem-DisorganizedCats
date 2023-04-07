@@ -63,4 +63,8 @@ public class EventModel {
     public ObservableList<Event> getEventsBySpecTicketID(int id) {
         return FXCollections.observableArrayList(eventManager.getEventsBySpecTicketID(id));
     }
+    public void addEventToSpecTicket(int ticketID,int eventID) {
+        eventManager.addEventToSpecTicket(ticketID,eventID);
+        events = getAllEvents();
+    }
 }

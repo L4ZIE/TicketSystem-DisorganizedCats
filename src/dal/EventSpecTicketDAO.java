@@ -68,4 +68,21 @@ public class EventSpecTicketDAO implements IEventSpecTicketDAO {
             throw new RuntimeException(e);
         }
     }
+ @Override
+    public void addEventsToSpecTicket(int ticketID, int eventID) {
+        try{
+            String sql = "INSERT INTO Event_SpecTickets (ticketID, eventID) VALUES (?,?)";
+
+            preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
+            preparedStatement.setInt(1,ticketID);
+            preparedStatement.setInt(2,eventID);
+            preparedStatement.execute();
+
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }
