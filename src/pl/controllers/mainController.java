@@ -553,6 +553,8 @@ public class mainController implements Initializable {
         btnEditAccount.getStyleClass().addAll("app-buttons");
 
         container.getChildren().addAll(lblTitle, btnManageUsers, btnEditAccount, btnDeleteAccount, btnNewAccount);
+
+
         displayAccountTableView(container);
 
         btnDeleteAccount.setOnMouseClicked(account -> {
