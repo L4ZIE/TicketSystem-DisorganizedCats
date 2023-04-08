@@ -37,6 +37,7 @@ public class mainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
+        accountModel = new AccountModel();
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
@@ -501,13 +502,13 @@ public class mainController implements Initializable {
         uNameColumn.setResizable(false);
         uNameColumn.setText("UserName");
         uNameColumn.setMinWidth(110); //set to dynamic later
-        uNameColumn.setCellValueFactory(new PropertyValueFactory<>("uName"));
+        uNameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
         TableColumn<Account, String> uPasswordColumn = new TableColumn<>();
         uPasswordColumn.setResizable(false);
         uPasswordColumn.setText("UserPassword");
         uPasswordColumn.setMinWidth(110); //set to dynamic later
-        uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("uPassword"));
+        uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
 
         fillAccountsTable(accountTable);
         accountTable.setLayoutX(container.getLayoutX() - 300);
