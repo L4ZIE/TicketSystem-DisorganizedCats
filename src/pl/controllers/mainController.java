@@ -2,6 +2,9 @@ package pl.controllers;
 
 import be.Event;
 import be.Ticket;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,15 +15,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import pl.models.EventModel;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -143,7 +150,6 @@ public class mainController implements Initializable {
         eventsTable.getColumns().addAll(nameColumn, startColumn, endColumn, locationColumn);
         container.getChildren().add(eventsTable);
     }
-
 
     private void ManageEventsScreen(AnchorPane container) {
         clearContainer(container);
@@ -504,9 +510,11 @@ public class mainController implements Initializable {
     }
 
     private void createTicketToPrint(Event event) {
+
         StackPane pane = new StackPane();
         Label lblBoldText = new Label();
         Label lblSimpleText = new Label();
+        ImageView qrCode = new ImageView();
 
         lblBoldText.setText(event.getEventName() + "\n\n" +
                 "Start Date & Time: " + "\n\n" +
@@ -514,7 +522,7 @@ public class mainController implements Initializable {
                 "Notes:" + "\n\n" +
                 "Location:" + "\n\n" +
                 "Location Guidance:" + "\n\n");
-        lblSimpleText.setText("\n\n" +
+        lblSimpleText.setText(
                 "\t\t\t\t " + event.getStartDateTime() + "\n\n" +
                 "\t\t\t\t " + event.getEndDateTime() + "\n\n\n" +
                 event.getNotes() + "\n\n" +
@@ -530,7 +538,10 @@ public class mainController implements Initializable {
         pane.setAlignment(lblSimpleText, Pos.CENTER_LEFT);
         pane.setPadding(new Insets(5));
 
-        pane.getChildren().addAll(lblBoldText, lblSimpleText);
+        qrCode = generateQRCode("I like cookies");
+        pane.setAlignment(qrCode,Pos.CENTER_RIGHT);
+
+        pane.getChildren().addAll(lblBoldText, lblSimpleText, qrCode);
 
         anpMain.getChildren().add(pane);
         savePicture();
@@ -538,6 +549,37 @@ public class mainController implements Initializable {
 
     }
 
+    private ImageView generateQRCode(String data){
+        QRCodeWriter writer = new QRCodeWriter();
+        int height = 300, width = 300;
+        BufferedImage qrImage = null;
+        ImageView generatedQR = new ImageView();
+
+        try {
+            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
+            qrImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            qrImage.createGraphics();
+
+            Graphics2D graphics = (Graphics2D) qrImage.getGraphics();
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, width, height);
+            graphics.setColor(Color.BLACK);
+
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (bitMatrix.get(i, j)) {
+                        graphics.fillRect(i, j, 1, 1);
+                    }
+                }
+            }
+
+        } catch (WriterException e) {
+
+        }
+        generatedQR.setImage(SwingFXUtils.toFXImage(qrImage, null));
+
+        return generatedQR;
+    }
 
     private void savePicture() {
         FileChooser fileChooser = new FileChooser();
@@ -548,7 +590,7 @@ public class mainController implements Initializable {
 
         if (file != null) {
             try {
-                WritableImage writableImage = new WritableImage(700, 260);
+                WritableImage writableImage = new WritableImage(700, 300);
                 anpMain.snapshot(null, writableImage);
                 RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
                 ImageIO.write(renderedImage, "png", file);
