@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class TicketModel {
+    private ObservableList<Ticket> tickets;
     private ITicketManager ticketManager;
     public TicketModel(){
         ticketManager = new TicketManager();
@@ -33,4 +34,21 @@ public class TicketModel {
         //waiting for backend
         return null;
     }
+
+    public void createTicket(Ticket ticket){
+        ticketManager.createTicket(ticket);
+        tickets.add(ticket);
+    }
+
+    public void deleteTicket(Ticket ticket){
+        ticketManager.deleteTicket(ticket.getId());
+        tickets.remove(tickets.indexOf(ticket));
+    }
+
+    public void updateTicket(Ticket ticket){
+        ticketManager.updateTicket(ticket);
+        tickets = getAllTickets();
+    }
+
+
 }

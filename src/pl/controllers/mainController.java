@@ -38,6 +38,7 @@ public class mainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
+        ticketModel = new TicketModel();
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
@@ -132,7 +133,7 @@ public class mainController implements Initializable {
         eventsTable.setLayoutX(container.getLayoutX() - 300);
         eventsTable.setLayoutY(container.getLayoutY() + 30);
         eventsTable.setMaxHeight(container.getMinHeight() - 100);
-        eventsTable.setMaxWidth(container.getMinWidth() - 50);
+        eventsTable.setMaxWidth(container.getMinWidth() - 51);
 
         eventsTable.getColumns().addAll(nameColumn, startColumn, endColumn, locationColumn);
         container.getChildren().add(eventsTable);
@@ -430,7 +431,7 @@ public class mainController implements Initializable {
 
     }
 
-    private void displayTicketsTableView(AnchorPane container){
+    private void displayTicketsTableView(AnchorPane container, int id) {
         ticketsTable = new TableView<>();
 
         TableColumn<Ticket, String> nameColumn = new TableColumn<>();
@@ -457,15 +458,10 @@ public class mainController implements Initializable {
         typeColumn.setMinWidth(110);
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
 
-        /*TableColumn<Ticket, String> useColumn = new TableColumn<>();
-        useColumn.setResizable(false);
-        useColumn.setMaxWidth(75);
 
-        TableColumn<Ticket, String> delColumn = new TableColumn<>();
-        delColumn.setResizable(false);
-        delColumn.setMaxWidth(75);*/
+        //if (ticketModel.getAllTickets() != null)
 
-        fillEventsTable(ticketsTable);
+        fillTicketsTable(ticketsTable, id);
         ticketsTable.setLayoutX(container.getLayoutX() - 310);
         ticketsTable.setLayoutY(container.getLayoutY() + 30);
         ticketsTable.setMaxHeight(container.getMinHeight() - 100);
@@ -475,12 +471,13 @@ public class mainController implements Initializable {
         container.getChildren().add(ticketsTable);
     }
 
-    private void fillTicketsTable(TableView ticketsTable) {
-        ticketsTable.setItems(ticketModel.getAllTickets());
+    private void fillTicketsTable(TableView ticketsTable, int id) {
+
+        ticketsTable.setItems(ticketModel.getTicketsByEventID(id));
     }
 
 
-    private void ManageTicketsScreen(AnchorPane container, Event selectedItem) {
+    private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
@@ -495,53 +492,59 @@ public class mainController implements Initializable {
         Button useBtn = new Button();
         Button delBtn = new Button();
         Button editBtn = new Button();
+        Button printBtn = new Button();
 
         newTicket.setText("New Ticket");
         newTicket.getStyleClass().addAll("app-buttons");
-        newTicket.setLayoutX(goBack.getLayoutX()+20);
-        newTicket.setLayoutY(container.getMinHeight()-newTicket.getMinHeight()-50);
+        newTicket.setLayoutX(goBack.getLayoutX() + 20);
+        newTicket.setLayoutY(container.getMinHeight() - newTicket.getMinHeight() - 50);
 
         useBtn.setText("USE");
         useBtn.getStyleClass().addAll("app-buttons");
-        useBtn.setLayoutX(newTicket.getLayoutX()+120);
+        useBtn.setLayoutX(newTicket.getLayoutX() + 100);
         useBtn.setLayoutY(newTicket.getLayoutY());
 
         delBtn.setText("DELETE");
         delBtn.getStyleClass().addAll("app-buttons", "negative-buttons");
-        delBtn.setLayoutX(useBtn.getLayoutX()+90);
+        delBtn.setLayoutX(useBtn.getLayoutX() + 70);
         delBtn.setLayoutY(useBtn.getLayoutY());
 
         editBtn.setText("Edit");
         editBtn.getStyleClass().addAll("app-buttons");
-        editBtn.setLayoutX(delBtn.getLayoutX()+100);
+        editBtn.setLayoutX(delBtn.getLayoutX() + 80);
         editBtn.setLayoutY(delBtn.getLayoutY());
+
+        printBtn.setText("Print");
+        printBtn.getStyleClass().addAll("app-buttons");
+        printBtn.setLayoutX(editBtn.getLayoutX()+80);
+        printBtn.setLayoutY(editBtn.getLayoutY());
 
 
         goBack.setText("←");
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
         goBack.setStyle("-fx-font-size: 13");
-        goBack.setLayoutX(container.getLayoutX()-300);
-        goBack.setLayoutY(container.getLayoutY()+5);
+        goBack.setLayoutX(container.getLayoutX() - 300);
+        goBack.setLayoutY(container.getLayoutY() + 5);
         goBack.setStyle("-fx-font-size: 12");
 
-        title.setText("Event's Tickets");
-        title.setLayoutX(goBack.getLayoutX()+40);
-        title.setLayoutY(goBack.getLayoutY()+2);
+        title.setText(selectedEvent.getEventName());
+        title.setLayoutX(goBack.getLayoutX() + 40);
+        title.setLayoutY(goBack.getLayoutY() + 2);
         title.setStyle("-fx-font-size: 15");
 
         searchBox.setPromptText("Search...");
-        searchBox.setLayoutX(title.getLayoutX()+110);
+        searchBox.setLayoutX(title.getLayoutX() + 110);
         searchBox.setLayoutY(title.getLayoutY());
-        searchBox.setMinWidth(container.getMinWidth()/6);
+        searchBox.setMinWidth(container.getMinWidth() / 6);
 
         searchButton.setText("\uD83D\uDD0D");
         searchButton.setStyle("-fx-font-size: 12");
         searchButton.getStyleClass().add("app-buttons");
-        searchButton.setLayoutX(searchBox.getLayoutX()+searchBox.getMinWidth()+100);
+        searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 100);
         searchButton.setLayoutY(searchBox.getLayoutY());
 
-        container.getChildren().addAll(title, searchBox, searchButton, goBack, newTicket, useBtn, delBtn, editBtn);
-        displayTicketsTableView(container);
+        container.getChildren().addAll(title, searchBox, searchButton, goBack, newTicket, useBtn, delBtn, editBtn, printBtn);
+        displayTicketsTableView(container, selectedEvent.getId());
 
 
         goBack.setOnMouseClicked(e -> {
@@ -549,43 +552,69 @@ public class mainController implements Initializable {
         });
 
         newTicket.setOnMouseClicked(event -> {
-            displayCreateTicket(container);
+            displayCreateTicket(container, selectedEvent);
+        });
+
+        delBtn.setOnMouseClicked(event -> {
+            if (ticketsTable.getSelectionModel().getSelectedItem()==null){
+                JOptionPane.showMessageDialog(null, "Please select a ticket");
+            }else {
+                Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
+                ticketModel.deleteTicket(selectedTicket);
+                //TODO check if it is right "getID"
+                displayTicketsTableView(container, selectedTicket.getId());
+            }
+        });
+
+        useBtn.setOnMouseClicked(event -> {
+            if(ticketsTable.getSelectionModel().getSelectedItem()==null){
+                JOptionPane.showMessageDialog(null,"Please select a ticket");
+            }else {
+                Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
+                selectedTicket.equals(true);
+            }
+        });
+
+
+
+        printBtn.setOnMouseClicked(event -> {
+            //TODO
         });
     }
 
-    private void displayCreateTicket(AnchorPane container){
+    private void displayCreateTicket(AnchorPane container, Event selectedEvent) {
         clearContainer(container);
-        
+
         Label eventLbl = new Label();
         Label nameLbl = new Label();
         Label emailLbl = new Label();
         Label notesLbl = new Label();
         Label locLbl = new Label();
+        Label locField = new Label();
         Label locGuideLbl = new Label();
         Button savBtn = new Button();
         Button canclBtn = new Button();
         TextField nameField = new TextField();
         TextField emailField = new TextField();
         TextField notesField = new TextField();
-        TextField locField = new TextField();
         TextField locGuideField = new TextField();
 
         nameLbl.setText("Name");
-        nameLbl.setLayoutX(container.getLayoutX()-290);
-        nameLbl.setLayoutY(container.getLayoutY()+40);
+        nameLbl.setLayoutX(container.getLayoutX() - 290);
+        nameLbl.setLayoutY(container.getLayoutY() + 40);
 
         nameField.setLayoutX(nameLbl.getLayoutX());
-        nameField.setLayoutY(nameLbl.getLayoutY()+20);
+        nameField.setLayoutY(nameLbl.getLayoutY() + 20);
 
         emailLbl.setText("Email");
         emailLbl.setLayoutX(nameField.getLayoutX());
-        emailLbl.setLayoutY(nameField.getLayoutY()+30);
+        emailLbl.setLayoutY(nameField.getLayoutY() + 30);
 
         emailField.setLayoutX(emailLbl.getLayoutX());
-        emailField.setLayoutY(emailLbl.getLayoutY()+20);
+        emailField.setLayoutY(emailLbl.getLayoutY() + 20);
 
         notesLbl.setText("Notes");
-        notesLbl.setLayoutX((container.getLayoutX()/2)+60);
+        notesLbl.setLayoutX((container.getLayoutX() / 2) + 60);
         notesLbl.setLayoutY(nameLbl.getLayoutY());
 
         notesField.setLayoutX(notesLbl.getLayoutX());
@@ -595,23 +624,24 @@ public class mainController implements Initializable {
 
         locLbl.setText("Location");
         locLbl.setLayoutX(emailField.getLayoutX());
-        locLbl.setLayoutY(emailField.getLayoutY()+30);
+        locLbl.setLayoutY(emailField.getLayoutY() + 30);
 
+        locField.setText(selectedEvent.getLocation());
         locField.setLayoutX(locLbl.getLayoutX());
-        locField.setLayoutY(locLbl.getLayoutY()+20);
+        locField.setLayoutY(locLbl.getLayoutY() + 20);
+        locField.setStyle("-fx-font-weight: normal");
 
         locGuideLbl.setText("Location Guidance");
         locGuideLbl.setLayoutX(locLbl.getLayoutX());
-        locGuideLbl.setLayoutY(locLbl.getLayoutY()+60);
+        locGuideLbl.setLayoutY(locLbl.getLayoutY() + 60);
 
         locGuideField.setLayoutX(locGuideLbl.getLayoutX());
-        locGuideField.setLayoutY(locLbl.getLayoutY()+90);
-        locGuideField.setPrefSize(350,110);
+        locGuideField.setLayoutY(locLbl.getLayoutY() + 90);
+        locGuideField.setPrefSize(350, 110);
 
-
-        eventLbl.setText("Create Ticket");
-        eventLbl.setLayoutX(container.getLayoutX()/2);
-        eventLbl.setLayoutY(container.getLayoutY()+5);
+        eventLbl.setText(selectedEvent.getEventName());
+        eventLbl.setLayoutX(container.getLayoutX() / 2);
+        eventLbl.setLayoutY(container.getLayoutY() + 5);
 
         savBtn.setPrefWidth(60);
         savBtn.setText("Save");
@@ -623,16 +653,30 @@ public class mainController implements Initializable {
         canclBtn.setLayoutX(container.getLayoutX());
         canclBtn.setLayoutY(container.getLayoutY() + 350);
 
-        container.getChildren().addAll(savBtn,canclBtn,eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
+        container.getChildren().addAll(savBtn, canclBtn, eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
 
-        //add function for save button
+        /*
+        //TODO need to fix
+        savBtn.setOnMouseClicked(e -> {
+            if (selectedTicket==null){
+                ticketModel.createTicket(new Ticket(
+                        ticketModel.getTicketByID()+1,
+                        nameField.getText(),
+                        emailField.getText(),
+                        locGuideField.getText(),
+                        notesField.getText()
+                ));
+                JOptionPane.showMessageDialog(null, "Succesfully saved ticket");
+            }
+            ManageTicketsScreen(container,selectedEvent,selectedTicket);
+        });*/
 
         canclBtn.setOnMouseClicked(event -> {
             ManageTicketsScreen(container, eventsTable.getSelectionModel().getSelectedItem());
 
         });
-    }
 
+    }
 
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {

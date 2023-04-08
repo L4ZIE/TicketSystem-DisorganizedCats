@@ -50,6 +50,12 @@ public class TicketManager implements ITicketManager {
         }
     }
 
+    public void updateTicket(Ticket ticket){
+        ticketDAO.updateTicket(ticket);
+        allTickets = ticketDAO.getAllTickets();
+    }
+
+
     @Override
     public List<Ticket> searchTicketsByCustomerName(String query) {
         List<Ticket> filtered = new ArrayList<>();
