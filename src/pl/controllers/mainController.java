@@ -484,14 +484,10 @@ public class mainController implements Initializable {
         goBack.setOnMouseClicked(e -> {
             ManageSelectedEventScreen(anpContent);
         });
-
     }
-
     private void ManageSpecialTicketsScreen(AnchorPane container) {
-
     }
-
-
+    private void fillAccountsTable(TableView accountTable) {accountTable.setItems(accountModel.getAllAccounts());}
     private void displayAccountTableView(AnchorPane container) {
         accountTable = new TableView<>();
 
@@ -521,7 +517,6 @@ public class mainController implements Initializable {
         accountTable.getColumns().addAll(accountTypeColumn, uNameColumn, uPasswordColumn);
         container.getChildren().add(accountTable);
     }
-    private void fillAccountsTable(TableView accountTable) {accountTable.setItems(accountModel.getAllAccounts());}
     private void ManageAccountScreen(AnchorPane container) {
         clearContainer(container);
 
@@ -559,12 +554,22 @@ public class mainController implements Initializable {
         container.getChildren().addAll(lblTitle, btnManageUsers, btnEditAccount, btnDeleteAccount, btnNewAccount);
         displayAccountTableView(container);
 
-        btnNewAccount.setOnMouseClicked(e -> {
-            displayCreateAccount(container);
+        btnDeleteAccount.setOnMouseClicked(account -> {
+            if (accountTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an account.");
+            } else {
+                Account selectedAccount = accountTable.getSelectionModel().getSelectedItem();
+                accountModel.deleteAccount(selectedAccount.getId());
+                displayAccountTableView(container);
+            }
         });
+
+        // btnNewAccount.setOnMouseClicked(e -> {
+        //   displayCreateAccount(container);
+        //});
     }
 
-    public void displayCreateAccount(AnchorPane container){
+    public void displayCreateAccount(AnchorPane container, Account selectedAccount){
         clearContainer(container);
 
         Label lblAccountType = new Label();
