@@ -2,16 +2,28 @@ package pl.controllers;
 
 import be.Event;
 import be.Ticket;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import pl.models.EventModel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -189,7 +201,8 @@ public class mainController implements Initializable {
         displayEventsTableView(container);
 
         btnNewEvent.setOnMouseClicked(e -> {
-            displayCreateEvent(container);
+            //displayCreateEvent(container);
+            createTicketToPrint(eventsTable.getSelectionModel().getSelectedItem());
         });
 
         btnDeleteEvent.setOnMouseClicked(event -> {
@@ -379,7 +392,7 @@ public class mainController implements Initializable {
                         txfLocation.getText(),
                         txfNotes.getText(),
                         txfLocationGuidance.getText(),
-                        txfEventName.getText()
+                        txfEventName.getText().substring(0, 1).toUpperCase() + txfEventName.getText().substring(1)
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully saved selected event");
             } else {
@@ -390,7 +403,7 @@ public class mainController implements Initializable {
                         txfLocation.getText(),
                         txfNotes.getText(),
                         txfLocationGuidance.getText(),
-                        txfEventName.getText()
+                        txfEventName.getText().substring(0, 1).toUpperCase() + txfEventName.getText().substring(1)
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully updated selected event");
             }
@@ -490,5 +503,60 @@ public class mainController implements Initializable {
         //sprint 2
     }
 
+    private void createTicketToPrint(Event event) {
+        StackPane pane = new StackPane();
+        Label lblBoldText = new Label();
+        Label lblSimpleText = new Label();
+
+        lblBoldText.setText(event.getEventName() + "\n\n" +
+                "Start Date & Time: " + "\n\n" +
+                "End Date & Time: " + "\n\n" +
+                "Notes:" + "\n\n" +
+                "Location:" + "\n\n" +
+                "Location Guidance:" + "\n\n");
+        lblSimpleText.setText("\n\n" +
+                "\t\t\t\t " + event.getStartDateTime() + "\n\n" +
+                "\t\t\t\t " + event.getEndDateTime() + "\n\n\n" +
+                event.getNotes() + "\n\n" +
+                event.getLocation() + "\n\n" +
+                event.getLocationGuidance() + "\n\n");
+        lblSimpleText.setStyle("-fx-font-weight: normal");
+
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px");
+        pane.setMinSize(700, 250);
+        pane.setLayoutX(0);
+        pane.setLayoutY(0);
+        pane.setAlignment(lblBoldText, Pos.TOP_LEFT);
+        pane.setAlignment(lblSimpleText, Pos.CENTER_LEFT);
+        pane.setPadding(new Insets(5));
+
+        pane.getChildren().addAll(lblBoldText, lblSimpleText);
+
+        anpMain.getChildren().add(pane);
+        savePicture();
+        anpMain.getChildren().remove(pane);
+
+    }
+
+
+    private void savePicture() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+        fileChooser.setInitialFileName("Ticket");
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                WritableImage writableImage = new WritableImage(700, 260);
+                anpMain.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Couldn't save image.\nError Message:\n" + e.getMessage());
+            }
+        }
+
+    }
 
 }
