@@ -522,13 +522,13 @@ public class mainController implements Initializable {
         clearContainer(container);
 
         Label lblTitle = new Label();
+
         Button btnNewAccount = new Button();
-        Button btnManageUsers = new Button();
 
         Button btnDeleteAccount = new Button();
         Button btnEditAccount = new Button();
 
-        lblTitle.setText("Manage Accounts");
+        lblTitle.setText("Manage Users");
         lblTitle.setLayoutX(container.getLayoutX() - 300);
         lblTitle.setLayoutY(container.getLayoutY());
 
@@ -537,14 +537,9 @@ public class mainController implements Initializable {
         btnNewAccount.setLayoutY(container.getMinHeight() - btnNewAccount.getMinHeight() - 50);
         btnNewAccount.getStyleClass().addAll("app-buttons");
 
-        btnManageUsers.setText("Manage Accounts");
-        btnManageUsers.setLayoutX(btnNewAccount.getLayoutX() + 100);
-        btnManageUsers.setLayoutY(btnNewAccount.getLayoutY());
-        btnManageUsers.getStyleClass().add("app-buttons");
-
         btnDeleteAccount.setText("Delete");
-        btnDeleteAccount.setLayoutX(btnManageUsers.getLayoutX() + 140);
-        btnDeleteAccount.setLayoutY(btnManageUsers.getLayoutY());
+        btnDeleteAccount.setLayoutX(btnNewAccount.getLayoutX() + 240);
+        btnDeleteAccount.setLayoutY(btnNewAccount.getLayoutY());
         btnDeleteAccount.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         btnEditAccount.setText("Edit");
@@ -552,9 +547,7 @@ public class mainController implements Initializable {
         btnEditAccount.setLayoutY(btnDeleteAccount.getLayoutY());
         btnEditAccount.getStyleClass().addAll("app-buttons");
 
-        container.getChildren().addAll(lblTitle, btnManageUsers, btnEditAccount, btnDeleteAccount, btnNewAccount);
-
-
+        container.getChildren().addAll(lblTitle, btnEditAccount, btnDeleteAccount, btnNewAccount);
         displayAccountTableView(container);
 
         btnDeleteAccount.setOnMouseClicked(account -> {
@@ -567,9 +560,9 @@ public class mainController implements Initializable {
             }
         });
 
-        // btnNewAccount.setOnMouseClicked(e -> {
-        //   displayCreateAccount(container);
-        //});
+         btnNewAccount.setOnMouseClicked(e -> {
+           displayCreateAccount(container);
+        });
     }
 
     public void displayCreateAccount(AnchorPane container, Account selectedAccount){
@@ -580,23 +573,74 @@ public class mainController implements Initializable {
         TextField txfUserName = new TextField();
         TextField txfUserPassword = new TextField();
 
+        Label lblUserName = new Label();
+        Label lblUserPassword = new Label();
+
+        Label lblSelectAccountType= new Label();
+
         Button btnAdmin = new Button();
         Button btnEventCoordinator = new Button();
+
+        Button btnSave = new Button();
+        Button btnCancel = new Button();
 
         lblAccountType.setText("Create Account");
         lblAccountType.setLayoutX(container.getLayoutX() - 300);
         lblAccountType.setLayoutY(container.getLayoutY());
 
+        lblUserName.setText("User Name");
+        lblUserName.setLayoutX(container.getLayoutX() - 300);
+        lblUserName.setLayoutY(container.getLayoutY() + 70);
+
+        lblUserPassword.setText("Password");
+        lblUserPassword.setLayoutX(lblUserName.getLayoutX());
+        lblUserPassword.setLayoutY(lblUserName.getLayoutY() + 60);
+
+        lblSelectAccountType.setText("Select Account Type");
+        lblSelectAccountType.setLayoutX(lblUserPassword.getLayoutX());
+        lblSelectAccountType.setLayoutY(lblUserPassword.getLayoutY() + 60);
+
+        txfUserName.setPrefWidth(200);
+        txfUserName.setPrefHeight(20);
+        txfUserName.setLayoutX(lblUserName.getLayoutX());
+        txfUserName.setLayoutY(lblUserName.getLayoutY() + 20);
+
+
+        txfUserPassword.setPrefWidth(200);
+        txfUserPassword.setPrefHeight(20);
+        txfUserPassword.setLayoutX(lblUserPassword.getLayoutX());
+        txfUserPassword.setLayoutY(lblUserPassword.getLayoutY() + 20);
+
+
         btnAdmin.setText("Admin");
         btnAdmin.setLayoutX(lblAccountType.getLayoutX());
-        btnAdmin.setLayoutY(container.getMinHeight() - btnAdmin.getMinHeight() - 50);
+        btnAdmin.setLayoutY(container.getMinHeight() - btnAdmin.getMinHeight() - 175);
         btnAdmin.getStyleClass().addAll("app-buttons");
 
         btnEventCoordinator.setText("Event Coordinator");
-        btnEventCoordinator.setLayoutX(btnAdmin.getLayoutX() + 100 );
+        btnEventCoordinator.setLayoutX(btnAdmin.getLayoutX() + 60);
         btnEventCoordinator.setLayoutY(btnAdmin.getLayoutY());
         btnEventCoordinator.getStyleClass().addAll("app-buttons");
 
-        container.getChildren().addAll(lblAccountType, txfUserName, txfUserPassword, btnAdmin, btnEventCoordinator);
+        btnSave.setPrefWidth(60);
+        btnSave.setText("Save");
+        btnSave.setLayoutX(container.getLayoutX() - 300);
+        btnSave.setLayoutY(container.getLayoutY() + 350);
+        btnSave.getStyleClass().addAll("app-buttons");
+
+        btnCancel.setPrefWidth(70);
+        btnCancel.setText("Go Back");
+        btnCancel.setLayoutX(container.getLayoutX());
+        btnCancel.setLayoutY(container.getLayoutY() + 350);
+        btnCancel.getStyleClass().addAll("app-buttons");
+
+        container.getChildren().addAll(
+                lblAccountType, lblUserName, lblUserPassword, lblSelectAccountType,
+                txfUserName, txfUserPassword, btnAdmin, btnEventCoordinator, btnSave, btnCancel);
+
+    }
+
+    private void displayCreateAccount(AnchorPane container){
+        displayCreateAccount(container, null);
     }
 }
