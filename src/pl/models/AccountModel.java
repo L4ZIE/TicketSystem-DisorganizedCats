@@ -31,4 +31,8 @@ public class AccountModel {
         return accountManager.getAccountById(id);
     }
 
+    public int getMaxID(){
+        return accountManager.getMaxID();
+    }
+
 }

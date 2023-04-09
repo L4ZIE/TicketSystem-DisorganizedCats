@@ -25,6 +25,7 @@ public class mainController implements Initializable {
 
     private EventModel eventModel;
     private AccountModel accountModel;
+    private boolean userType;
     private int id;
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
@@ -461,14 +462,12 @@ public class mainController implements Initializable {
         Label eventLabel = new Label();
         TextField searchBar = new TextField();
 
-
         goBack.setText("<-");
         useBtn.setText("Use");
         delBtn.setText("Delete");
         searchBar.setText("Search...");
 
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
-
 
         goBack.setLayoutX(container.getLayoutX() - 290);
         goBack.setLayoutY(container.getLayoutY() + 5);
@@ -478,7 +477,6 @@ public class mainController implements Initializable {
 
         ticketList.setLayoutX(container.getLayoutX() - 290);
         ticketList.setLayoutY(container.getLayoutY() + 40);
-
 
         container.getChildren().addAll(goBack, searchBar, ticketList);
 
@@ -605,12 +603,10 @@ public class mainController implements Initializable {
         txfUserName.setLayoutX(lblUserName.getLayoutX());
         txfUserName.setLayoutY(lblUserName.getLayoutY() + 20);
 
-
         txfUserPassword.setPrefWidth(200);
         txfUserPassword.setPrefHeight(20);
         txfUserPassword.setLayoutX(lblUserPassword.getLayoutX());
         txfUserPassword.setLayoutY(lblUserPassword.getLayoutY() + 20);
-
 
         btnAdmin.setText("Admin");
         btnAdmin.setLayoutX(lblAccountType.getLayoutX());
@@ -638,8 +634,35 @@ public class mainController implements Initializable {
                 lblAccountType, lblUserName, lblUserPassword, lblSelectAccountType,
                 txfUserName, txfUserPassword, btnAdmin, btnEventCoordinator, btnSave, btnCancel);
 
+        btnAdmin.setOnAction(event -> {
+            if(btnAdmin.isArmed()){
+                btnAdmin.setDisable(true);
+                btnEventCoordinator.setDisable(false);
+                userType = true;
+            }
+        });
+        btnEventCoordinator.setOnAction(event -> {
+            if(btnEventCoordinator.isArmed()){
+                btnAdmin.setDisable(false);
+                btnEventCoordinator.setDisable(true);
+                userType = false;
+            }
+        });
+        btnSave.setOnMouseClicked(event ->{
+            if (selectedAccount == null) {
+                accountModel.createAccount(new Account(
+                        accountModel.getMaxID() + 1,
+                        txfUserName.getText(),
+                        txfUserPassword.getText(),
+                        userType
+                        ));
+            }
+            ManageAccountScreen(container);
+        });
+        btnCancel.setOnMouseClicked(e -> {
+            ManageAccountScreen(container);
+        });
     }
-
     private void displayCreateAccount(AnchorPane container){
         displayCreateAccount(container, null);
     }

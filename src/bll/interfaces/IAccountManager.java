@@ -11,4 +11,6 @@ public interface IAccountManager {
     void updateAccount(Account account);
     List<Account> getAccountsByType(boolean type);
     Account getAccountById(int id);
+
+    int getMaxID();
 }

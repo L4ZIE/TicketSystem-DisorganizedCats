@@ -40,15 +40,14 @@ public class AccountDAO implements IAccountDAO {
     @Override
     public void creatAccount(Account account) {
         try {
-        String sql = "INSERT INTO Accounts(id,uName,uPassword,accountType) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO Accounts(uName,uPassword,accountType) VALUES (?,?,?)";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
-            preparedStatement.setInt(1,account.getId());
-            preparedStatement.setString(2,account.getUsername());
-            preparedStatement.setString(3,account.getPassword());
-            preparedStatement.setBoolean(4,account.getAccountType());
+            preparedStatement.setString(1,account.getUsername());
+            preparedStatement.setString(2,account.getPassword());
+            preparedStatement.setBoolean(3,account.getAccountType());
 
-            preparedStatement.executeQuery();
+            preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

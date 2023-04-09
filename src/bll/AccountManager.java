@@ -54,4 +54,15 @@ public class AccountManager implements IAccountManager {
         }
         return result;
     }
+    @Override
+    public int getMaxID() {
+        int max = 0;
+
+        for (Account e : allAccounts) {
+            if(max < e.getId())
+                max = e.getId();
+        }
+
+        return max;
+    }
 }
