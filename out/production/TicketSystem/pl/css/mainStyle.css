@@ -105,3 +105,8 @@
     -fx-font-weight: bold;
     -fx-border-width: 0px;
 }
+.label-login {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
