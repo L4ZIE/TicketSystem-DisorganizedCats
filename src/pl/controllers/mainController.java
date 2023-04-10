@@ -39,9 +39,60 @@ public class mainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
         ticketModel = new TicketModel();
-        displayUserControls(anpController);
-        anpContent.getStyleClass().add("container");
+        loginScreen(anpMain);
         anpMain.setStyle("-fx-background-color: #474747");
+    }
+    private void loginScreen(AnchorPane container){
+        Label usernameLbl = new Label();
+        TextField usernameField = new TextField();
+        Label passwordLbl = new Label();
+        TextField passwordField = new TextField();
+        Button loginBtn = new Button();
+        Button recoverBtn = new Button();
+
+        usernameLbl.setText("Username");
+        usernameLbl.setLayoutX(container.getLayoutX()+300);
+        usernameLbl.setLayoutY(container.getLayoutY()+70);
+        usernameLbl.setStyle("-fx-font-size: 20");
+
+        usernameField.setLayoutX(usernameLbl.getLayoutX()-50);
+        usernameField.setLayoutY(usernameLbl.getLayoutY()+40);
+        usernameField.setPrefWidth(200);
+
+        passwordLbl.setText("Password");
+        passwordLbl.setLayoutX(usernameLbl.getLayoutX());
+        passwordLbl.setLayoutY(usernameField.getLayoutY()+50);
+        passwordLbl.setStyle("-fx-font-size: 20");
+
+        passwordField.setLayoutX(usernameField.getLayoutX());
+        passwordField.setLayoutY(passwordLbl.getLayoutY()+40);
+        passwordField.setPrefWidth(200);
+
+        loginBtn.setText("Login");
+        loginBtn.getStyleClass().addAll("app-buttons","positive-buttons");
+        loginBtn.setLayoutX(passwordLbl.getLayoutX()-50);
+        loginBtn.setLayoutY(passwordField.getLayoutY()+70);
+        loginBtn.setPrefWidth(115);
+
+        recoverBtn.setText("Recover");
+        recoverBtn.getStyleClass().addAll("app-buttons","negative-buttons");
+        recoverBtn.setLayoutX(loginBtn.getLayoutX()+120);
+        recoverBtn.setLayoutY(loginBtn.getLayoutY());
+        recoverBtn.setPrefWidth(75);
+
+        container.getChildren().addAll(usernameLbl,usernameField,passwordLbl,passwordField,loginBtn,recoverBtn);
+
+        //TODO
+        loginBtn.setOnMouseClicked(event -> {
+            displayUserControls(anpController);
+            anpContent.getStyleClass().add("container");
+        });
+
+        recoverBtn.setOnMouseClicked(event -> {
+
+        });
+
+
     }
 
     private void fillEventsTable(TableView eventsTable) {
@@ -50,6 +101,7 @@ public class mainController implements Initializable {
 
     private void displayUserControls(AnchorPane container) {
         //TODO
+
         container.getStyleClass().add("container");
 
         Button manageUsers = new Button();
@@ -463,7 +515,7 @@ public class mainController implements Initializable {
 
         fillTicketsTable(ticketsTable, id);
         ticketsTable.setLayoutX(container.getLayoutX() - 310);
-        ticketsTable.setLayoutY(container.getLayoutY() + 30);
+        ticketsTable.setLayoutY(container.getLayoutY() + 40);
         ticketsTable.setMaxHeight(container.getMinHeight() - 100);
         ticketsTable.setMaxWidth(360);
 
@@ -516,7 +568,7 @@ public class mainController implements Initializable {
 
         printBtn.setText("Print");
         printBtn.getStyleClass().addAll("app-buttons");
-        printBtn.setLayoutX(editBtn.getLayoutX()+80);
+        printBtn.setLayoutX(editBtn.getLayoutX()+70);
         printBtn.setLayoutY(editBtn.getLayoutY());
 
 
@@ -533,14 +585,14 @@ public class mainController implements Initializable {
         title.setStyle("-fx-font-size: 15");
 
         searchBox.setPromptText("Search...");
-        searchBox.setLayoutX(title.getLayoutX() + 110);
+        searchBox.setLayoutX(title.getLayoutX() + 150);
         searchBox.setLayoutY(title.getLayoutY());
-        searchBox.setMinWidth(container.getMinWidth() / 6);
+        searchBox.setPrefWidth(130);
 
         searchButton.setText("\uD83D\uDD0D");
         searchButton.setStyle("-fx-font-size: 12");
         searchButton.getStyleClass().add("app-buttons");
-        searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 100);
+        searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 140);
         searchButton.setLayoutY(searchBox.getLayoutY());
 
         container.getChildren().addAll(title, searchBox, searchButton, goBack, newTicket, useBtn, delBtn, editBtn, printBtn);
@@ -572,6 +624,17 @@ public class mainController implements Initializable {
             }else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
                 selectedTicket.equals(true);
+                useBtn.setDisable(true);
+            }
+        });
+
+        //TODO Check if it is right
+        editBtn.setOnMouseClicked(event -> {
+            if (ticketsTable.getSelectionModel().getSelectedItem()==null){
+                JOptionPane.showMessageDialog(null,"Please select a ticket");
+            } else {
+                Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
+                displayCreateTicket(container,selectedEvent);
             }
         });
 
@@ -582,7 +645,7 @@ public class mainController implements Initializable {
         });
     }
 
-    private void displayCreateTicket(AnchorPane container, Event selectedEvent) {
+    private void displayCreateTicket(AnchorPane container, Event selectedEvent, Ticket selectedTicket) {
         clearContainer(container);
 
         Label eventLbl = new Label();
@@ -592,6 +655,10 @@ public class mainController implements Initializable {
         Label locLbl = new Label();
         Label locField = new Label();
         Label locGuideLbl = new Label();
+        Label ticketPriceLbl = new Label();
+        Label ticketPriceField = new Label();
+        Label ticketTypeLbl = new Label();
+        Label ticketTypeField = new Label();
         Button savBtn = new Button();
         Button canclBtn = new Button();
         TextField nameField = new TextField();
@@ -655,20 +722,33 @@ public class mainController implements Initializable {
 
         container.getChildren().addAll(savBtn, canclBtn, eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
 
-        /*
+
         //TODO need to fix
-        savBtn.setOnMouseClicked(e -> {
-            if (selectedTicket==null){
+        /*savBtn.setOnMouseClicked(e -> {
+            if (selectedTicket!=null){
                 ticketModel.createTicket(new Ticket(
-                        ticketModel.getTicketByID()+1,
+                        ticketModel.getMaxID()+1,
+                        nameField.getText(),
+                        emailField.getText(),
+                        //not sure how to call properly
+                        ticketTypeField.,
+                        ticketPriceField.getText(),
+
+                        locGuideField.getText(),
+                        notesField.getText()
+                ));
+                JOptionPane.showMessageDialog(null, "Succesfully saved ticket");
+            }else{
+                ticketModel.updateTicket(new Ticket(
+                        selectedTicket.getId(),
                         nameField.getText(),
                         emailField.getText(),
                         locGuideField.getText(),
                         notesField.getText()
                 ));
-                JOptionPane.showMessageDialog(null, "Succesfully saved ticket");
+                JOptionPane.showMessageDialog(null,"Succesfully updated selected ticket");
             }
-            ManageTicketsScreen(container,selectedEvent,selectedTicket);
+            ManageTicketsScreen(container,selectedEvent);
         });*/
 
         canclBtn.setOnMouseClicked(event -> {
@@ -676,6 +756,9 @@ public class mainController implements Initializable {
 
         });
 
+    }
+    private void displayCreateTicket(AnchorPane container, Event selectedEvent){
+        displayCreateTicket(container,selectedEvent,null);
     }
 
 
@@ -686,6 +769,7 @@ public class mainController implements Initializable {
     private void displayManageAccountScreen(AnchorPane container) {
         //sprint 2
     }
+
 
 
 }

@@ -137,5 +137,16 @@ public class TicketManager implements ITicketManager {
         }
         return listTicketsByEvent;
     }
+    @Override
+    public int getMaxID() {
+        int max = 0;
+
+        for (Ticket ticket : allTickets) {
+            if(max < ticket.getId())
+                max = ticket.getId();
+        }
+        return max;
+    }
+
 
 }

@@ -11,6 +11,7 @@ public interface ITicketManager {
     void createTicket(Ticket ticket) ;
     void deleteTicket(int id);
     void updateTicket(Ticket ticket);
+    int getMaxID();
     List<Ticket> searchTicketsByCustomerName(String query);
     Ticket getTicketByID(int id);
     List<Ticket> searchTicketByEvent(String query);

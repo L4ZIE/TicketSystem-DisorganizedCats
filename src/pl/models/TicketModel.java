@@ -50,5 +50,8 @@ public class TicketModel {
         tickets = getAllTickets();
     }
 
-
+    public int getMaxID(){
+        return ticketManager.getMaxID();
+    }
 }
+
