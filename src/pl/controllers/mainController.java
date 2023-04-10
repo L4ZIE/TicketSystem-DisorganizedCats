@@ -558,6 +558,15 @@ public class mainController implements Initializable {
             }
         });
 
+        btnEditAccount.setOnMouseClicked(event -> {
+            if (accountTable.getSelectionModel().getSelectedItem() == null) {
+                        JOptionPane.showMessageDialog(null, "Please select an account.");
+            } else {
+                Account selectedAccount = accountTable.getSelectionModel().getSelectedItem();
+                displayCreateAccount(container, selectedAccount);
+            }
+        });
+
          btnNewAccount.setOnMouseClicked(e -> {
            displayCreateAccount(container);
         });
@@ -648,17 +657,34 @@ public class mainController implements Initializable {
                 userType = false;
             }
         });
-        btnSave.setOnMouseClicked(event ->{
-            if (selectedAccount == null) {
-                accountModel.createAccount(new Account(
-                        accountModel.getMaxID() + 1,
-                        txfUserName.getText(),
-                        txfUserPassword.getText(),
-                        userType
+
+        btnSave.setOnMouseClicked(event -> {
+            if(txfUserName.getText().isEmpty()){
+
+                JOptionPane.showMessageDialog(null, "Pleas enter a username");
+            }else
+                if (txfUserPassword.getText().isEmpty()){
+                    JOptionPane.showMessageDialog(null, "Pleas enter a password");
+                }else
+                    if(selectedAccount == null) {
+                        accountModel.createAccount(new Account(
+                                accountModel.getMaxID() + 1,
+                                txfUserName.getText(),
+                                txfUserPassword.getText(),
+                                userType
                         ));
-            }
+                }else {
+                        accountModel.updateAccount(new Account(
+                                accountModel.getMaxID() + 1,
+                                txfUserName.getText(),
+                                txfUserPassword.getText(),
+                                userType
+                        ));
+                        JOptionPane.showMessageDialog(null, "Successfully updated selected account");
+                    }
             ManageAccountScreen(container);
         });
+
         btnCancel.setOnMouseClicked(e -> {
             ManageAccountScreen(container);
         });

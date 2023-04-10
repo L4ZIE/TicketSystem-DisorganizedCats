@@ -74,7 +74,6 @@ public class AccountDAO implements IAccountDAO {
                     "WHERE id = ?";
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.setBoolean(3, account.getAccountType());
