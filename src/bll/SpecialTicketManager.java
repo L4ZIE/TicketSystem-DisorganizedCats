@@ -113,6 +113,11 @@ public class SpecialTicketManager implements ISpecialTicketManager {
         }
         return null;
     }
+    @Override
+    public void setUseForSpecTicket(int id, boolean used){
+       specialTicketDAO.setUseForSpecTicket(id,used);
+       allSpecialTickets = specialTicketDAO.getAllSpecialTickets();
+    }
 }
 
 

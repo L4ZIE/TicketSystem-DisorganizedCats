@@ -11,4 +11,6 @@ public interface ISpecialTicketDAO {
     void deleteSpecialTicket(int id);
 
     void updateSpecTicket(SpecialTicket selectedSpecTicket);
+
+    void setUseForSpecTicket(int id, boolean used);
 }

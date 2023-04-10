@@ -61,4 +61,8 @@ public class SpecialTicketModel {
     public SpecialTicket getSpecTicketByName(String name) {
         return specTicketManager.getSpecTicketByName(name);
     }
+
+    public void setUseForSpecTicket(int id, boolean used) {
+        specTicketManager.setUseForSpecTicket(id,used);
+    }
 }

@@ -97,5 +97,23 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+    @Override
+    public void setUseForSpecTicket(int id, boolean used) {
+        try {
+            String sql = "UPDATE SpecialTickets SET used = ? WHERE id = ?";
+
+            Connection conn = dataBaseConnector.createConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setBoolean(1, used);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
