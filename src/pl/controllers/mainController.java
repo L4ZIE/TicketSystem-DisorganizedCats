@@ -22,7 +22,7 @@ public class mainController implements Initializable {
             anpMain;
 
     private EventModel eventModel;
-    private int id;
+
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
 
