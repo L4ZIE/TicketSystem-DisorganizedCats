@@ -10,8 +10,12 @@ public interface ITicketManager {
     List<Ticket> getAllTickets() ;
     void createTicket(Ticket ticket) ;
     void deleteTicket(int id);
+    void updateTicket(Ticket ticket);
+    int getMaxID();
     List<Ticket> searchTicketsByCustomerName(String query);
     Ticket getTicketByID(int id);
+    List<Ticket> searchForTicket(String query, List<Ticket> allTickets);
+    List<Ticket> searchTicketByEvent(String query);
 
     List<Ticket> getTicketsByCustomer(String name);
 

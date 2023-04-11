@@ -17,6 +17,15 @@ public class Ticket extends TicketBase{
         this.customerEmail = customerEmail;
         this.ticketType = ticketType;
         this.ticketPrice = ticketPrice;
+
+    }
+
+
+
+
+    @Override
+    public int getId() {
+        return id;
     }
 
     public String getCustomerName() {

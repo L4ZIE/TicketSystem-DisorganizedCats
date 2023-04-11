@@ -54,4 +54,10 @@ public class AccountManager implements IAccountManager {
         }
         return result;
     }
+    @Override
+    public void logInUser(String uName, String uPassword) {
+        accountDAO.logInUser(uName,uPassword);
+        fillAllAccounts();
+    }
+
 }

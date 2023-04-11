@@ -9,18 +9,60 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCode;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import pl.models.EventModel;
 import pl.models.SpecialTicketModel;
+import pl.models.TicketModel;
+import pl.models.TicketModel;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import com.google.zxing.qrcode.QRCodeWriter;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +77,15 @@ public class mainController implements Initializable {
     private EventModel eventModel;
     private SpecialTicketModel specTicketModel;
     private String qrCode;
+    private TicketModel ticketModel;
+    private int id;
+    private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
     private TableView<SpecialTicket> specialTicketsTable;
     private TextField txfTicketName;
 
+
+    private TableView<Ticket> ticketsTable;
 
     public mainController() {
     }
@@ -47,6 +94,7 @@ public class mainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
         specTicketModel = new SpecialTicketModel();
+        ticketModel = new TicketModel();
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
@@ -59,6 +107,7 @@ public class mainController implements Initializable {
 
     private void displayUserControls(AnchorPane container) {
         //TODO
+
         container.getStyleClass().add("container");
 
         Button manageUsers = new Button();
@@ -142,7 +191,7 @@ public class mainController implements Initializable {
         eventsTable.setLayoutX(container.getLayoutX() - 300);
         eventsTable.setLayoutY(container.getLayoutY() + 30);
         eventsTable.setMaxHeight(container.getMinHeight() - 100);
-        eventsTable.setMaxWidth(container.getMinWidth() - 50);
+        eventsTable.setMaxWidth(container.getMinWidth() - 51);
 
         eventsTable.getColumns().addAll(nameColumn, startColumn, endColumn, locationColumn);
         container.getChildren().add(eventsTable);
@@ -436,58 +485,393 @@ public class mainController implements Initializable {
         displayEventsTableView(container);
     }
 
+    private void displayTicketsTableView(AnchorPane container, int id) {
+        ticketsTable = new TableView<>();
+
+        TableColumn<Ticket, String> nameColumn = new TableColumn<>();
+        nameColumn.setResizable(false);
+        nameColumn.setText("Name");
+        nameColumn.setMinWidth(100);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        TableColumn<Ticket, String> emailColumn = new TableColumn<>();
+        emailColumn.setResizable(false);
+        emailColumn.setText("Email");
+        emailColumn.setMaxWidth(75);
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
+
+        TableColumn<Ticket, Integer> priceColumn = new TableColumn<>();
+        priceColumn.setResizable(false);
+        priceColumn.setText("Price");
+        priceColumn.setMaxWidth(75);
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
+
+        TableColumn<Ticket, String> typeColumn = new TableColumn<>();
+        typeColumn.setResizable(false);
+        typeColumn.setText("Type");
+        typeColumn.setMinWidth(110);
+        typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
+
+
+        //if (ticketModel.getAllTickets() != null)
+
+        fillTicketsTable(ticketsTable, id);
+        ticketsTable.setLayoutX(container.getLayoutX() - 310);
+        ticketsTable.setLayoutY(container.getLayoutY() + 40);
+        ticketsTable.setMaxHeight(container.getMinHeight() - 100);
+        ticketsTable.setMaxWidth(360);
+
+        ticketsTable.getColumns().addAll(nameColumn, emailColumn, priceColumn, typeColumn);
+        container.getChildren().add(ticketsTable);
+    }
+
+    private void fillTicketsTable(TableView ticketsTable, int id) {
+
+        ticketsTable.setItems(ticketModel.getTicketsByEventID(id));
+    }
+
+
     private void ManageTicketsScreen(AnchorPane container, Event selectedEvent) {
         //TODO display event name,
         // generate tableview with 2 buttons (use and delete)
         // display search bar and go back button
-        container.getChildren().clear();
 
-        TableView ticketList = new TableView<>();
+        clearContainer(container);
 
-        TableColumn<Ticket, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-
-        TableColumn<Ticket, String> emailColumn = new TableColumn<>("Email");
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
-
-        TableColumn<Ticket, String> priceColumn = new TableColumn<>("Price");
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
-
-        TableColumn<Ticket, String> typeColumn = new TableColumn<>("Type");
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("ticketType"));
-
-        TableColumn<Ticket, String> usedColumn = new TableColumn<>("Used");
-        usedColumn.setCellValueFactory(new PropertyValueFactory<>("used"));
-
-        ticketList.getColumns().addAll(nameColumn, emailColumn, priceColumn, typeColumn, usedColumn);
-
+        Label title = new Label();
+        TextField searchBox = new TextField();
+        Button searchButton = new Button();
         Button goBack = new Button();
+        Button newTicket = new Button();
         Button useBtn = new Button();
         Button delBtn = new Button();
-        Label eventLabel = new Label();
-        TextField searchBar = new TextField();
+        Button editBtn = new Button();
+        Button printBtn = new Button();
+
+        newTicket.setText("New Ticket");
+        newTicket.getStyleClass().addAll("app-buttons");
+        newTicket.setLayoutX(goBack.getLayoutX() + 20);
+        newTicket.setLayoutY(container.getMinHeight() - newTicket.getMinHeight() - 50);
+
+        useBtn.setText("USE");
+        useBtn.getStyleClass().addAll("app-buttons");
+        useBtn.setLayoutX(newTicket.getLayoutX() + 100);
+        useBtn.setLayoutY(newTicket.getLayoutY());
+
+        delBtn.setText("DELETE");
+        delBtn.getStyleClass().addAll("app-buttons", "negative-buttons");
+        delBtn.setLayoutX(useBtn.getLayoutX() + 70);
+        delBtn.setLayoutY(useBtn.getLayoutY());
 
         goBack.setText("<-");
         useBtn.setText("Use");
         delBtn.setText("Delete");
-        searchBar.setText("Search...");
+        searchBox.setText("Search...");
+        editBtn.setText("Edit");
+        editBtn.getStyleClass().addAll("app-buttons");
+        editBtn.setLayoutX(delBtn.getLayoutX() + 80);
+        editBtn.setLayoutY(delBtn.getLayoutY());
+
+        printBtn.setText("Print");
+        printBtn.getStyleClass().addAll("app-buttons");
+        printBtn.setLayoutX(editBtn.getLayoutX()+70);
+        printBtn.setLayoutY(editBtn.getLayoutY());
+
+
+        goBack.setText("←");
         goBack.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         goBack.setLayoutX(container.getLayoutX() - 290);
+        goBack.setStyle("-fx-font-size: 13");
+        goBack.setLayoutX(container.getLayoutX() - 300);
         goBack.setLayoutY(container.getLayoutY() + 5);
+        goBack.setStyle("-fx-font-size: 12");
 
-        searchBar.setLayoutX(container.getLayoutX() - 80);
-        searchBar.setLayoutY(container.getLayoutY() + 5);
+        title.setText(selectedEvent.getEventName());
+        title.setLayoutX(goBack.getLayoutX() + 40);
+        title.setLayoutY(goBack.getLayoutY() + 2);
+        title.setStyle("-fx-font-size: 15");
 
-        ticketList.setLayoutX(container.getLayoutX() - 290);
-        ticketList.setLayoutY(container.getLayoutY() + 40);
+        searchBox.setPromptText("Search...");
+        searchBox.setLayoutX(title.getLayoutX() + 150);
+        searchBox.setLayoutY(title.getLayoutY());
+        searchBox.setPrefWidth(130);
 
-        container.getChildren().addAll(goBack, searchBar, ticketList);
+        container.getChildren().addAll(goBack, searchBox, ticketsTable);
+        searchButton.setText("\uD83D\uDD0D");
+        searchButton.setStyle("-fx-font-size: 12");
+        searchButton.getStyleClass().add("app-buttons");
+        searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 140);
+        searchButton.setLayoutY(searchBox.getLayoutY());
+
+        container.getChildren().addAll(title, searchBox, searchButton, goBack, newTicket, useBtn, delBtn, editBtn, printBtn);
+        displayTicketsTableView(container, selectedEvent.getId());
+
 
         goBack.setOnMouseClicked(e -> {
             clearContainer(container);
             ManageSelectedEventScreen(anpContent);
+            ManageEventsScreen(container);
         });
+
+        newTicket.setOnMouseClicked(event -> {
+            displayCreateTicket(container, selectedEvent);
+        });
+
+        delBtn.setOnMouseClicked(event -> {
+            if (ticketsTable.getSelectionModel().getSelectedItem()==null){
+                JOptionPane.showMessageDialog(null, "Please select a ticket");
+            }else {
+                Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
+                ticketModel.deleteTicket(selectedTicket);
+                displayTicketsTableView(container,selectedEvent.getId());
+            }
+        });
+
+        useBtn.setOnMouseClicked(event -> {
+            if(ticketsTable.getSelectionModel().getSelectedItem()==null){
+                JOptionPane.showMessageDialog(null,"Please select a ticket");
+            }else {
+                Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
+                if (!ticketsTable.getSelectionModel().getSelectedItem().getUsed()){
+                    selectedTicket.equals(true);
+                }else {
+                    JOptionPane.showMessageDialog(null, "This ticket has already been used");
+                }
+            }
+        });
+
+
+        editBtn.setOnMouseClicked(event -> {
+            if (ticketsTable.getSelectionModel().getSelectedItem()==null){
+                JOptionPane.showMessageDialog(null,"Please select a ticket");
+            } else {
+                Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
+                displayCreateTicket(container,selectedEvent);
+            }
+        });
+
+        searchBox.setOnKeyPressed(keyEvent->{
+            if (keyEvent.getCode()== KeyCode.ENTER){
+                ticketModel.searchForTicket(searchBox.getText());
+            }
+        });
+
+        searchButton.setOnMouseClicked(event -> {
+            ticketModel.searchForTicket(searchBox.getText());
+        });
+
+
+
+        printBtn.setOnMouseClicked(event -> {
+            //TODO milk, bread, OLIVE OIL, frozen food
+        });
+    }
+
+    private void displayCreateTicket(AnchorPane container, Event selectedEvent, Ticket selectedTicket) {
+        clearContainer(container);
+
+        Label eventLbl = new Label();
+        Label nameLbl = new Label();
+        Label emailLbl = new Label();
+        Label notesLbl = new Label();
+        Label locLbl = new Label();
+        Label locField = new Label();
+        Label locGuideLbl = new Label();
+        Label ticketPriceLbl = new Label();
+        Label ticketPriceField = new Label();
+        Label ticketTypeLbl = new Label();
+        Label ticketTypeField = new Label();
+        Button savBtn = new Button();
+        Button canclBtn = new Button();
+        TextField nameField = new TextField();
+        TextField emailField = new TextField();
+        TextField notesField = new TextField();
+        TextField locGuideField = new TextField();
+
+        nameLbl.setText("Name");
+        nameLbl.setLayoutX(container.getLayoutX() - 290);
+        nameLbl.setLayoutY(container.getLayoutY() + 40);
+
+        nameField.setLayoutX(nameLbl.getLayoutX());
+        nameField.setLayoutY(nameLbl.getLayoutY() + 20);
+
+        emailLbl.setText("Email");
+        emailLbl.setLayoutX(nameField.getLayoutX());
+        emailLbl.setLayoutY(nameField.getLayoutY() + 30);
+
+        emailField.setLayoutX(emailLbl.getLayoutX());
+        emailField.setLayoutY(emailLbl.getLayoutY() + 20);
+
+        notesLbl.setText("Notes");
+        notesLbl.setLayoutX((container.getLayoutX() / 2) + 60);
+        notesLbl.setLayoutY(nameLbl.getLayoutY());
+
+        notesField.setLayoutX(notesLbl.getLayoutX());
+        notesField.setLayoutY(nameField.getLayoutY());
+        notesField.setPrefWidth(150);
+        notesField.setPrefHeight(150);
+
+        locLbl.setText("Location");
+        locLbl.setLayoutX(emailField.getLayoutX());
+        locLbl.setLayoutY(emailField.getLayoutY() + 30);
+
+        locField.setText(selectedEvent.getLocation());
+        locField.setLayoutX(locLbl.getLayoutX());
+        locField.setLayoutY(locLbl.getLayoutY() + 20);
+        locField.setStyle("-fx-font-weight: normal");
+
+        locGuideLbl.setText("Location Guidance");
+        locGuideLbl.setLayoutX(locLbl.getLayoutX());
+        locGuideLbl.setLayoutY(locLbl.getLayoutY() + 60);
+
+        locGuideField.setLayoutX(locGuideLbl.getLayoutX());
+        locGuideField.setLayoutY(locLbl.getLayoutY() + 90);
+        locGuideField.setPrefSize(350, 110);
+
+        eventLbl.setText(selectedEvent.getEventName());
+        eventLbl.setLayoutX(container.getLayoutX() / 2);
+        eventLbl.setLayoutY(container.getLayoutY() + 5);
+
+        savBtn.setPrefWidth(60);
+        savBtn.setText("Save");
+        savBtn.setLayoutX(container.getLayoutX() - 300);
+        savBtn.setLayoutY(container.getLayoutY() + 350);
+
+        canclBtn.setPrefWidth(70);
+        canclBtn.setText("Cancel");
+        canclBtn.setLayoutX(container.getLayoutX());
+        canclBtn.setLayoutY(container.getLayoutY() + 350);
+
+        container.getChildren().addAll(savBtn, canclBtn, eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
+
+
+        //TODO need to fix
+       /* savBtn.setOnMouseClicked(e -> {
+            if (selectedTicket!=null){
+                ticketModel.createTicket(new Ticket(
+                        ticketModel.getMaxID()+1,
+                        nameField.getText(),
+                        emailField.getText(),
+                        //not sure how to call properly
+                        //ticketTypeField
+                        locGuideField.getText(),
+                        notesField.getText()
+                ));
+                JOptionPane.showMessageDialog(null, "Succesfully saved ticket");
+            }else{
+                ticketModel.updateTicket(new Ticket(
+                        selectedTicket.getId(),
+                        nameField.getText(),
+                        emailField.getText(),
+                        locGuideField.getText(),
+                        notesField.getText()
+                ));
+                JOptionPane.showMessageDialog(null,"Succesfully updated selected ticket");
+            }
+            ManageTicketsScreen(container,selectedEvent);
+        });*/
+
+        canclBtn.setOnMouseClicked(event -> {
+            ManageTicketsScreen(container, eventsTable.getSelectionModel().getSelectedItem());
+
+        });
+
+    }
+    private void displayCreateTicket(AnchorPane container, Event selectedEvent){
+        displayCreateTicket(container,selectedEvent,null);
+    }
+
+    private void createTicketToPrint(Event event, Ticket ticket) {
+
+        StackPane pane = new StackPane();
+        Label lblBoldText = new Label();
+        Label lblSimpleText = new Label();
+        ImageView qrCode;
+
+        lblBoldText.setText(event.getEventName() + "\n\n" +
+                "Start Date & Time: " + "\n\n" +
+                "End Date & Time: " + "\n\n" +
+                "Notes:" + "\n\n" +
+                "Location:" + "\n\n" +
+                "Location Guidance:" + "\n\n");
+        lblSimpleText.setText(
+                "\t\t\t\t " + event.getStartDateTime() + "\n\n" +
+                        "\t\t\t\t " + event.getEndDateTime() + "\n\n\n" +
+                        event.getNotes() + "\n\n" +
+                        event.getLocation() + "\n\n" +
+                        event.getLocationGuidance() + "\n\n");
+        lblSimpleText.setStyle("-fx-font-weight: normal");
+
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px");
+        pane.setMinSize(700, 250);
+        pane.setLayoutX(0);
+        pane.setLayoutY(0);
+        pane.setAlignment(lblBoldText, Pos.TOP_LEFT);
+        pane.setAlignment(lblSimpleText, Pos.CENTER_LEFT);
+        pane.setPadding(new Insets(5));
+
+        qrCode = generateQRCode(ticket.getQrCode());
+        pane.setAlignment(qrCode,Pos.CENTER_RIGHT);
+
+        pane.getChildren().addAll(lblBoldText, lblSimpleText, qrCode);
+
+        anpMain.getChildren().add(pane);
+        savePicture();
+        anpMain.getChildren().remove(pane);
+
+    }
+
+    private ImageView generateQRCode(String data){
+        QRCodeWriter writer = new QRCodeWriter();
+        int height = 300, width = 300;
+        BufferedImage qrImage = null;
+        ImageView generatedQR = new ImageView();
+
+        try {
+            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
+            qrImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            qrImage.createGraphics();
+
+            Graphics2D graphics = (Graphics2D) qrImage.getGraphics();
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, width, height);
+            graphics.setColor(Color.BLACK);
+
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (bitMatrix.get(i, j)) {
+                        graphics.fillRect(i, j, 1, 1);
+                    }
+                }
+            }
+
+        } catch (WriterException e) {
+
+        }
+        generatedQR.setImage(SwingFXUtils.toFXImage(qrImage, null));
+
+        return generatedQR;
+    }
+
+    private void savePicture() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+        fileChooser.setInitialFileName("Ticket");
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                WritableImage writableImage = new WritableImage(700, 300);
+                anpMain.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Couldn't save image.\nError Message:\n" + e.getMessage());
+            }
+        }
+
     }
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {

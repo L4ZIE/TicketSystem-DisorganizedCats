@@ -116,3 +116,9 @@
 
     -fx-font-weight: bold;
 }
+
+.label-login {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
