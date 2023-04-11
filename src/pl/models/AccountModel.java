@@ -4,6 +4,7 @@ import be.Account;
 import bll.AccountManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 
 public class AccountModel {
     AccountManager accountManager;
@@ -30,5 +31,7 @@ public class AccountModel {
     public Account getAccountByID(int id){
         return accountManager.getAccountById(id);
     }
-
+    public void logInUser(String uName, String uPassword) {
+        accountManager.logInUser(uName,uPassword);
+    }
 }
