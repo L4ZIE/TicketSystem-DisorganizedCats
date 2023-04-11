@@ -39,60 +39,9 @@ public class mainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
         ticketModel = new TicketModel();
-        loginScreen(anpMain);
+        displayUserControls(anpController);
+        anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
-    }
-    private void loginScreen(AnchorPane container){
-        Label usernameLbl = new Label();
-        TextField usernameField = new TextField();
-        Label passwordLbl = new Label();
-        TextField passwordField = new TextField();
-        Button loginBtn = new Button();
-        Button recoverBtn = new Button();
-
-        usernameLbl.setText("Username");
-        usernameLbl.setLayoutX(container.getLayoutX()+300);
-        usernameLbl.setLayoutY(container.getLayoutY()+70);
-        usernameLbl.setStyle("-fx-font-size: 20");
-
-        usernameField.setLayoutX(usernameLbl.getLayoutX()-50);
-        usernameField.setLayoutY(usernameLbl.getLayoutY()+40);
-        usernameField.setPrefWidth(200);
-
-        passwordLbl.setText("Password");
-        passwordLbl.setLayoutX(usernameLbl.getLayoutX());
-        passwordLbl.setLayoutY(usernameField.getLayoutY()+50);
-        passwordLbl.setStyle("-fx-font-size: 20");
-
-        passwordField.setLayoutX(usernameField.getLayoutX());
-        passwordField.setLayoutY(passwordLbl.getLayoutY()+40);
-        passwordField.setPrefWidth(200);
-
-        loginBtn.setText("Login");
-        loginBtn.getStyleClass().addAll("app-buttons","positive-buttons");
-        loginBtn.setLayoutX(passwordLbl.getLayoutX()-50);
-        loginBtn.setLayoutY(passwordField.getLayoutY()+70);
-        loginBtn.setPrefWidth(115);
-
-        recoverBtn.setText("Recover");
-        recoverBtn.getStyleClass().addAll("app-buttons","negative-buttons");
-        recoverBtn.setLayoutX(loginBtn.getLayoutX()+120);
-        recoverBtn.setLayoutY(loginBtn.getLayoutY());
-        recoverBtn.setPrefWidth(75);
-
-        container.getChildren().addAll(usernameLbl,usernameField,passwordLbl,passwordField,loginBtn,recoverBtn);
-
-        //TODO
-        loginBtn.setOnMouseClicked(event -> {
-            displayUserControls(anpController);
-            anpContent.getStyleClass().add("container");
-        });
-
-        recoverBtn.setOnMouseClicked(event -> {
-
-        });
-
-
     }
 
     private void fillEventsTable(TableView eventsTable) {
@@ -613,8 +562,7 @@ public class mainController implements Initializable {
             }else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
                 ticketModel.deleteTicket(selectedTicket);
-                //TODO check if it is right "getID"
-                displayTicketsTableView(container, selectedTicket.getId());
+                displayTicketsTableView(container,selectedEvent.getId());
             }
         });
 
@@ -623,12 +571,15 @@ public class mainController implements Initializable {
                 JOptionPane.showMessageDialog(null,"Please select a ticket");
             }else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
-                selectedTicket.equals(true);
-                useBtn.setDisable(true);
+                if (!ticketsTable.getSelectionModel().getSelectedItem().getUsed()){
+                    selectedTicket.equals(true);
+                }else {
+                    JOptionPane.showMessageDialog(null, "This ticket has already been used");
+                }
             }
         });
 
-        //TODO Check if it is right
+
         editBtn.setOnMouseClicked(event -> {
             if (ticketsTable.getSelectionModel().getSelectedItem()==null){
                 JOptionPane.showMessageDialog(null,"Please select a ticket");
@@ -641,7 +592,7 @@ public class mainController implements Initializable {
 
 
         printBtn.setOnMouseClicked(event -> {
-            //TODO
+            //TODO milk, bread, OLIVE OIL, frozen food
         });
     }
 
@@ -724,16 +675,14 @@ public class mainController implements Initializable {
 
 
         //TODO need to fix
-        /*savBtn.setOnMouseClicked(e -> {
+       /* savBtn.setOnMouseClicked(e -> {
             if (selectedTicket!=null){
                 ticketModel.createTicket(new Ticket(
                         ticketModel.getMaxID()+1,
                         nameField.getText(),
                         emailField.getText(),
                         //not sure how to call properly
-                        ticketTypeField.,
-                        ticketPriceField.getText(),
-
+                        //ticketTypeField
                         locGuideField.getText(),
                         notesField.getText()
                 ));
