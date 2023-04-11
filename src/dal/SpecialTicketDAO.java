@@ -115,7 +115,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
-
+    @Override
     public void massCreateSpecTicket(List<SpecialTicket> tickets){
         for (SpecialTicket st : tickets) {
             try {
