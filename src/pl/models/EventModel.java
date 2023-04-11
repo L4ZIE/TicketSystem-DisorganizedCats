@@ -33,10 +33,6 @@ public class EventModel {
         events = getAllEvents();
     }
 
-    public ObservableList<Event> searchEventByName(String query) {
-        return FXCollections.observableArrayList(eventManager.searchEventByName(query));
-    }
-
     public Event getEventByID(int id){
         return eventManager.getEventByID(id);
     }

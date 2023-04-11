@@ -45,6 +45,19 @@ public class AccountManager implements IAccountManager {
         }
         return null;
     }
+
+    @Override
+    public List<Account> searchForAccount(String query, List<Account> allAccounts){
+        List<Account> filtered = new ArrayList<>();
+
+        for (Account a : allAccounts){
+            if (a.getUsername().toLowerCase().contains(query.toLowerCase()))
+                filtered.add(a);  {
+            }
+        }
+        return filtered;
+    }
+
     @Override
     public List<Account> getAccountsByType(boolean type) {
         List<Account> result = new ArrayList<>();

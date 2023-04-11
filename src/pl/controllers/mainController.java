@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import pl.models.EventModel;
@@ -565,6 +566,15 @@ public class mainController implements Initializable {
         container.getChildren().addAll(lblTitle, btnEditAccount, btnDeleteAccount, btnNewAccount, btnSearchButton, txfSearchBox);
         displayAccountTableView(container);
 
+        txfSearchBox.setOnKeyPressed(keyEvent ->{
+            if(keyEvent.getCode() == KeyCode.ENTER) {
+                accountModel.searchForAccount(txfSearchBox.getText());
+            }
+        });
+
+        btnSearchButton.setOnAction(event -> {
+            accountModel.searchForAccount(txfSearchBox.getText());
+        });
 
         btnDeleteAccount.setOnMouseClicked(event -> {
             if (accountTable.getSelectionModel().getSelectedItem() == null) {
