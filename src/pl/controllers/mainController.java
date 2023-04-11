@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import pl.models.EventModel;
@@ -587,6 +588,16 @@ public class mainController implements Initializable {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
                 displayCreateTicket(container,selectedEvent);
             }
+        });
+
+        searchBox.setOnKeyPressed(keyEvent->{
+            if (keyEvent.getCode()== KeyCode.ENTER){
+                ticketModel.searchForTicket(searchBox.getText());
+            }
+        });
+
+        searchButton.setOnMouseClicked(event -> {
+            ticketModel.searchForTicket(searchBox.getText());
         });
 
 

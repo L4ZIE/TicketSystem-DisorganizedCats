@@ -14,6 +14,7 @@ public interface ITicketManager {
     int getMaxID();
     List<Ticket> searchTicketsByCustomerName(String query);
     Ticket getTicketByID(int id);
+    List<Ticket> searchForTicket(String query, List<Ticket> allTickets);
     List<Ticket> searchTicketByEvent(String query);
 
     List<Ticket> getTicketsByCustomer(String name);

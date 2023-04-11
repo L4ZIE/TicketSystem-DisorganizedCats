@@ -148,5 +148,16 @@ public class TicketManager implements ITicketManager {
         return max;
     }
 
+    public List<Ticket> searchForTicket(String query, List<Ticket> allTickets){
+        List<Ticket> filtered = new ArrayList<>();
+
+        for (Ticket t : allTickets){
+            if (t.getCustomerName().toLowerCase().contains(query.toLowerCase())||
+                    t.getCustomerEmail().toLowerCase().contains(query.toLowerCase())){
+                filtered.add(t);
+            }
+        }
+        return filtered;
+    }
 
 }

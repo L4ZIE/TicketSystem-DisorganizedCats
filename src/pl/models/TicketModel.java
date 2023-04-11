@@ -6,6 +6,8 @@ import bll.interfaces.ITicketManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class TicketModel {
     private ObservableList<Ticket> tickets;
     private ITicketManager ticketManager;
@@ -48,6 +50,12 @@ public class TicketModel {
     public void updateTicket(Ticket ticket){
         ticketManager.updateTicket(ticket);
         tickets = getAllTickets();
+    }
+
+    public void searchForTicket(String query){
+        List<Ticket> filtered = ticketManager.searchForTicket(query,ticketManager.getAllTickets());
+        tickets.clear();
+        tickets.addAll(filtered);
     }
 
     public int getMaxID(){
