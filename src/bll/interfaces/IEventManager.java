@@ -14,7 +14,6 @@ public interface IEventManager {
     List<Event> getEventsByStartDate(String start);
     List<Event> getEventsByEndDate(String end);
     List<Event> getEventsByName(String name);
-    List<Event> searchEventByName(String query);
     int getMaxID();
     void updateEvent(Event event);
 }

@@ -88,12 +88,12 @@ public class mainController implements Initializable {
 
         container.getChildren().addAll(userControls, buttonContainer);
 
-        //manageUsers.setDisable(false);//
+        /*manageUsers.setDisable(false);//
         if(userType == false){
             manageUsers.setDisable(true);
         }else {
             manageUsers.setDisable(false);
-        }
+        } */
         manageUsers.setOnMouseClicked(e -> {
             ManageAccountScreen(anpContent);
         });
@@ -520,10 +520,14 @@ public class mainController implements Initializable {
 
         Label lblTitle = new Label();
 
+        TextField txfSearchBox = new TextField();
+
         Button btnNewAccount = new Button();
 
         Button btnDeleteAccount = new Button();
         Button btnEditAccount = new Button();
+
+        Button btnSearchButton = new Button();
 
         lblTitle.setText("Manage Users");
         lblTitle.setLayoutX(container.getLayoutX() - 300);
@@ -544,7 +548,21 @@ public class mainController implements Initializable {
         btnEditAccount.setLayoutY(btnDeleteAccount.getLayoutY());
         btnEditAccount.getStyleClass().addAll("app-buttons");
 
-        container.getChildren().addAll(lblTitle, btnEditAccount, btnDeleteAccount, btnNewAccount);
+        txfSearchBox.setPromptText("Search...");
+
+        btnSearchButton.setText("\uD83D\uDD0D");
+        btnSearchButton.setStyle("-fx-font-size: 12");
+
+        btnSearchButton.getStyleClass().add("app-buttons");
+
+        txfSearchBox.setLayoutX(lblTitle.getLayoutX() + 125);
+        txfSearchBox.setLayoutY(lblTitle.getLayoutY());
+        txfSearchBox.setMinWidth(container.getMinWidth() / 2);
+
+        btnSearchButton.setLayoutX(txfSearchBox.getLayoutX() + txfSearchBox.getMinWidth() + 5);
+        btnSearchButton.setLayoutY(txfSearchBox.getLayoutY());
+
+        container.getChildren().addAll(lblTitle, btnEditAccount, btnDeleteAccount, btnNewAccount, btnSearchButton, txfSearchBox);
         displayAccountTableView(container);
 
 

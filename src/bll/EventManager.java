@@ -78,16 +78,6 @@ public class EventManager implements IEventManager {
         }
         return result;
     }
-    @Override
-    public List<Event> searchEventByName(String query){
-        List<Event> filtered = new ArrayList<>();
-        for (Event e : allEvents) {
-            if (("" + e.getEventName()).equalsIgnoreCase(query)) {
-                filtered.add(e);
-            }
-        }
-        return filtered;
-    }
 
     @Override
     public int getMaxID() {
