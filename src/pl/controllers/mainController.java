@@ -89,6 +89,11 @@ public class mainController implements Initializable {
         container.getChildren().addAll(userControls, buttonContainer);
 
         //manageUsers.setDisable(false);//
+        if(userType == false){
+            manageUsers.setDisable(true);
+        }else {
+            manageUsers.setDisable(false);
+        }
         manageUsers.setOnMouseClicked(e -> {
             ManageAccountScreen(anpContent);
         });
@@ -490,30 +495,24 @@ public class mainController implements Initializable {
     private void displayAccountTableView(AnchorPane container) {
         accountTable = new TableView<>();
 
-        TableColumn<Account, String> accountTypeColumn = new TableColumn<>();
-        accountTypeColumn.setResizable(false);
-        accountTypeColumn.setText("AccountType");
-        accountTypeColumn.setMinWidth(100); //set to dynamic later
-        accountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
-
         TableColumn<Account, String> uNameColumn = new TableColumn<>();
         uNameColumn.setResizable(false);
-        uNameColumn.setText("UserName");
+        uNameColumn.setText("User Name");
         uNameColumn.setMinWidth(110); //set to dynamic later
         uNameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-        TableColumn<Account, String> uPasswordColumn = new TableColumn<>();
-        uPasswordColumn.setResizable(false);
-        uPasswordColumn.setText("UserPassword");
-        uPasswordColumn.setMinWidth(110); //set to dynamic later
-        uPasswordColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
+        TableColumn<Account, String> accountTypeColumn = new TableColumn<>();
+        accountTypeColumn.setResizable(false);
+        accountTypeColumn.setText("Account Type");
+        accountTypeColumn.setMinWidth(110); //set to dynamic later
+        accountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
 
         fillAccountsTable(accountTable);
         accountTable.setLayoutX(container.getLayoutX() - 300);
         accountTable.setLayoutY(container.getLayoutY() + 30);
         accountTable.setMaxHeight(container.getMinHeight() - 100);
-        accountTable.setMaxWidth(container.getMinWidth() - 50);
-        accountTable.getColumns().addAll(accountTypeColumn, uNameColumn, uPasswordColumn);
+        accountTable.setMaxWidth(container.getMinWidth() - 190);
+        accountTable.getColumns().addAll(uNameColumn, accountTypeColumn);
         container.getChildren().add(accountTable);
     }
     private void ManageAccountScreen(AnchorPane container) {
@@ -548,7 +547,8 @@ public class mainController implements Initializable {
         container.getChildren().addAll(lblTitle, btnEditAccount, btnDeleteAccount, btnNewAccount);
         displayAccountTableView(container);
 
-        btnDeleteAccount.setOnMouseClicked(account -> {
+
+        btnDeleteAccount.setOnMouseClicked(event -> {
             if (accountTable.getSelectionModel().getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(null, "Please select an account.");
             } else {
@@ -643,6 +643,10 @@ public class mainController implements Initializable {
                 lblAccountType, lblUserName, lblUserPassword, lblSelectAccountType,
                 txfUserName, txfUserPassword, btnAdmin, btnEventCoordinator, btnSave, btnCancel);
 
+        if(selectedAccount != null){
+            txfUserName.setText(selectedAccount.getUsername());
+        }
+
         btnAdmin.setOnAction(event -> {
             if(btnAdmin.isArmed()){
                 btnAdmin.setDisable(true);
@@ -673,16 +677,18 @@ public class mainController implements Initializable {
                                 txfUserPassword.getText(),
                                 userType
                         ));
+                        JOptionPane.showMessageDialog(null,"Successfully saved selected account");
+                        ManageAccountScreen(container);
                 }else {
                         accountModel.updateAccount(new Account(
-                                accountModel.getMaxID() + 1,
+                                selectedAccount.getId(),
                                 txfUserName.getText(),
                                 txfUserPassword.getText(),
                                 userType
                         ));
                         JOptionPane.showMessageDialog(null, "Successfully updated selected account");
+                        ManageAccountScreen(container);
                     }
-            ManageAccountScreen(container);
         });
 
         btnCancel.setOnMouseClicked(e -> {

@@ -67,11 +67,8 @@ public class AccountDAO implements IAccountDAO {
     @Override
     public void updateAccount(Account account) {
         try {
-            String sql = "UPDATE Accounts" +
-                    "SET uName = ?" +
-                    "SET uPassword = ?" +
-                    "SET accountType = ?" +
-                    "WHERE id = ?";
+            String sql = "UPDATE Accounts SET uName = ?, uPassword = ?, accountType = ? WHERE id = ?";
+
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, account.getUsername());
@@ -79,7 +76,7 @@ public class AccountDAO implements IAccountDAO {
             preparedStatement.setBoolean(3, account.getAccountType());
             preparedStatement.setInt(4, account.getId());
 
-            preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
