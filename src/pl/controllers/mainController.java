@@ -692,18 +692,18 @@ public class mainController implements Initializable {
 
         container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
                 lblEvents, choiceBoxNewEvents, lblAddRemove, choiceBoxAllEvents, btnAdd, btnDelete, btnSave, btnGoBack);
-        //*
+
         btnGoBack.setOnAction(event -> {
             ManageSpecialTicketsScreen(container);
         });
 
-        //*
+
         ObservableList<String> eventsName = FXCollections.observableArrayList();
         for (Event e : eventModel.getAllEvents()) {
             eventsName.add(e.getEventName());
         }
         choiceBoxAllEvents.setItems(eventsName);
-        //*
+
         ObservableList<String> addedEvents = FXCollections.observableArrayList();
         btnAdd.setOnAction(event -> {
             String selectedEvent = choiceBoxAllEvents.getSelectionModel().getSelectedItem();
@@ -722,7 +722,7 @@ public class mainController implements Initializable {
         });
 
 
-        //*
+
         btnSave.setOnMouseClicked(event -> {
             if (selectedItem != null) {
                 specTicketModel.updateSpecTicket(new SpecialTicket(selectedItem.getId(), txfTicketName.getText(), selectedItem.getQrCode(), selectedItem.getUsed()));
