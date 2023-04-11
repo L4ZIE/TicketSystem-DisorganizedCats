@@ -12,6 +12,25 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import pl.models.EventModel;
 import pl.models.TicketModel;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import com.google.zxing.qrcode.QRCodeWriter;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
 import java.net.URL;
@@ -721,6 +740,97 @@ public class mainController implements Initializable {
         displayCreateTicket(container,selectedEvent,null);
     }
 
+    private void createTicketToPrint(Event event, Ticket ticket) {
+
+        StackPane pane = new StackPane();
+        Label lblBoldText = new Label();
+        Label lblSimpleText = new Label();
+        ImageView qrCode;
+
+        lblBoldText.setText(event.getEventName() + "\n\n" +
+                "Start Date & Time: " + "\n\n" +
+                "End Date & Time: " + "\n\n" +
+                "Notes:" + "\n\n" +
+                "Location:" + "\n\n" +
+                "Location Guidance:" + "\n\n");
+        lblSimpleText.setText(
+                "\t\t\t\t " + event.getStartDateTime() + "\n\n" +
+                        "\t\t\t\t " + event.getEndDateTime() + "\n\n\n" +
+                        event.getNotes() + "\n\n" +
+                        event.getLocation() + "\n\n" +
+                        event.getLocationGuidance() + "\n\n");
+        lblSimpleText.setStyle("-fx-font-weight: normal");
+
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px");
+        pane.setMinSize(700, 250);
+        pane.setLayoutX(0);
+        pane.setLayoutY(0);
+        pane.setAlignment(lblBoldText, Pos.TOP_LEFT);
+        pane.setAlignment(lblSimpleText, Pos.CENTER_LEFT);
+        pane.setPadding(new Insets(5));
+
+        qrCode = generateQRCode(ticket.getQrCode());
+        pane.setAlignment(qrCode,Pos.CENTER_RIGHT);
+
+        pane.getChildren().addAll(lblBoldText, lblSimpleText, qrCode);
+
+        anpMain.getChildren().add(pane);
+        savePicture();
+        anpMain.getChildren().remove(pane);
+
+    }
+
+    private ImageView generateQRCode(String data){
+        QRCodeWriter writer = new QRCodeWriter();
+        int height = 300, width = 300;
+        BufferedImage qrImage = null;
+        ImageView generatedQR = new ImageView();
+
+        try {
+            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
+            qrImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            qrImage.createGraphics();
+
+            Graphics2D graphics = (Graphics2D) qrImage.getGraphics();
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, width, height);
+            graphics.setColor(Color.BLACK);
+
+            for (int i = 0; i < height; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (bitMatrix.get(i, j)) {
+                        graphics.fillRect(i, j, 1, 1);
+                    }
+                }
+            }
+
+        } catch (WriterException e) {
+
+        }
+        generatedQR.setImage(SwingFXUtils.toFXImage(qrImage, null));
+
+        return generatedQR;
+    }
+
+    private void savePicture() {
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
+        fileChooser.setInitialFileName("Ticket");
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try {
+                WritableImage writableImage = new WritableImage(700, 300);
+                anpMain.snapshot(null, writableImage);
+                RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                ImageIO.write(renderedImage, "png", file);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Couldn't save image.\nError Message:\n" + e.getMessage());
+            }
+        }
+
+    }
 
     private void ManageSpecialTicketsScreen(AnchorPane container) {
 
