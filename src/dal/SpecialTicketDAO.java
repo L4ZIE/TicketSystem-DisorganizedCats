@@ -115,5 +115,29 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public void massCreateSpecTicket(List<SpecialTicket> tickets){
+        for (SpecialTicket st : tickets) {
+            try {
+                String sql = "INSERT INTO SpecialTickets (ticketName, qrCode, used ) VALUES ( ?,?,?)";
+
+                preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
+
+                preparedStatement.setString(1, st.getTicketName());
+                preparedStatement.setString(2, st.getQrCode());
+                preparedStatement.setBoolean(3, st.getUsed());
+
+                preparedStatement.execute();
+
+            } catch (SQLServerException e) {
+                throw new RuntimeException(e);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
+
 }
 

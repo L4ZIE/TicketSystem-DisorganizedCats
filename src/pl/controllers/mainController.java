@@ -4,6 +4,8 @@ import be.Event;
 import be.SpecialTicket;
 import be.Ticket;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -562,10 +564,13 @@ public class mainController implements Initializable {
 
         btnUse.setOnAction(event -> {
             SpecialTicket selectedItem = specialTicketsTable.getSelectionModel().getSelectedItem();
-            if (selectedItem != null) {
+            if (selectedItem != null && !selectedItem.getUsed()) {
                 specTicketModel.setUseForSpecTicket(selectedItem.getId(), true);
                 ManageSpecialTicketsScreen(container);
-
+            } else if (selectedItem != null && selectedItem.getUsed()) {
+                JOptionPane.showMessageDialog(null, "The selected ticket is already used.");
+            } else {
+                JOptionPane.showMessageDialog(null, "Please select a ticket to use.");
             }
         });
 
@@ -669,6 +674,22 @@ public class mainController implements Initializable {
         btnSave.setLayoutY(btnDelete.getLayoutY() + 40);
         btnSave.getStyleClass().addAll("app-buttons");
 
+        //force numbers only to ticket amount
+        txfTicketAmount.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    txfTicketAmount.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        if (selectedItem != null) {
+            txfTicketAmount.setDisable(true);
+            txfTicketName.setText(selectedItem.getTicketName());
+        }
+
         container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
                 lblEvents, choiceBoxNewEvents, lblAddRemove, choiceBoxAllEvents, btnAdd, btnDelete, btnSave, btnGoBack);
         //*
@@ -695,7 +716,7 @@ public class mainController implements Initializable {
             if (exist == false)
                 addedEvents.add(selectedEvent);
             else
-                JOptionPane.showMessageDialog(null,"This event is already added.");
+                JOptionPane.showMessageDialog(null, "This event is already added.");
             choiceBoxNewEvents.setItems(addedEvents);
 
         });
@@ -703,7 +724,19 @@ public class mainController implements Initializable {
 
         //*
         btnSave.setOnMouseClicked(event -> {
-            ////TODO NEED HELP
+            if (selectedItem != null) {
+                specTicketModel.updateSpecTicket(new SpecialTicket(selectedItem.getId(), txfTicketName.getText(), selectedItem.getQrCode(), selectedItem.getUsed()));
+                JOptionPane.showMessageDialog(null, "Successfully updated special ticket.");
+            }
+            else {
+                List<SpecialTicket> tickets = new ArrayList<>();
+
+                for (int i = 0; i < Integer.parseInt(txfTicketAmount.getText()); i++){
+                    tickets.add(new SpecialTicket(i, txfTicketName.getText(), "placeholder", false));
+                }
+                specTicketModel.massCreateSpecTicket(tickets);
+                JOptionPane.showMessageDialog(null, "Successfully created " + txfTicketAmount + "tickets.");
+            }
 
         });
     }

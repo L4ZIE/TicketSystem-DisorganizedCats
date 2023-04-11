@@ -65,4 +65,5 @@ public class SpecialTicketModel {
     public void setUseForSpecTicket(int id, boolean used) {
         specTicketManager.setUseForSpecTicket(id,used);
     }
+    public void massCreateSpecTicket(List<SpecialTicket> tickets){specTicketManager.massCreateSpecTicket(tickets);}
 }

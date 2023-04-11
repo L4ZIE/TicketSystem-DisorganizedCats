@@ -13,4 +13,10 @@ public interface ISpecialTicketDAO {
     void updateSpecTicket(SpecialTicket selectedSpecTicket);
 
     void setUseForSpecTicket(int id, boolean used);
+
+    /**
+     * Creates special tickets inside the DB from a list.
+     * @param tickets List of the special tickets.
+     */
+    void massCreateSpecTicket(List<SpecialTicket> tickets);
 }

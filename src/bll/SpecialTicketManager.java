@@ -47,7 +47,7 @@ public class SpecialTicketManager implements ISpecialTicketManager {
     @Override
     public void updateSpecTicket(SpecialTicket specTicket) {
         specialTicketDAO.updateSpecTicket(specTicket);
-        allSpecialTickets = specialTicketDAO.getAllSpecialTickets();
+        fillAllSpecTickets();
     }
     @Override
     public int getMaxID() {
@@ -116,7 +116,13 @@ public class SpecialTicketManager implements ISpecialTicketManager {
     @Override
     public void setUseForSpecTicket(int id, boolean used){
        specialTicketDAO.setUseForSpecTicket(id,used);
-       allSpecialTickets = specialTicketDAO.getAllSpecialTickets();
+       fillAllSpecTickets();
+    }
+
+    @Override
+    public void massCreateSpecTicket(List<SpecialTicket> tickets) {
+        specialTicketDAO.massCreateSpecTicket(tickets);
+        fillAllSpecTickets();
     }
 }
 

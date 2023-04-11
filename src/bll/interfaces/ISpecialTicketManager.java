@@ -19,4 +19,5 @@ public interface ISpecialTicketManager {
      SpecialTicket getSpecTicketByName(String name);
 
     void setUseForSpecTicket(int id, boolean used);
+    void massCreateSpecTicket(List<SpecialTicket> tickets);
 }
