@@ -5,6 +5,7 @@ import bll.AccountManager;
 import bll.interfaces.IAccountManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class AccountModel {
     }
     public Account getAccountByID(int id){
         return accountManager.getAccountById(id);
+    }
+    public void logInUser(String uName, String uPassword) {
+        accountManager.logInUser(uName,uPassword);
     }
 
     public int getMaxID(){

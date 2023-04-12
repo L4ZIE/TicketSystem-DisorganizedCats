@@ -15,7 +15,7 @@ public class TicketManager implements ITicketManager {
 
     ITicketDAO ticketDAO;
     private IEventTicketDAO eventTicketDAO;
-    private List<Ticket> allTickets = new ArrayList<>();
+    private List<Ticket> allTickets;
 
 
     public TicketManager(){
@@ -29,6 +29,7 @@ public class TicketManager implements ITicketManager {
 
     @Override
     public List<Ticket> getAllTickets() {
+        fillAllTickets();
         return allTickets;
     }
 
@@ -49,6 +50,12 @@ public class TicketManager implements ITicketManager {
         }
     }
 
+    public void updateTicket(Ticket ticket){
+        ticketDAO.updateTicket(ticket);
+        allTickets = ticketDAO.getAllTickets();
+    }
+
+
     @Override
     public List<Ticket> searchTicketsByCustomerName(String query) {
         List<Ticket> filtered = new ArrayList<>();
@@ -67,13 +74,6 @@ public class TicketManager implements ITicketManager {
                 return ticket;
             }
         }
-        return null;
-    }
-
-    @Override
-    public List<Ticket> searchTicketByEvent(String query) {
-        //TODO
-        //i will implement later
         return null;
     }
 
@@ -129,6 +129,33 @@ public class TicketManager implements ITicketManager {
             listTicketsByEvent.add(getTicketByID(j));
         }
         return listTicketsByEvent;
+    }
+    @Override
+    public int getMaxID() {
+        int max = 0;
+
+        for (Ticket ticket : allTickets) {
+            if(max < ticket.getId())
+                max = ticket.getId();
+        }
+        return max;
+    }
+
+    public List<Ticket> searchForTicket(String query, List<Ticket> allTickets){
+        List<Ticket> filtered = new ArrayList<>();
+
+        for (Ticket t : allTickets){
+            if (t.getCustomerName().toLowerCase().contains(query.toLowerCase())||
+                    t.getCustomerEmail().toLowerCase().contains(query.toLowerCase())){
+                filtered.add(t);
+            }
+        }
+        return filtered;
+    }
+
+    @Override
+    public List<Ticket> searchTicketByEvent(String query) {
+        return null;
     }
 
 }

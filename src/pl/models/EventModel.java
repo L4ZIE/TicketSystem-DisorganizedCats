@@ -1,6 +1,7 @@
 package pl.models;
 
 import be.Event;
+import be.SpecialTicket;
 import bll.EventManager;
 import bll.interfaces.IEventManager;
 import javafx.collections.FXCollections;
@@ -33,6 +34,12 @@ public class EventModel {
         events = getAllEvents();
     }
 
+    public void searchForEvent(String query) {
+        List<Event> filtered = eventManager.searchForEvent(query,eventManager.getAllEvents());
+        events.clear();
+        events.addAll(filtered);
+    }
+
     public Event getEventByID(int id){
         return eventManager.getEventByID(id);
     }
@@ -52,5 +59,13 @@ public class EventModel {
     }
     public int getMaxID(){
         return eventManager.getMaxID();
+    }
+
+    public ObservableList<Event> getEventsBySpecTicketID(int id) {
+        return FXCollections.observableArrayList(eventManager.getEventsBySpecTicketID(id));
+    }
+    public void addEventToSpecTicket(int ticketID,int eventID) {
+        eventManager.addEventToSpecTicket(ticketID,eventID);
+        events = getAllEvents();
     }
 }
