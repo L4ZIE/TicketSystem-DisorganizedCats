@@ -57,11 +57,15 @@ public class AccountDAO implements IAccountDAO {
             String sql = "INSERT INTO Accounts(uName,uPassword,accountType) VALUES (?,?,?)";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
+            preparedStatement.setString(1,account.getUsername());
+            preparedStatement.setString(2,account.getPassword());
+            preparedStatement.setBoolean(3,account.getAccountType());
 
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.setBoolean(3, account.getAccountType());
 
+            preparedStatement.execute();
             preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -84,11 +88,10 @@ public class AccountDAO implements IAccountDAO {
     @Override
     public void updateAccount(Account account) {
         try {
-            String sql = "UPDATE Accounts SET  uName = ? ,uPassword = ?, accountType = ?, WHERE id = ?";
+            String sql = "UPDATE Accounts SET uName = ?, uPassword = ?, accountType = ? WHERE id = ?";
 
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.setBoolean(3, account.getAccountType());
@@ -121,6 +124,7 @@ public class AccountDAO implements IAccountDAO {
                     Boolean retrievedAccountType = resultSet.getBoolean("accountType");
                 }
             }
+            preparedStatement.executeUpdate();
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {

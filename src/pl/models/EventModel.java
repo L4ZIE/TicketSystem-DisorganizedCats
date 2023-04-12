@@ -33,6 +33,7 @@ public class EventModel {
         eventManager.updateEvent(event);
         events = getAllEvents();
     }
+
     public void searchForEvent(String query) {
         List<Event> filtered = eventManager.searchForEvent(query,eventManager.getAllEvents());
         events.clear();

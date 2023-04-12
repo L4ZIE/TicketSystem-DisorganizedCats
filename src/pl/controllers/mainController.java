@@ -1,5 +1,6 @@
 package pl.controllers;
 
+import be.Account;
 import be.Event;
 import be.SpecialTicket;
 import be.Ticket;
@@ -28,6 +29,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -49,12 +51,15 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import com.google.zxing.qrcode.QRCodeWriter;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+
+import pl.models.AccountModel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -66,6 +71,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class mainController implements Initializable {
@@ -75,6 +81,8 @@ public class mainController implements Initializable {
             anpMain;
 
     private EventModel eventModel;
+    private AccountModel accountModel;
+    private boolean userType;
     private SpecialTicketModel specTicketModel;
     private String qrCode;
     private TicketModel ticketModel;
@@ -87,12 +95,15 @@ public class mainController implements Initializable {
 
     private TableView<Ticket> ticketsTable;
 
+    private TableView<Account> accountTable;
+
     public mainController() {
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
+        accountModel = new AccountModel();
         specTicketModel = new SpecialTicketModel();
         ticketModel = new TicketModel();
         displayUserControls(anpController);
@@ -146,9 +157,14 @@ public class mainController implements Initializable {
 
         container.getChildren().addAll(userControls, buttonContainer);
 
-        manageUsers.setDisable(true);
+        /*manageUsers.setDisable(false);//
+        if(userType == false){
+            manageUsers.setDisable(true);
+        }else {
+            manageUsers.setDisable(false);
+        } */
         manageUsers.setOnMouseClicked(e -> {
-            //this is for sprint 2
+            ManageAccountScreen(anpContent);
         });
 
         manageEvents.setOnMouseClicked(e -> {
@@ -574,7 +590,7 @@ public class mainController implements Initializable {
 
         printBtn.setText("Print");
         printBtn.getStyleClass().addAll("app-buttons");
-        printBtn.setLayoutX(editBtn.getLayoutX()+70);
+        printBtn.setLayoutX(editBtn.getLayoutX() + 70);
         printBtn.setLayoutY(editBtn.getLayoutY());
 
 
@@ -619,23 +635,23 @@ public class mainController implements Initializable {
         });
 
         delBtn.setOnMouseClicked(event -> {
-            if (ticketsTable.getSelectionModel().getSelectedItem()==null){
+            if (ticketsTable.getSelectionModel().getSelectedItem() == null) {
                 JOptionPane.showMessageDialog(null, "Please select a ticket");
-            }else {
+            } else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
                 ticketModel.deleteTicket(selectedTicket);
-                displayTicketsTableView(container,selectedEvent.getId());
+                displayTicketsTableView(container, selectedEvent.getId());
             }
         });
 
         useBtn.setOnMouseClicked(event -> {
-            if(ticketsTable.getSelectionModel().getSelectedItem()==null){
-                JOptionPane.showMessageDialog(null,"Please select a ticket");
-            }else {
+            if (ticketsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select a ticket");
+            } else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
-                if (!ticketsTable.getSelectionModel().getSelectedItem().getUsed()){
+                if (!ticketsTable.getSelectionModel().getSelectedItem().getUsed()) {
                     selectedTicket.equals(true);
-                }else {
+                } else {
                     JOptionPane.showMessageDialog(null, "This ticket has already been used");
                 }
             }
@@ -643,16 +659,16 @@ public class mainController implements Initializable {
 
 
         editBtn.setOnMouseClicked(event -> {
-            if (ticketsTable.getSelectionModel().getSelectedItem()==null){
-                JOptionPane.showMessageDialog(null,"Please select a ticket");
+            if (ticketsTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select a ticket");
             } else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
-                displayCreateTicket(container,selectedEvent);
+                displayCreateTicket(container, selectedEvent);
             }
         });
 
-        searchBox.setOnKeyPressed(keyEvent->{
-            if (keyEvent.getCode()== KeyCode.ENTER){
+        searchBox.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
                 ticketModel.searchForTicket(searchBox.getText());
             }
         });
@@ -660,7 +676,6 @@ public class mainController implements Initializable {
         searchButton.setOnMouseClicked(event -> {
             ticketModel.searchForTicket(searchBox.getText());
         });
-
 
 
         printBtn.setOnMouseClicked(event -> {
@@ -778,8 +793,9 @@ public class mainController implements Initializable {
         });
 
     }
-    private void displayCreateTicket(AnchorPane container, Event selectedEvent){
-        displayCreateTicket(container,selectedEvent,null);
+
+    private void displayCreateTicket(AnchorPane container, Event selectedEvent) {
+        displayCreateTicket(container, selectedEvent, null);
     }
 
     private void createTicketToPrint(Event event, Ticket ticket) {
@@ -812,7 +828,7 @@ public class mainController implements Initializable {
         pane.setPadding(new Insets(5));
 
         qrCode = generateQRCode(ticket.getQrCode());
-        pane.setAlignment(qrCode,Pos.CENTER_RIGHT);
+        pane.setAlignment(qrCode, Pos.CENTER_RIGHT);
 
         pane.getChildren().addAll(lblBoldText, lblSimpleText, qrCode);
 
@@ -822,7 +838,7 @@ public class mainController implements Initializable {
 
     }
 
-    private ImageView generateQRCode(String data){
+    private ImageView generateQRCode(String data) {
         QRCodeWriter writer = new QRCodeWriter();
         int height = 300, width = 300;
         BufferedImage qrImage = null;
@@ -1074,9 +1090,6 @@ public class mainController implements Initializable {
             txfTicketName.setText(selectedItem.getTicketName());
         }
 
-        container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
-                lblEvents, choiceBoxNewEvents, lblAddRemove, choiceBoxAllEvents, btnAdd, btnDelete, btnSave, btnGoBack);
-
         btnGoBack.setOnAction(event -> {
             ManageSpecialTicketsScreen(container);
         });
@@ -1105,17 +1118,14 @@ public class mainController implements Initializable {
 
         });
 
-
-
         btnSave.setOnMouseClicked(event -> {
             if (selectedItem != null) {
                 specTicketModel.updateSpecTicket(new SpecialTicket(selectedItem.getId(), txfTicketName.getText(), selectedItem.getQrCode(), selectedItem.getUsed()));
                 JOptionPane.showMessageDialog(null, "Successfully updated special ticket.");
-            }
-            else {
+            } else {
                 List<SpecialTicket> tickets = new ArrayList<>();
 
-                for (int i = 0; i < Integer.parseInt(txfTicketAmount.getText()); i++){
+                for (int i = 0; i < Integer.parseInt(txfTicketAmount.getText()); i++) {
                     tickets.add(new SpecialTicket(i, txfTicketName.getText(), "placeholder", false));
                 }
                 specTicketModel.massCreateSpecTicket(tickets);
@@ -1123,6 +1133,245 @@ public class mainController implements Initializable {
             }
 
         });
+
+        container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
+                lblEvents, choiceBoxNewEvents, lblAddRemove, choiceBoxAllEvents, btnAdd, btnDelete, btnSave, btnGoBack);
+    }
+
+    private void fillAccountsTable(TableView accountTable) {
+        accountTable.setItems(accountModel.getAllAccounts());
+    }
+
+    private void displayAccountTableView(AnchorPane container) {
+        accountTable = new TableView<>();
+
+        TableColumn<Account, String> uNameColumn = new TableColumn<>();
+        uNameColumn.setResizable(false);
+        uNameColumn.setText("User Name");
+        uNameColumn.setMinWidth(110); //set to dynamic later
+        uNameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+        TableColumn<Account, String> accountTypeColumn = new TableColumn<>();
+        accountTypeColumn.setResizable(false);
+        accountTypeColumn.setText("Account Type");
+        accountTypeColumn.setMinWidth(110); //set to dynamic later
+        accountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("accountType"));
+
+        fillAccountsTable(accountTable);
+        accountTable.setLayoutX(container.getLayoutX() - 300);
+        accountTable.setLayoutY(container.getLayoutY() + 30);
+        accountTable.setMaxHeight(container.getMinHeight() - 100);
+        accountTable.setMaxWidth(container.getMinWidth() - 190);
+        accountTable.getColumns().addAll(uNameColumn, accountTypeColumn);
+        container.getChildren().add(accountTable);
+    }
+
+    private void ManageAccountScreen(AnchorPane container) {
+        clearContainer(container);
+
+        Label lblTitle = new Label();
+
+        TextField txfSearchBox = new TextField();
+
+        Button btnNewAccount = new Button();
+
+        Button btnDeleteAccount = new Button();
+        Button btnEditAccount = new Button();
+
+        Button btnSearchButton = new Button();
+
+        lblTitle.setText("Manage Users");
+        lblTitle.setLayoutX(container.getLayoutX() - 300);
+        lblTitle.setLayoutY(container.getLayoutY());
+
+        btnNewAccount.setText("New Account");
+        btnNewAccount.setLayoutX(lblTitle.getLayoutX());
+        btnNewAccount.setLayoutY(container.getMinHeight() - btnNewAccount.getMinHeight() - 50);
+        btnNewAccount.getStyleClass().addAll("app-buttons");
+
+        btnDeleteAccount.setText("Delete");
+        btnDeleteAccount.setLayoutX(btnNewAccount.getLayoutX() + 240);
+        btnDeleteAccount.setLayoutY(btnNewAccount.getLayoutY());
+        btnDeleteAccount.getStyleClass().addAll("app-buttons", "negative-buttons");
+
+        btnEditAccount.setText("Edit");
+        btnEditAccount.setLayoutX(btnDeleteAccount.getLayoutX() + 80);
+        btnEditAccount.setLayoutY(btnDeleteAccount.getLayoutY());
+        btnEditAccount.getStyleClass().addAll("app-buttons");
+
+        txfSearchBox.setPromptText("Search...");
+
+        btnSearchButton.setText("\uD83D\uDD0D");
+        btnSearchButton.setStyle("-fx-font-size: 12");
+
+        btnSearchButton.getStyleClass().add("app-buttons");
+
+        txfSearchBox.setLayoutX(lblTitle.getLayoutX() + 125);
+        txfSearchBox.setLayoutY(lblTitle.getLayoutY());
+        txfSearchBox.setMinWidth(container.getMinWidth() / 2);
+
+        btnSearchButton.setLayoutX(txfSearchBox.getLayoutX() + txfSearchBox.getMinWidth() + 5);
+        btnSearchButton.setLayoutY(txfSearchBox.getLayoutY());
+
+        container.getChildren().addAll(lblTitle, btnEditAccount, btnDeleteAccount, btnNewAccount, btnSearchButton, txfSearchBox);
+        displayAccountTableView(container);
+
+        txfSearchBox.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                accountModel.searchForAccount(txfSearchBox.getText());
+            }
+        });
+
+        btnSearchButton.setOnAction(event -> {
+            accountModel.searchForAccount(txfSearchBox.getText());
+        });
+
+        btnDeleteAccount.setOnMouseClicked(event -> {
+            if (accountTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an account.");
+            } else {
+                Account selectedAccount = accountTable.getSelectionModel().getSelectedItem();
+                accountModel.deleteAccount(selectedAccount.getId());
+                displayAccountTableView(container);
+            }
+        });
+
+        btnEditAccount.setOnMouseClicked(event -> {
+            if (accountTable.getSelectionModel().getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(null, "Please select an account.");
+            } else {
+                Account selectedAccount = accountTable.getSelectionModel().getSelectedItem();
+                displayCreateAccount(container, selectedAccount);
+            }
+        });
+
+        btnNewAccount.setOnMouseClicked(e -> {
+            displayCreateAccount(container, accountTable.getSelectionModel().getSelectedItem());
+        });
+    }
+
+    public void displayCreateAccount(AnchorPane container, Account selectedAccount) {
+        clearContainer(container);
+
+        Label lblAccountType = new Label();
+
+        TextField txfUserName = new TextField();
+        TextField txfUserPassword = new TextField();
+
+        Label lblUserName = new Label();
+        Label lblUserPassword = new Label();
+
+        Label lblSelectAccountType = new Label();
+
+        Button btnAdmin = new Button();
+        Button btnEventCoordinator = new Button();
+
+        Button btnSave = new Button();
+        Button btnCancel = new Button();
+
+        lblAccountType.setText("Create Account");
+        lblAccountType.setLayoutX(container.getLayoutX() - 300);
+        lblAccountType.setLayoutY(container.getLayoutY());
+
+        lblUserName.setText("User Name");
+        lblUserName.setLayoutX(container.getLayoutX() - 300);
+        lblUserName.setLayoutY(container.getLayoutY() + 70);
+
+        lblUserPassword.setText("Password");
+        lblUserPassword.setLayoutX(lblUserName.getLayoutX());
+        lblUserPassword.setLayoutY(lblUserName.getLayoutY() + 60);
+
+        lblSelectAccountType.setText("Select Account Type");
+        lblSelectAccountType.setLayoutX(lblUserPassword.getLayoutX());
+        lblSelectAccountType.setLayoutY(lblUserPassword.getLayoutY() + 60);
+
+        txfUserName.setPrefWidth(200);
+        txfUserName.setPrefHeight(20);
+        txfUserName.setLayoutX(lblUserName.getLayoutX());
+        txfUserName.setLayoutY(lblUserName.getLayoutY() + 20);
+
+        txfUserPassword.setPrefWidth(200);
+        txfUserPassword.setPrefHeight(20);
+        txfUserPassword.setLayoutX(lblUserPassword.getLayoutX());
+        txfUserPassword.setLayoutY(lblUserPassword.getLayoutY() + 20);
+
+        btnAdmin.setText("Admin");
+        btnAdmin.setLayoutX(lblAccountType.getLayoutX());
+        btnAdmin.setLayoutY(container.getMinHeight() - btnAdmin.getMinHeight() - 175);
+        btnAdmin.getStyleClass().addAll("app-buttons");
+
+        btnEventCoordinator.setText("Event Coordinator");
+        btnEventCoordinator.setLayoutX(btnAdmin.getLayoutX() + 60);
+        btnEventCoordinator.setLayoutY(btnAdmin.getLayoutY());
+        btnEventCoordinator.getStyleClass().addAll("app-buttons");
+
+        btnSave.setPrefWidth(60);
+        btnSave.setText("Save");
+        btnSave.setLayoutX(container.getLayoutX() - 300);
+        btnSave.setLayoutY(container.getLayoutY() + 350);
+        btnSave.getStyleClass().addAll("app-buttons");
+
+        btnCancel.setPrefWidth(70);
+        btnCancel.setText("Go Back");
+        btnCancel.setLayoutX(container.getLayoutX());
+        btnCancel.setLayoutY(container.getLayoutY() + 350);
+        btnCancel.getStyleClass().addAll("app-buttons");
+
+        container.getChildren().addAll(
+                lblAccountType, lblUserName, lblUserPassword, lblSelectAccountType,
+                txfUserName, txfUserPassword, btnAdmin, btnEventCoordinator, btnSave, btnCancel);
+
+        if (selectedAccount != null) {
+            txfUserName.setText(selectedAccount.getUsername());
+        }
+
+        btnAdmin.setOnAction(event -> {
+            if (btnAdmin.isArmed()) {
+                btnAdmin.setDisable(true);
+                btnEventCoordinator.setDisable(false);
+                userType = true;
+            }
+        });
+        btnEventCoordinator.setOnAction(event -> {
+            if (btnEventCoordinator.isArmed()) {
+                btnAdmin.setDisable(false);
+                btnEventCoordinator.setDisable(true);
+                userType = false;
+            }
+        });
+
+        btnSave.setOnMouseClicked(event -> {
+            if (txfUserName.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Pleas enter a username");
+            } else if (txfUserPassword.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Pleas enter a password");
+            } else if (selectedAccount == null) {
+                accountModel.createAccount(new Account(
+                        accountModel.getMaxID() + 1,
+                        txfUserName.getText(),
+                        txfUserPassword.getText(),
+                        userType
+                ));
+                JOptionPane.showMessageDialog(null, "Successfully saved selected account");
+                ManageAccountScreen(container);
+            }
+            else {
+                accountModel.updateAccount(new Account(
+                        selectedAccount.getId(),
+                        txfUserName.getText(),
+                        txfUserPassword.getText(),
+                        userType
+                ));
+                JOptionPane.showMessageDialog(null, "Successfully updated selected account");
+                ManageAccountScreen(container);
+            }
+        });
+
+
+    }
+
+    private void displayCreateAccount(AnchorPane container) {
+        displayCreateAccount(container, null);
     }
 
     private void displaySpecialTicketsTableView(AnchorPane container) {
@@ -1157,13 +1406,6 @@ public class mainController implements Initializable {
 
     }
 
-    private void fillSpecialTicketsTable(TableView specialTicketsTable) {
-        specialTicketsTable.setItems(specTicketModel.getAllSpecTickets());
+    private void fillSpecialTicketsTable(TableView<SpecialTicket> specialTicketsTable) {
     }
-
-    private void displayManageAccountScreen(AnchorPane container) {
-        //sprint 2
-    }
-
-
 }

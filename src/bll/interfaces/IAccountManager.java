@@ -10,8 +10,13 @@ public interface IAccountManager {
     void creatAccount(Account account);
     void deleteAccount(int id);
     void updateAccount(Account account);
+
+    List<Account> searchForAccount(String query, List<Account> allAccounts);
+
     List<Account> getAccountsByType(boolean type);
     Account getAccountById(int id);
+
+    int getMaxID();
 
     void logInUser(String uName, String uPassword);
 }
