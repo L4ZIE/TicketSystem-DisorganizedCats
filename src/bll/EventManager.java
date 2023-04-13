@@ -74,13 +74,12 @@ public class EventManager implements IEventManager {
     }
 
     @Override
-    public List<Event> getEventsByName(String name) {
-        List<Event> result = new ArrayList<>();
+    public Event getEventByName(String name) {
         for (Event e : allEvents) {
-            if (e.getEventName().equalsIgnoreCase(name))
-                result.add(e);
+            if (e.getEventName().equals(name))
+                return e;
         }
-        return result;
+        return null;
     }
 
     @Override
@@ -88,12 +87,12 @@ public class EventManager implements IEventManager {
         List<Event> filtered = new ArrayList<>();
 
         for (Event e : allEvents) {
-            if ( e.getEventName().toLowerCase().contains(query.toLowerCase()) ||
+            if (e.getEventName().toLowerCase().contains(query.toLowerCase()) ||
                     e.getStartDateTime().toLowerCase().contains(query.toLowerCase()) ||
                     e.getEndDateTime().toLowerCase().contains(query.toLowerCase()) ||
                     e.getLocationGuidance().toLowerCase().contains(query.toLowerCase()) ||
                     e.getLocation().toLowerCase().contains(query.toLowerCase()) ||
-                    e.getNotes().toLowerCase().contains(query.toLowerCase()))  {
+                    e.getNotes().toLowerCase().contains(query.toLowerCase())) {
                 filtered.add(e);
             }
         }
@@ -109,25 +108,33 @@ public class EventManager implements IEventManager {
         }
         return max;
     }
+
     @Override
     public void updateEvent(Event event) {
         eventDAO.updateEvent(event);
         allEvents = eventDAO.getAllEvents();
     }
+
     @Override
-    public List<Event> getEventsBySpecTicketID(int id){
+    public List<Event> getEventsBySpecTicketID(int id) {
         List<Integer> eventID;
         List<Event> listEventsBySpecTicketID = new ArrayList<>();
 
         eventID = eventSpecTicketDAO.getEventForSpecTickets(id);
-        for(int i : eventID) {
+        for (int i : eventID) {
             listEventsBySpecTicketID.add(getEventByID(i));
         }
         return listEventsBySpecTicketID;
     }
+
     @Override
     public void addEventToSpecTicket(int ticketID, int eventID) {
-        eventSpecTicketDAO.addEventsToSpecTicket(ticketID,eventID);
+        eventSpecTicketDAO.addEventsToSpecTicket(ticketID, eventID);
+    }
+
+    @Override
+    public void deleteEventFromSpecTicket(int ticketID, int eventID) {
+        eventSpecTicketDAO.deleteEventFromSpecTicket(ticketID, eventID);
     }
 }
 

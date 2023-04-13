@@ -15,7 +15,7 @@ public interface ISpecialTicketManager {
     List<SpecialTicket> getSpecTicketsByUsed(boolean used);
     void deleteSpecialTicket(int id);
     List<SpecialTicket> getSpecTicketsByEventID(int id);
-    List<SpecialTicket> searchForSpecTicket(String query, List<SpecialTicket> allSpecialTickets);
+    List<SpecialTicket> searchForSpecTicket(String query);
      SpecialTicket getSpecTicketByName(String name);
 
     void setUseForSpecTicket(int id, boolean used);

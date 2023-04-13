@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import pl.controllers.LoginController;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,11 +23,8 @@ import java.util.List;
 public class AccountDAO implements IAccountDAO {
     private PreparedStatement preparedStatement;
     private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
-    private Object root;
-    private LoginController loginController;
 
     public AccountDAO() {
-        loginController = new LoginController();
     }
 
     @Override
@@ -106,25 +104,23 @@ public class AccountDAO implements IAccountDAO {
         }
     }
     @Override
-    public void logInUser( String uName, String uPassword) {
+    public Boolean logInUser(String username, String password) {
         try {
             String sql = "SELECT uPassword, accountType FROM Accounts WHERE uName = ?";
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
-            preparedStatement.setString(1, uName);
+            preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (!resultSet.isBeforeFirst()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Provided information's are incorrect!");
-                alert.show();
+                return false;
             } else {
-                if(resultSet.next()) {
-                    String retrievedPassword = resultSet.getString("uPassword");
-                    Boolean retrievedAccountType = resultSet.getBoolean("accountType");
+                if(resultSet.next()){
+                    return resultSet.getString("uPassword").equals(password);
                 }
+                else
+                    return false;
             }
-            preparedStatement.executeUpdate();
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {

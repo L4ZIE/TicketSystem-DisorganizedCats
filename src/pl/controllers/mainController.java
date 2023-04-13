@@ -4,12 +4,11 @@ import be.Account;
 import be.Event;
 import be.SpecialTicket;
 import be.Ticket;
-import javafx.beans.property.BooleanProperty;
+import com.sun.tools.javac.Main;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
@@ -19,38 +18,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCode;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import pl.models.EventModel;
 import pl.models.SpecialTicketModel;
 import pl.models.TicketModel;
-import pl.models.TicketModel;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -61,17 +46,10 @@ import java.io.IOException;
 
 import pl.models.AccountModel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class mainController implements Initializable {
@@ -90,8 +68,7 @@ public class mainController implements Initializable {
     private boolean listsUpdated = false;
     private TableView<Event> eventsTable;
     private TableView<SpecialTicket> specialTicketsTable;
-    private TextField txfTicketName;
-
+    private Boolean isAdmin;
 
     private TableView<Ticket> ticketsTable;
 
@@ -99,26 +76,29 @@ public class mainController implements Initializable {
 
     public mainController() {
     }
+    //Disclaimer: This is a gigantic bloater, I'd have personally taken it apart into multiple classes
+    //but for the purpose of inexperienced members and me not having time to teach how the classes could
+    //interact with each other while having loose coupling I have decided to have the bloater instead.
 
+    //For easier navigation, I have included regions.
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         eventModel = new EventModel();
         accountModel = new AccountModel();
         specTicketModel = new SpecialTicketModel();
         ticketModel = new TicketModel();
+        isAdmin = checkIfAdmin();
         displayUserControls(anpController);
         anpContent.getStyleClass().add("container");
         anpMain.setStyle("-fx-background-color: #474747");
-
     }
 
-    private void fillEventsTable(TableView eventsTable) {
-        eventsTable.setItems(eventModel.getAllEvents());
+    //region Utility
+    private Boolean checkIfAdmin() {
+        return accountModel.getAccountByName(LoginController.getUsername()).getAccountType();
     }
 
     private void displayUserControls(AnchorPane container) {
-        //TODO
-
         container.getStyleClass().add("container");
 
         Button manageUsers = new Button();
@@ -155,14 +135,11 @@ public class mainController implements Initializable {
         userControls.setLayoutX((container.getMinWidth() / 2) - 50);
         userControls.setLayoutY(container.getLayoutY() + 10);
 
+        if (!isAdmin)
+            manageUsers.setDisable(true);
+
         container.getChildren().addAll(userControls, buttonContainer);
 
-        /*manageUsers.setDisable(false);//
-        if(userType == false){
-            manageUsers.setDisable(true);
-        }else {
-            manageUsers.setDisable(false);
-        } */
         manageUsers.setOnMouseClicked(e -> {
             ManageAccountScreen(anpContent);
         });
@@ -174,6 +151,16 @@ public class mainController implements Initializable {
         manageSpecTickets.setOnMouseClicked(e -> {
             ManageSpecialTicketsScreen(anpContent);
         });
+    }
+
+    private void clearContainer(AnchorPane container) {
+        container.getChildren().clear();
+    }
+
+    //endregion
+    //region Events
+    private void fillEventsTable(TableView eventsTable) {
+        eventsTable.setItems(eventModel.getAllEvents());
     }
 
     private void displayEventsTableView(AnchorPane container) {
@@ -463,8 +450,8 @@ public class mainController implements Initializable {
                         txfStartDate.getText(),
                         txfEndDate.getText(),
                         txfLocation.getText(),
-                        txfNotes.getText(),
                         txfLocationGuidance.getText(),
+                        txfNotes.getText(),
                         txfEventName.getText()
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully saved selected event");
@@ -474,8 +461,8 @@ public class mainController implements Initializable {
                         txfStartDate.getText(),
                         txfEndDate.getText(),
                         txfLocation.getText(),
-                        txfNotes.getText(),
                         txfLocationGuidance.getText(),
+                        txfNotes.getText(),
                         txfEventName.getText()
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully updated selected event");
@@ -493,16 +480,14 @@ public class mainController implements Initializable {
         displayCreateEvent(container, null);
     }
 
-    private void clearContainer(AnchorPane container) {
-        container.getChildren().clear();
-    }
-
     private void ManageSelectedEventScreen(AnchorPane container) {
         displayEventsTableView(container);
     }
 
+    //endregion
+    //region Tickets
     private void displayTicketsTableView(AnchorPane container, int id) {
-        ticketsTable = new TableView<>();
+        ticketsTable = new TableView();
 
         TableColumn<Ticket, String> nameColumn = new TableColumn<>();
         nameColumn.setResizable(false);
@@ -516,11 +501,11 @@ public class mainController implements Initializable {
         emailColumn.setMaxWidth(75);
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("customerEmail"));
 
-        TableColumn<Ticket, Integer> priceColumn = new TableColumn<>();
-        priceColumn.setResizable(false);
-        priceColumn.setText("Price");
-        priceColumn.setMaxWidth(75);
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("ticketPrice"));
+        TableColumn<Ticket, Boolean> usedColumn = new TableColumn<>();
+        usedColumn.setResizable(false);
+        usedColumn.setText("Used");
+        usedColumn.setMaxWidth(75);
+        usedColumn.setCellValueFactory(new PropertyValueFactory<>("used"));
 
         TableColumn<Ticket, String> typeColumn = new TableColumn<>();
         typeColumn.setResizable(false);
@@ -531,18 +516,18 @@ public class mainController implements Initializable {
 
         //if (ticketModel.getAllTickets() != null)
 
-        fillTicketsTable(ticketsTable, id);
+
         ticketsTable.setLayoutX(container.getLayoutX() - 310);
         ticketsTable.setLayoutY(container.getLayoutY() + 40);
         ticketsTable.setMaxHeight(container.getMinHeight() - 100);
         ticketsTable.setMaxWidth(360);
 
-        ticketsTable.getColumns().addAll(nameColumn, emailColumn, priceColumn, typeColumn);
+        ticketsTable.getColumns().addAll(nameColumn, emailColumn, usedColumn, typeColumn);
+        fillTicketsTable(id);
         container.getChildren().add(ticketsTable);
     }
 
-    private void fillTicketsTable(TableView ticketsTable, int id) {
-
+    private void fillTicketsTable(int id) {
         ticketsTable.setItems(ticketModel.getTicketsByEventID(id));
     }
 
@@ -569,20 +554,16 @@ public class mainController implements Initializable {
         newTicket.setLayoutX(goBack.getLayoutX() + 20);
         newTicket.setLayoutY(container.getMinHeight() - newTicket.getMinHeight() - 50);
 
-        useBtn.setText("USE");
+        useBtn.setText("Use");
         useBtn.getStyleClass().addAll("app-buttons");
         useBtn.setLayoutX(newTicket.getLayoutX() + 100);
         useBtn.setLayoutY(newTicket.getLayoutY());
 
-        delBtn.setText("DELETE");
+        delBtn.setText("Delete");
         delBtn.getStyleClass().addAll("app-buttons", "negative-buttons");
         delBtn.setLayoutX(useBtn.getLayoutX() + 70);
         delBtn.setLayoutY(useBtn.getLayoutY());
 
-        goBack.setText("<-");
-        useBtn.setText("Use");
-        delBtn.setText("Delete");
-        searchBox.setText("Search...");
         editBtn.setText("Edit");
         editBtn.getStyleClass().addAll("app-buttons");
         editBtn.setLayoutX(delBtn.getLayoutX() + 80);
@@ -613,12 +594,13 @@ public class mainController implements Initializable {
         searchBox.setLayoutY(title.getLayoutY());
         searchBox.setPrefWidth(130);
 
-        container.getChildren().addAll(goBack, searchBox, ticketsTable);
         searchButton.setText("\uD83D\uDD0D");
         searchButton.setStyle("-fx-font-size: 12");
         searchButton.getStyleClass().add("app-buttons");
         searchButton.setLayoutX(searchBox.getLayoutX() + searchBox.getMinWidth() + 140);
         searchButton.setLayoutY(searchBox.getLayoutY());
+
+        displayTicketsTableView(container, selectedEvent.getId());
 
         container.getChildren().addAll(title, searchBox, searchButton, goBack, newTicket, useBtn, delBtn, editBtn, printBtn);
         displayTicketsTableView(container, selectedEvent.getId());
@@ -639,7 +621,7 @@ public class mainController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Please select a ticket");
             } else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
-                ticketModel.deleteTicket(selectedTicket);
+                ticketModel.deleteTicket(selectedTicket.getId());
                 displayTicketsTableView(container, selectedEvent.getId());
             }
         });
@@ -650,7 +632,8 @@ public class mainController implements Initializable {
             } else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
                 if (!ticketsTable.getSelectionModel().getSelectedItem().getUsed()) {
-                    selectedTicket.equals(true);
+                    ticketModel.useTicket(selectedTicket.getId());
+                    fillTicketsTable(selectedEvent.getId());
                 } else {
                     JOptionPane.showMessageDialog(null, "This ticket has already been used");
                 }
@@ -663,23 +646,26 @@ public class mainController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Please select a ticket");
             } else {
                 Ticket selectedTicket = ticketsTable.getSelectionModel().getSelectedItem();
-                displayCreateTicket(container, selectedEvent);
+                displayCreateTicket(container, selectedEvent, selectedTicket);
             }
         });
 
         searchBox.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
-                ticketModel.searchForTicket(searchBox.getText());
+                ticketsTable.setItems(ticketModel.searchForTicket(searchBox.getText()));
             }
         });
 
         searchButton.setOnMouseClicked(event -> {
-            ticketModel.searchForTicket(searchBox.getText());
+            ticketsTable.setItems(ticketModel.searchForTicket(searchBox.getText()));
         });
 
 
         printBtn.setOnMouseClicked(event -> {
-            //TODO milk, bread, OLIVE OIL, frozen food
+            if (ticketsTable.getSelectionModel().getSelectedItem() != null)
+                createTicketToPrint(selectedEvent, ticketsTable.getSelectionModel().getSelectedItem());
+            else
+                JOptionPane.showMessageDialog(null, "Please select a ticket to print.");
         });
     }
 
@@ -693,16 +679,15 @@ public class mainController implements Initializable {
         Label locLbl = new Label();
         Label locField = new Label();
         Label locGuideLbl = new Label();
-        Label ticketPriceLbl = new Label();
-        Label ticketPriceField = new Label();
-        Label ticketTypeLbl = new Label();
-        Label ticketTypeField = new Label();
-        Button savBtn = new Button();
-        Button canclBtn = new Button();
+        Button saveBtn = new Button();
+        Button cancelBtn = new Button();
         TextField nameField = new TextField();
         TextField emailField = new TextField();
         TextField notesField = new TextField();
         TextField locGuideField = new TextField();
+
+        saveBtn.getStyleClass().add("app-buttons");
+        cancelBtn.getStyleClass().addAll("app-buttons", "negative-buttons");
 
         nameLbl.setText("Name");
         nameLbl.setLayoutX(container.getLayoutX() - 290);
@@ -748,46 +733,61 @@ public class mainController implements Initializable {
         eventLbl.setLayoutX(container.getLayoutX() / 2);
         eventLbl.setLayoutY(container.getLayoutY() + 5);
 
-        savBtn.setPrefWidth(60);
-        savBtn.setText("Save");
-        savBtn.setLayoutX(container.getLayoutX() - 300);
-        savBtn.setLayoutY(container.getLayoutY() + 350);
+        notesField.setText(selectedEvent.getNotes());
+        notesField.setDisable(true);
 
-        canclBtn.setPrefWidth(70);
-        canclBtn.setText("Cancel");
-        canclBtn.setLayoutX(container.getLayoutX());
-        canclBtn.setLayoutY(container.getLayoutY() + 350);
+        locGuideField.setText(selectedEvent.getNotes());
+        locGuideField.setDisable(true);
 
-        container.getChildren().addAll(savBtn, canclBtn, eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
+        saveBtn.setPrefWidth(60);
+        saveBtn.setText("Save");
+        saveBtn.setLayoutX(container.getLayoutX() - 300);
+        saveBtn.setLayoutY(container.getLayoutY() + 350);
 
 
-        //TODO need to fix
-       /* savBtn.setOnMouseClicked(e -> {
-            if (selectedTicket!=null){
+        cancelBtn.setPrefWidth(70);
+        cancelBtn.setText("Cancel");
+        cancelBtn.setLayoutX(container.getLayoutX());
+        cancelBtn.setLayoutY(container.getLayoutY() + 350);
+
+        if (selectedTicket != null) {
+            nameField.setText(selectedTicket.getCustomerName());
+            emailField.setText(selectedTicket.getCustomerEmail());
+        }
+
+        container.getChildren().addAll(saveBtn, cancelBtn, eventLbl, nameLbl, emailLbl, notesLbl, locLbl, locGuideLbl, nameField, emailField, notesField, locField, locGuideField);
+
+
+        saveBtn.setOnMouseClicked(e -> {
+            if (selectedTicket == null) {
                 ticketModel.createTicket(new Ticket(
-                        ticketModel.getMaxID()+1,
+                        ticketModel.getMaxID() + 1,
                         nameField.getText(),
                         emailField.getText(),
-                        //not sure how to call properly
-                        //ticketTypeField
-                        locGuideField.getText(),
-                        notesField.getText()
-                ));
-                JOptionPane.showMessageDialog(null, "Succesfully saved ticket");
-            }else{
+                        1,
+                        100,
+                        "qr placeholder",
+                        false,
+                        selectedEvent.getId()
+                ), selectedEvent.getId());
+                JOptionPane.showMessageDialog(null, "Successfully saved ticket");
+            } else {
                 ticketModel.updateTicket(new Ticket(
-                        selectedTicket.getId(),
+                        ticketModel.getMaxID() + 1,
                         nameField.getText(),
                         emailField.getText(),
-                        locGuideField.getText(),
-                        notesField.getText()
+                        1,
+                        100,
+                        "qr placeholder",
+                        false,
+                        selectedEvent.getId()
                 ));
-                JOptionPane.showMessageDialog(null,"Succesfully updated selected ticket");
+                JOptionPane.showMessageDialog(null, "Successfully updated selected ticket");
             }
-            ManageTicketsScreen(container,selectedEvent);
-        });*/
+            ManageTicketsScreen(container, selectedEvent);
+        });
 
-        canclBtn.setOnMouseClicked(event -> {
+        cancelBtn.setOnMouseClicked(event -> {
             ManageTicketsScreen(container, eventsTable.getSelectionModel().getSelectedItem());
 
         });
@@ -798,8 +798,10 @@ public class mainController implements Initializable {
         displayCreateTicket(container, selectedEvent, null);
     }
 
+    //endregion
+    //region Print tickets
     private void createTicketToPrint(Event event, Ticket ticket) {
-
+        int ticketHeight = 700, TicketWidth = 250;
         StackPane pane = new StackPane();
         Label lblBoldText = new Label();
         Label lblSimpleText = new Label();
@@ -833,7 +835,34 @@ public class mainController implements Initializable {
         pane.getChildren().addAll(lblBoldText, lblSimpleText, qrCode);
 
         anpMain.getChildren().add(pane);
-        savePicture();
+        savePicture(ticketHeight, TicketWidth);
+        anpMain.getChildren().remove(pane);
+
+    }
+
+    private void createSpecialTicketToPrint(SpecialTicket specialTicket) {
+        int ticketWidth = 400, ticketHeight = 400;
+        StackPane pane = new StackPane();
+        Label lblTicketName = new Label();
+        ImageView qrCode;
+
+        lblTicketName.setText(specialTicket.getTicketName());
+
+        lblTicketName.setStyle("-fx-font-size: 28px");
+        pane.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 1px");
+        pane.setMinSize(ticketWidth, ticketHeight);
+        pane.setLayoutX(0);
+        pane.setLayoutY(0);
+        pane.setAlignment(lblTicketName, Pos.TOP_CENTER);
+        pane.setPadding(new Insets(5));
+
+        qrCode = generateQRCode(specialTicket.getQrCode());
+        pane.setAlignment(qrCode, Pos.CENTER);
+
+        pane.getChildren().addAll(lblTicketName, qrCode);
+
+        anpMain.getChildren().add(pane);
+        savePicture(ticketWidth, ticketHeight);
         anpMain.getChildren().remove(pane);
 
     }
@@ -870,7 +899,7 @@ public class mainController implements Initializable {
         return generatedQR;
     }
 
-    private void savePicture() {
+    private void savePicture(int width, int height) {
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("png files (*.png)", "*.png"));
@@ -879,7 +908,7 @@ public class mainController implements Initializable {
 
         if (file != null) {
             try {
-                WritableImage writableImage = new WritableImage(700, 300);
+                WritableImage writableImage = new WritableImage(width, height);
                 anpMain.snapshot(null, writableImage);
                 RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
                 ImageIO.write(renderedImage, "png", file);
@@ -890,6 +919,8 @@ public class mainController implements Initializable {
 
     }
 
+    //endregion
+    //region Special Tickets
     private void ManageSpecialTicketsScreen(AnchorPane container) {
         clearContainer(container);
 
@@ -992,6 +1023,12 @@ public class mainController implements Initializable {
 
             }
         });
+        btnPrintTicket.setOnMouseClicked(e -> {
+            if (specialTicketsTable.getSelectionModel().getSelectedItem() != null)
+                createSpecialTicketToPrint(specialTicketsTable.getSelectionModel().getSelectedItem());
+            else
+                JOptionPane.showMessageDialog(null, "Please select a ticket to print.");
+        });
     }
 
     private void createSpecTicketPopUp(AnchorPane container) {
@@ -1074,6 +1111,19 @@ public class mainController implements Initializable {
         btnSave.setLayoutY(btnDelete.getLayoutY() + 40);
         btnSave.getStyleClass().addAll("app-buttons");
 
+        if (selectedItem != null) {
+            List<Event> events = eventModel.getEventsBySpecTicketID(selectedItem.getId());
+            ObservableList<String> eventNames = FXCollections.observableArrayList();
+
+            for (Event e : events) {
+                eventNames.add(e.getEventName());
+            }
+
+            System.out.println(eventNames.size());
+            choiceBoxNewEvents.setItems(eventNames);
+
+        }
+
         //force numbers only to ticket amount
         txfTicketAmount.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -1110,8 +1160,12 @@ public class mainController implements Initializable {
                     exist = true;
                 }
             }
-            if (exist == false)
+            if (exist == false){
                 addedEvents.add(selectedEvent);
+                eventModel.addEventToSpecTicket(selectedItem.getId(), eventModel.getEventByName(selectedEvent).getId());
+            }
+
+
             else
                 JOptionPane.showMessageDialog(null, "This event is already added.");
             choiceBoxNewEvents.setItems(addedEvents);
@@ -1121,6 +1175,7 @@ public class mainController implements Initializable {
         btnSave.setOnMouseClicked(event -> {
             if (selectedItem != null) {
                 specTicketModel.updateSpecTicket(new SpecialTicket(selectedItem.getId(), txfTicketName.getText(), selectedItem.getQrCode(), selectedItem.getUsed()));
+
                 JOptionPane.showMessageDialog(null, "Successfully updated special ticket.");
             } else {
                 List<SpecialTicket> tickets = new ArrayList<>();
@@ -1133,11 +1188,53 @@ public class mainController implements Initializable {
             }
 
         });
+        btnDelete.setOnMouseClicked(e->{
+            String selectedEvent = choiceBoxNewEvents.getSelectionModel().getSelectedItem();
+            eventModel.deleteEventFromSpecTicket(selectedItem.getId(), eventModel.getEventByName(selectedEvent).getId());
+        });
 
         container.getChildren().addAll(lblTitle, lblTicketName, txfTicketName, lblTicketAmount, txfTicketAmount,
                 lblEvents, choiceBoxNewEvents, lblAddRemove, choiceBoxAllEvents, btnAdd, btnDelete, btnSave, btnGoBack);
     }
 
+    private void displaySpecialTicketsTableView(AnchorPane container) {
+        specialTicketsTable = new TableView<>();
+
+        TableColumn<SpecialTicket, Integer> colID = new TableColumn<>();
+        colID.setResizable(false);
+        colID.setText("ID");
+        colID.setMaxWidth(40);
+        colID.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<SpecialTicket, String> colName = new TableColumn<>();
+        colName.setResizable(false);
+        colName.setText(" Ticket Name");
+        colName.setMinWidth(150);
+        colName.setCellValueFactory(new PropertyValueFactory<>("ticketName"));
+
+        TableColumn<SpecialTicket, Boolean> colUsed = new TableColumn<>();
+        colUsed.setResizable(false);
+        colUsed.setText("Used");
+        colUsed.setMinWidth(100);
+        colUsed.setCellValueFactory(new PropertyValueFactory<>("used"));
+
+        fillSpecialTicketsTable(specialTicketsTable);
+        specialTicketsTable.setLayoutX(container.getLayoutX() - 265);
+        specialTicketsTable.setLayoutY(container.getLayoutY() + 30);
+        specialTicketsTable.setMaxHeight(container.getMinHeight() - 100);
+        specialTicketsTable.setMaxWidth(container.getMinWidth() - 121);
+
+        specialTicketsTable.getColumns().addAll(colID, colName, colUsed);
+        container.getChildren().add(specialTicketsTable);
+
+    }
+
+    private void fillSpecialTicketsTable(TableView<SpecialTicket> specialTicketsTable) {
+        specialTicketsTable.setItems(specTicketModel.getAllSpecTickets());
+    }
+
+    //endregion
+    //region Accounts
     private void fillAccountsTable(TableView accountTable) {
         accountTable.setItems(accountModel.getAllAccounts());
     }
@@ -1218,12 +1315,12 @@ public class mainController implements Initializable {
 
         txfSearchBox.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
-                accountModel.searchForAccount(txfSearchBox.getText());
+                accountTable.setItems(accountModel.searchForAccount(txfSearchBox.getText()));
             }
         });
 
         btnSearchButton.setOnAction(event -> {
-            accountModel.searchForAccount(txfSearchBox.getText());
+            accountTable.setItems(accountModel.searchForAccount(txfSearchBox.getText()));
         });
 
         btnDeleteAccount.setOnMouseClicked(event -> {
@@ -1246,7 +1343,7 @@ public class mainController implements Initializable {
         });
 
         btnNewAccount.setOnMouseClicked(e -> {
-            displayCreateAccount(container, accountTable.getSelectionModel().getSelectedItem());
+            displayCreateAccount(container);
         });
     }
 
@@ -1323,6 +1420,10 @@ public class mainController implements Initializable {
 
         if (selectedAccount != null) {
             txfUserName.setText(selectedAccount.getUsername());
+            if (selectedAccount.getAccountType())
+                btnAdmin.setDisable(true);
+            else
+                btnEventCoordinator.setDisable(true);
         }
 
         btnAdmin.setOnAction(event -> {
@@ -1345,7 +1446,8 @@ public class mainController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Pleas enter a username");
             } else if (txfUserPassword.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Pleas enter a password");
-            } else if (selectedAccount == null) {
+            }
+            if (selectedAccount == null) {
                 accountModel.createAccount(new Account(
                         accountModel.getMaxID() + 1,
                         txfUserName.getText(),
@@ -1354,8 +1456,7 @@ public class mainController implements Initializable {
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully saved selected account");
                 ManageAccountScreen(container);
-            }
-            else {
+            } else {
                 accountModel.updateAccount(new Account(
                         selectedAccount.getId(),
                         txfUserName.getText(),
@@ -1366,6 +1467,9 @@ public class mainController implements Initializable {
                 ManageAccountScreen(container);
             }
         });
+        btnCancel.setOnMouseClicked(e -> {
+            ManageAccountScreen(anpContent);
+        });
 
 
     }
@@ -1373,39 +1477,7 @@ public class mainController implements Initializable {
     private void displayCreateAccount(AnchorPane container) {
         displayCreateAccount(container, null);
     }
+    //endregion
 
-    private void displaySpecialTicketsTableView(AnchorPane container) {
-        specialTicketsTable = new TableView<>();
 
-        TableColumn<SpecialTicket, Integer> colID = new TableColumn<>();
-        colID.setResizable(false);
-        colID.setText("ID");
-        colID.setMaxWidth(40);
-        colID.setCellValueFactory(new PropertyValueFactory<>("id"));
-
-        TableColumn<SpecialTicket, String> colName = new TableColumn<>();
-        colName.setResizable(false);
-        colName.setText(" Ticket Name");
-        colName.setMinWidth(150);
-        colName.setCellValueFactory(new PropertyValueFactory<>("ticketName"));
-
-        TableColumn<SpecialTicket, Boolean> colUsed = new TableColumn<>();
-        colUsed.setResizable(false);
-        colUsed.setText("Used");
-        colUsed.setMinWidth(100);
-        colUsed.setCellValueFactory(new PropertyValueFactory<>("used"));
-
-        fillSpecialTicketsTable(specialTicketsTable);
-        specialTicketsTable.setLayoutX(container.getLayoutX() - 265);
-        specialTicketsTable.setLayoutY(container.getLayoutY() + 30);
-        specialTicketsTable.setMaxHeight(container.getMinHeight() - 100);
-        specialTicketsTable.setMaxWidth(container.getMinWidth() - 121);
-
-        specialTicketsTable.getColumns().addAll(colID, colName, colUsed);
-        container.getChildren().add(specialTicketsTable);
-
-    }
-
-    private void fillSpecialTicketsTable(TableView<SpecialTicket> specialTicketsTable) {
-    }
 }

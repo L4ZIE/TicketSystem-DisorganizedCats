@@ -14,5 +14,5 @@ public interface IAccountDAO {
 
     void updateAccount(Account account);
 
-    void logInUser(String uName, String uPassword);
+    Boolean logInUser(String uName, String uPassword);
 }

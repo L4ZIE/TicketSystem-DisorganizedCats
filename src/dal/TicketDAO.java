@@ -32,7 +32,8 @@ public class TicketDAO implements ITicketDAO {
                         resultSet.getInt("ticketType"),
                         resultSet.getInt("ticketPrice"),
                         resultSet.getString("qrCode"),
-                        resultSet.getBoolean("used")
+                        resultSet.getBoolean("used"),
+                        resultSet.getInt("eventID")
                 ));
             }
             return tickets;
@@ -45,9 +46,9 @@ public class TicketDAO implements ITicketDAO {
     }
 
     @Override
-    public void createTicket(Ticket ticket) {
+    public void createTicket(Ticket ticket, int eventID) {
         try {
-            String sql = "INSERT INTO Tickets ( customerName, customerEmail, ticketType, ticketPrice, qrCode, used ) VALUES ( ?,?,?,?,?,?)";
+            String sql = "INSERT INTO Tickets ( customerName, customerEmail, ticketType, ticketPrice, qrCode, used, eventID ) VALUES ( ?,?,?,?,?,?,?)";
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
@@ -57,6 +58,7 @@ public class TicketDAO implements ITicketDAO {
             preparedStatement.setInt(4, ticket.getTicketPrice());
             preparedStatement.setString(5, ticket.getQrCode());
             preparedStatement.setBoolean(6, ticket.getUsed());
+            preparedStatement.setInt(7, eventID);
 
             preparedStatement.execute();
 
@@ -75,7 +77,7 @@ public class TicketDAO implements ITicketDAO {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, id);
 
-            preparedStatement.executeUpdate();
+            preparedStatement.execute();
         } catch (SQLServerException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -86,7 +88,7 @@ public class TicketDAO implements ITicketDAO {
     @Override
     public void updateTicket(Ticket selectedTicket) {
         try{
-            String sql = "UPDATE Tickets SET customerName = ?,customerEmail = ?, ticketType = ?, ticketPrice = ?, ticketQrCode = ?, used = ? WHERE id = ? ";
+            String sql = "UPDATE Tickets SET customerName = ?,customerEmail = ?, ticketType = ?, ticketPrice = ?, qrCode = ?, used = ? WHERE id = ? ";
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, selectedTicket.getCustomerName());

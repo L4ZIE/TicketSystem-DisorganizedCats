@@ -92,7 +92,7 @@ public class SpecialTicketManager implements ISpecialTicketManager {
         return listSpecTicketsByEvent;
     }
     @Override
-    public List<SpecialTicket> searchForSpecTicket(String query, List<SpecialTicket> allSpecialTickets) {
+    public List<SpecialTicket> searchForSpecTicket(String query) {
         List<SpecialTicket> listSorted = new ArrayList<>();
 
         for (SpecialTicket spTicket : allSpecialTickets) {

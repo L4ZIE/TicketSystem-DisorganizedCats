@@ -85,4 +85,22 @@ public class EventSpecTicketDAO implements IEventSpecTicketDAO {
         }
 
     }
+
+    @Override
+    public void deleteEventFromSpecTicket(int ticketID, int eventID) {
+        try{
+            String sql = "DELETE FROM Event_SpecTickets WHERE ticketID=? AND eventID=?";
+
+            preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
+            preparedStatement.setInt(1,ticketID);
+            preparedStatement.setInt(2,eventID);
+            preparedStatement.execute();
+
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

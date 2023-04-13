@@ -3,6 +3,7 @@ package bll;
 import be.Event;
 import be.Ticket;
 import bll.interfaces.ITicketManager;
+import dal.EventTicketDAO;
 import dal.TicketDAO;
 import dal.interfaces.IEventTicketDAO;
 import dal.interfaces.ITicketDAO;
@@ -18,8 +19,9 @@ public class TicketManager implements ITicketManager {
     private List<Ticket> allTickets;
 
 
-    public TicketManager(){
+    public TicketManager() {
         ticketDAO = new TicketDAO();
+        eventTicketDAO = new EventTicketDAO();
         fillAllTickets();
     }
 
@@ -34,23 +36,18 @@ public class TicketManager implements ITicketManager {
     }
 
     @Override
-    public void createTicket(Ticket ticket) {
+    public void createTicket(Ticket ticket, int eventID) {
         allTickets.add(ticket);
-        ticketDAO.createTicket(ticket);
+        ticketDAO.createTicket(ticket, eventID);
     }
 
     @Override
     public void deleteTicket(int id) {
-        for (int i = 0; i < allTickets.size(); i++) {
-            if (allTickets.get(i).getId() == id) {
-                allTickets.remove(allTickets.get(i));
-                ticketDAO.deleteTicket(id);
-                break;
-            }
-        }
+        allTickets.remove(getTicketByID(id));
+        ticketDAO.deleteTicket(id);
     }
 
-    public void updateTicket(Ticket ticket){
+    public void updateTicket(Ticket ticket) {
         ticketDAO.updateTicket(ticket);
         allTickets = ticketDAO.getAllTickets();
     }
@@ -87,6 +84,7 @@ public class TicketManager implements ITicketManager {
         }
         return ticketsByCustomer;
     }
+
     @Override
     public List<Ticket> getTicketsByEmail(String email) {
         List<Ticket> listTicketsEmail = new ArrayList<>();
@@ -97,6 +95,7 @@ public class TicketManager implements ITicketManager {
         }
         return listTicketsEmail;
     }
+
     @Override
     public List<Ticket> getTicketsByPrice(int price) {
         List<Ticket> listTicketPrice = new ArrayList<>();
@@ -108,11 +107,12 @@ public class TicketManager implements ITicketManager {
 
         return listTicketPrice;
     }
+
     @Override
-    public List <Ticket> getTicketsByUsed(Boolean used) {
+    public List<Ticket> getTicketsByUsed(Boolean used) {
         List<Ticket> listUsedTicket = new ArrayList<>();
-        for(Ticket ticket : allTickets) {
-            if(ticket.getUsed() == true) {
+        for (Ticket ticket : allTickets) {
+            if (ticket.getUsed() == true) {
                 listUsedTicket.add(ticket);
             }
         }
@@ -120,33 +120,41 @@ public class TicketManager implements ITicketManager {
     }
 
     @Override
-    public List<Ticket> getTicketsByEventID(Event event){
-        List<Integer> ticketID;
+    public List<Ticket> getTicketsByEventID(int id) {
+        fillAllTickets();
         List<Ticket> listTicketsByEvent = new ArrayList<>();
 
-        ticketID = eventTicketDAO.getTicketsByEventID(event.getId());
-        for(int j : ticketID) {
-            listTicketsByEvent.add(getTicketByID(j));
+        for (Ticket t : allTickets) {
+            if (t.getEventID() == id)
+                listTicketsByEvent.add(t);
         }
         return listTicketsByEvent;
     }
+
+    @Override
+    public void useTicket(int id) {
+        Ticket ticket = getTicketByID(id);
+        ticket.setUsed(true);
+        updateTicket(ticket);
+    }
+
     @Override
     public int getMaxID() {
         int max = 0;
 
         for (Ticket ticket : allTickets) {
-            if(max < ticket.getId())
+            if (max < ticket.getId())
                 max = ticket.getId();
         }
         return max;
     }
 
-    public List<Ticket> searchForTicket(String query, List<Ticket> allTickets){
+    public List<Ticket> searchForTicket(String query) {
         List<Ticket> filtered = new ArrayList<>();
 
-        for (Ticket t : allTickets){
-            if (t.getCustomerName().toLowerCase().contains(query.toLowerCase())||
-                    t.getCustomerEmail().toLowerCase().contains(query.toLowerCase())){
+        for (Ticket t : allTickets) {
+            if (t.getCustomerName().toLowerCase().contains(query.toLowerCase()) ||
+                    t.getCustomerEmail().toLowerCase().contains(query.toLowerCase())) {
                 filtered.add(t);
             }
         }

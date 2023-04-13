@@ -37,7 +37,7 @@ public class SpecialTicketModel {
     }
 
     public void searchForSpecTicket(String query) {
-        List<SpecialTicket> searched = specTicketManager.searchForSpecTicket(query, specTicketManager.getAllSpecTickets());
+        List<SpecialTicket> searched = specTicketManager.searchForSpecTicket(query);
         listSpecialTickets.clear();
         listSpecialTickets.addAll(searched);
     }
@@ -66,4 +66,7 @@ public class SpecialTicketModel {
         specTicketManager.setUseForSpecTicket(id,used);
     }
     public void massCreateSpecTicket(List<SpecialTicket> tickets){specTicketManager.massCreateSpecTicket(tickets);}
+    public void saveSpecEventConnections(int specTicketID, List<Integer> eventIDs){
+
+    }
 }

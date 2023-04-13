@@ -9,7 +9,7 @@ import static javafx.application.Application.launch;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("pl/fxml/mainWindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("pl/fxml/loginWindow.fxml"));
         primaryStage.setTitle("Ticket System 1.0");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

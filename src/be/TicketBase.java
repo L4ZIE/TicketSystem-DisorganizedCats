@@ -32,15 +32,4 @@ public abstract class TicketBase {
     public void setUsed(Boolean used) {
         this.used = used;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        TicketBase compTicketBase = (TicketBase) obj;
-        return compTicketBase.getId() == this.getId();
-    }
-
-   @Override
-    public String toString() {
-        return getId() + " " + getQrCode() + " " + getUsed();
-    }
 }

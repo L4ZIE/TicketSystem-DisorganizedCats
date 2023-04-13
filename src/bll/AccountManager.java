@@ -47,7 +47,7 @@ public class AccountManager implements IAccountManager {
     }
 
     @Override
-    public List<Account> searchForAccount(String query, List<Account> allAccounts){
+    public List<Account> searchForAccount(String query){
         List<Account> filtered = new ArrayList<>();
 
         for (Account a : allAccounts){
@@ -68,9 +68,17 @@ public class AccountManager implements IAccountManager {
         return result;
     }
     @Override
-    public void logInUser(String uName, String uPassword) {
-        accountDAO.logInUser(uName,uPassword);
-        fillAllAccounts();
+    public Boolean logInUser(String uName, String uPassword) {
+        return accountDAO.logInUser(uName,uPassword);
+    }
+
+    @Override
+    public Account getAccountByName(String name) {
+        for (Account a : allAccounts) {
+            if (a.getUsername().equals(name))
+                return a;
+        }
+        return null;
     }
 
     @Override

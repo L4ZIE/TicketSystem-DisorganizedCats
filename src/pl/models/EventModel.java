@@ -54,8 +54,8 @@ public class EventModel {
     public ObservableList<Event> getEventsByEndDate(String date){
         return FXCollections.observableArrayList(eventManager.getEventsByEndDate(date));
     }
-    public ObservableList<Event> getEventsByName(String name){
-        return FXCollections.observableArrayList(eventManager.getEventsByName(name));
+    public Event getEventByName(String name){
+        return eventManager.getEventByName(name);
     }
     public int getMaxID(){
         return eventManager.getMaxID();
@@ -67,5 +67,8 @@ public class EventModel {
     public void addEventToSpecTicket(int ticketID,int eventID) {
         eventManager.addEventToSpecTicket(ticketID,eventID);
         events = getAllEvents();
+    }
+    public void deleteEventFromSpecTicket(int ticketID, int eventID){
+        eventManager.deleteEventFromSpecTicket(ticketID, eventID);
     }
 }
