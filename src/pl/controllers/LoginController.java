@@ -1,6 +1,7 @@
 package pl.controllers;
 
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -81,25 +82,32 @@ public class LoginController implements Initializable {
     }
 
     private void login(String username, String password) {
-        if (!accountModel.logInUser(username, password)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setContentText("Provided information's are incorrect!");
-            alert.show();
-        } else {
-            try {
-                uname = username;
-                URL asd = new File("src/pl/fxml/mainWindow.fxml").toURI().toURL();
-                Parent root = FXMLLoader.load(asd);
-                Scene scene = new Scene(root);
-                Stage primaryStage = new Stage();
-                primaryStage.setTitle("Welcome " + username);
-                primaryStage.setScene(scene);
-                primaryStage.initModality(Modality.APPLICATION_MODAL);
-                primaryStage.show();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+        //I'd use a separate thread but JavaFX's fxml is not thread safe
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                if (!accountModel.logInUser(username, password)) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setContentText("Provided information's are incorrect!");
+                    alert.show();
+                } else {
+                    try {
+                        uname = username;
+                        URL asd = new File("src/pl/fxml/mainWindow.fxml").toURI().toURL();
+                        Parent root = FXMLLoader.load(asd);
+                        Scene scene = new Scene(root);
+                        Stage primaryStage = new Stage();
+                        primaryStage.setTitle("Welcome " + username);
+                        primaryStage.setScene(scene);
+                        primaryStage.initModality(Modality.APPLICATION_MODAL);
+                        primaryStage.show();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
-        }
+        });
     }
     public static String getUsername(){
         return uname;

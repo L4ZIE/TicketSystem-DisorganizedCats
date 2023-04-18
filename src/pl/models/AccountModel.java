@@ -28,7 +28,6 @@ public class AccountModel {
 
     public void deleteAccount(int id) {
         accountManager.deleteAccount(id);
-
     }
 
     public void updateAccount(Account account) {

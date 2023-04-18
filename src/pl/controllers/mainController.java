@@ -443,32 +443,37 @@ public class mainController implements Initializable {
                 txfStartMin, txfEndHour, txfEndMin, btnSave, btnCancel);
 
         btnSave.setOnMouseClicked(e -> {
-
-            if (selectedEvent == null) {
-                eventModel.createEvent(new Event(
-                        eventModel.getMaxID() + 1,
-                        txfStartDate.getText(),
-                        txfEndDate.getText(),
-                        txfLocation.getText(),
-                        txfLocationGuidance.getText(),
-                        txfNotes.getText(),
-                        txfEventName.getText()
-                ));
-                JOptionPane.showMessageDialog(null, "Successfully saved selected event");
+            if (txfEventName.getText().equals("") || txfStartDate.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Please fill out the required fields.");
             } else {
-                eventModel.updateEvent(new Event(
-                        selectedEvent.getId(),
-                        txfStartDate.getText(),
-                        txfEndDate.getText(),
-                        txfLocation.getText(),
-                        txfLocationGuidance.getText(),
-                        txfNotes.getText(),
-                        txfEventName.getText()
-                ));
-                JOptionPane.showMessageDialog(null, "Successfully updated selected event");
+                if (selectedEvent == null) {
+                    eventModel.createEvent(new Event(
+                            eventModel.getMaxID() + 1,
+                            txfStartDate.getText(),
+                            txfEndDate.getText(),
+                            txfLocation.getText(),
+                            txfLocationGuidance.getText(),
+                            txfNotes.getText(),
+                            txfEventName.getText()
+                    ));
+                    JOptionPane.showMessageDialog(null, "Successfully saved selected event");
+                } else {
+                    eventModel.updateEvent(new Event(
+                            selectedEvent.getId(),
+                            txfStartDate.getText(),
+                            txfEndDate.getText(),
+                            txfLocation.getText(),
+                            txfLocationGuidance.getText(),
+                            txfNotes.getText(),
+                            txfEventName.getText()
+                    ));
+                    JOptionPane.showMessageDialog(null, "Successfully updated selected event");
+                }
+
+                ManageEventsScreen(container);
             }
 
-            ManageEventsScreen(container);
+
         });
 
         btnCancel.setOnMouseClicked(e -> {
@@ -773,7 +778,7 @@ public class mainController implements Initializable {
                 JOptionPane.showMessageDialog(null, "Successfully saved ticket");
             } else {
                 ticketModel.updateTicket(new Ticket(
-                        ticketModel.getMaxID() + 1,
+                        selectedTicket.getId(),
                         nameField.getText(),
                         emailField.getText(),
                         1,
@@ -801,7 +806,7 @@ public class mainController implements Initializable {
     //endregion
     //region Print tickets
     private void createTicketToPrint(Event event, Ticket ticket) {
-        int ticketHeight = 700, TicketWidth = 250;
+        int ticketHeight = 700, ticketWidth = 250;
         StackPane pane = new StackPane();
         Label lblBoldText = new Label();
         Label lblSimpleText = new Label();
@@ -835,7 +840,7 @@ public class mainController implements Initializable {
         pane.getChildren().addAll(lblBoldText, lblSimpleText, qrCode);
 
         anpMain.getChildren().add(pane);
-        savePicture(ticketHeight, TicketWidth);
+        savePicture(ticketWidth + 50, ticketHeight);
         anpMain.getChildren().remove(pane);
 
     }
@@ -908,7 +913,7 @@ public class mainController implements Initializable {
 
         if (file != null) {
             try {
-                WritableImage writableImage = new WritableImage(width, height);
+                WritableImage writableImage = new WritableImage(height, width);
                 anpMain.snapshot(null, writableImage);
                 RenderedImage renderedImage = SwingFXUtils.fromFXImage(writableImage, null);
                 ImageIO.write(renderedImage, "png", file);
@@ -1160,13 +1165,10 @@ public class mainController implements Initializable {
                     exist = true;
                 }
             }
-            if (exist == false){
+            if (exist == false) {
                 addedEvents.add(selectedEvent);
                 eventModel.addEventToSpecTicket(selectedItem.getId(), eventModel.getEventByName(selectedEvent).getId());
-            }
-
-
-            else
+            } else
                 JOptionPane.showMessageDialog(null, "This event is already added.");
             choiceBoxNewEvents.setItems(addedEvents);
 
@@ -1188,7 +1190,7 @@ public class mainController implements Initializable {
             }
 
         });
-        btnDelete.setOnMouseClicked(e->{
+        btnDelete.setOnMouseClicked(e -> {
             String selectedEvent = choiceBoxNewEvents.getSelectionModel().getSelectedItem();
             eventModel.deleteEventFromSpecTicket(selectedItem.getId(), eventModel.getEventByName(selectedEvent).getId());
         });
@@ -1455,7 +1457,6 @@ public class mainController implements Initializable {
                         userType
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully saved selected account");
-                ManageAccountScreen(container);
             } else {
                 accountModel.updateAccount(new Account(
                         selectedAccount.getId(),
@@ -1464,8 +1465,9 @@ public class mainController implements Initializable {
                         userType
                 ));
                 JOptionPane.showMessageDialog(null, "Successfully updated selected account");
-                ManageAccountScreen(container);
             }
+            ManageAccountScreen(container);
+            displayAccountTableView(container);
         });
         btnCancel.setOnMouseClicked(e -> {
             ManageAccountScreen(anpContent);

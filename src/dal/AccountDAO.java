@@ -64,7 +64,6 @@ public class AccountDAO implements IAccountDAO {
             preparedStatement.setBoolean(3, account.getAccountType());
 
             preparedStatement.execute();
-            preparedStatement.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -73,7 +72,7 @@ public class AccountDAO implements IAccountDAO {
     @Override
     public void deleteAccount(int id) {
         try {
-            String sql = "DELETE FROM Accounts WHERE id = ?";
+            String sql = "DELETE FROM Accounts WHERE id= ?";
             Connection conn = dataBaseConnector.createConnection();
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setInt(1, id);
