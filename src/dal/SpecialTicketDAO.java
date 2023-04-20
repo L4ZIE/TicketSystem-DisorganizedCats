@@ -15,11 +15,11 @@ import java.util.List;
 public class SpecialTicketDAO implements ISpecialTicketDAO {
 
     private PreparedStatement preparedStatement;
-    private DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
+    private final DataBaseConnector dataBaseConnector = DataBaseConnector.getInstance();
 
     @Override
     public List<SpecialTicket> getAllSpecialTickets() {
-        List<SpecialTicket> specialTickets= new ArrayList<>();
+        List<SpecialTicket> specialTickets = new ArrayList<>();
         try {
             String sql = "SELECT * FROM SpecialTickets";
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
@@ -30,7 +30,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
                         resultSet.getInt("id"),
                         resultSet.getString("ticketName"),
                         resultSet.getString("qrCode"),
-                        resultSet.getByte("used")
+                        resultSet.getBoolean("used")
                 ));
             }
             return specialTickets;
@@ -41,6 +41,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void createSpecialTicket(SpecialTicket specialTicket) {
         try {
@@ -48,9 +49,9 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
 
             preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
 
-            preparedStatement.setString(1,specialTicket.getTicketName());
-            preparedStatement.setString(2,specialTicket.getQrCode());
-            preparedStatement.setByte(3, specialTicket.getUsed());
+            preparedStatement.setString(1, specialTicket.getTicketName());
+            preparedStatement.setString(2, specialTicket.getQrCode());
+            preparedStatement.setBoolean(3, specialTicket.getUsed());
 
             preparedStatement.execute();
 
@@ -60,6 +61,7 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void deleteSpecialTicket(int id) {
         try {
@@ -75,5 +77,67 @@ public class SpecialTicketDAO implements ISpecialTicketDAO {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void updateSpecTicket(SpecialTicket selectedSpecTicket) {
+        try {
+            String sql = "UPDATE SpecialTickets SET ticketName = ?, used = ? WHERE id = ? ";
+
+            Connection conn = dataBaseConnector.createConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, selectedSpecTicket.getTicketName());
+            preparedStatement.setBoolean(2, selectedSpecTicket.getUsed());
+            preparedStatement.setInt(3, selectedSpecTicket.getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void setUseForSpecTicket(int id, boolean used) {
+        try {
+            String sql = "UPDATE SpecialTickets SET used = ? WHERE id = ?";
+
+            Connection conn = dataBaseConnector.createConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setBoolean(1, used);
+            preparedStatement.setInt(2, id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLServerException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @Override
+    public void massCreateSpecTicket(List<SpecialTicket> tickets){
+        for (SpecialTicket st : tickets) {
+            try {
+                String sql = "INSERT INTO SpecialTickets (ticketName, qrCode, used ) VALUES ( ?,?,?)";
+
+                preparedStatement = dataBaseConnector.createConnection().prepareStatement(sql);
+
+                preparedStatement.setString(1, st.getTicketName());
+                preparedStatement.setString(2, st.getQrCode());
+                preparedStatement.setBoolean(3, st.getUsed());
+
+                preparedStatement.execute();
+
+            } catch (SQLServerException e) {
+                throw new RuntimeException(e);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
+
 }
 

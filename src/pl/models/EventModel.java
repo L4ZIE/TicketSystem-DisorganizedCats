@@ -1,40 +1,74 @@
 package pl.models;
 
 import be.Event;
+import be.SpecialTicket;
 import bll.EventManager;
+import bll.interfaces.IEventManager;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.List;
 
 public class EventModel {
 
-    EventManager eventManager;
+    IEventManager eventManager;
     public EventModel(){
         eventManager = new EventManager();
     }
+    private ObservableList<Event> events;
 
     public ObservableList<Event> getAllEvents(){
-        //waiting for backend
-        return null;
+        return events = FXCollections.observableArrayList(eventManager.getAllEvents());
     }
+    public void createEvent(Event event) {
+        eventManager.createEvent(event);
+        events.add(event);
+    }
+    public void deleteEvent(Event event){
+        eventManager.deleteEvent(event.getId());
+        events.remove(events.indexOf(event));
+    }
+
+    public void updateEvent(Event event){
+        eventManager.updateEvent(event);
+        events = getAllEvents();
+    }
+
+    public void searchForEvent(String query) {
+        List<Event> filtered = eventManager.searchForEvent(query,eventManager.getAllEvents());
+        events.clear();
+        events.addAll(filtered);
+    }
+
     public Event getEventByID(int id){
-        //waiting for backend
-        return null;
+        return eventManager.getEventByID(id);
     }
+
     public ObservableList<Event> getEventByAccount(){
         //sprint 2
         return null;
     }
     public ObservableList<Event> getEventsByStartDate(String date){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(eventManager.getEventsByStartDate(date));
     }
     public ObservableList<Event> getEventsByEndDate(String date){
-        //waiting for backend
-        return null;
+        return FXCollections.observableArrayList(eventManager.getEventsByEndDate(date));
     }
-    public ObservableList<Event> getEventsByName(String name){
-        //waiting for backend
-        return null;
+    public Event getEventByName(String name){
+        return eventManager.getEventByName(name);
+    }
+    public int getMaxID(){
+        return eventManager.getMaxID();
     }
 
-
+    public ObservableList<Event> getEventsBySpecTicketID(int id) {
+        return FXCollections.observableArrayList(eventManager.getEventsBySpecTicketID(id));
+    }
+    public void addEventToSpecTicket(int ticketID,int eventID) {
+        eventManager.addEventToSpecTicket(ticketID,eventID);
+        events = getAllEvents();
+    }
+    public void deleteEventFromSpecTicket(int ticketID, int eventID){
+        eventManager.deleteEventFromSpecTicket(ticketID, eventID);
+    }
 }

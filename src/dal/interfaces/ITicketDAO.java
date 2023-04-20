@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ITicketDAO {
     List<Ticket> getAllTickets();
-    void createTicket(Ticket ticket) ;
+    void createTicket(Ticket ticket, int eventID) ;
     void deleteTicket(int id) ;
     void updateTicket(Ticket selectedTicket);
 }
